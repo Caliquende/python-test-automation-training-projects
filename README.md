@@ -39,7 +39,6 @@ This project covers a core end-to-end test set for the SauceDemo website:
 ├─ README.md
 
 ├─ requirements.txt
-
 └─ .gitignore
 
 
