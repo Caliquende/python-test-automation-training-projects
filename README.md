@@ -20,7 +20,6 @@ This project covers a core end-to-end test set for the SauceDemo website:
 
 ## Project Structure
 
-\\\
 ├─ pages
 
 │  ├─ __init__.py
@@ -43,7 +42,7 @@ This project covers a core end-to-end test set for the SauceDemo website:
 
 └─ .gitignore
 
-\\\
+
 
 ## Installation
 
