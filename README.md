@@ -32,13 +32,13 @@ projects/
 
 ## Installation
 
-\\\ash
+\\\bash
 pip install -r requirements.txt
 \\\
 
 ## Run Tests
 
-\\\ash
+\\\bash
 pytest -v .\projects\tests\test_mini_project_core.py
 \\\
 
