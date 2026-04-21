@@ -21,19 +21,17 @@ This project covers a core end-to-end test set for the SauceDemo website:
 ## Project Structure
 
 \\\
-projects/
-
-  pages/
-
-    login_page.py
-    
-    inventory_page.py
-    
-    cart_page.py
-  
-  tests/
-  
-    test_mini_project_core.py
+├─ pages
+│  ├─ __init__.py
+│  ├─ login_page.py
+│  ├─ inventory_page.py
+│  └─ cart_page.py
+├─ tests
+│  ├─ __init__.py
+│  └─ test_mini_project_core.py
+├─ README.md
+├─ requirements.txt
+└─ .gitignore
 
 \\\
 
