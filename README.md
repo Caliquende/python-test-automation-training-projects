@@ -22,12 +22,19 @@ This project covers a core end-to-end test set for the SauceDemo website:
 
 \\\
 projects/
+
   pages/
+
     login_page.py
+    
     inventory_page.py
+    
     cart_page.py
+  
   tests/
+  
     test_mini_project_core.py
+
 \\\
 
 ## Installation
