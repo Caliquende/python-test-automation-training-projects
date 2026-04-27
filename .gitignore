@@ -7,6 +7,20 @@ __pycache__/
 venv/
 env/
 
+# Environment / secrets
+.env
+.env.*
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# Test artifacts
+*.log
+screenshots/
+reports/
+
 # IDEs
 .vscode/
 .idea/
@@ -14,3 +28,4 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
