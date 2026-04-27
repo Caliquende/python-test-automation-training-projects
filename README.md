@@ -1,60 +1,59 @@
-# Test Automation Projects
+# Python Test Automation Training Projects
 
-This directory contains two main test automation sub-projects:
+Training repository with two focused Python automation tracks:
 
-1.  **[API Automation](api/README.md)**: REST API tests for JSONPlaceholder and DummyJSON using Python and Requests.
-2.  **[UI Automation](ui/README.md)**: Web UI tests for SauceDemo using Python, Selenium, and the Page Object Model (POM).
+1. **[API automation](api/README.md)**: REST API tests against JSONPlaceholder and DummyJSON with `requests` and `pytest`.
+2. **[UI automation](ui/README.md)**: SauceDemo browser tests with Selenium WebDriver, `pytest`, and Page Object Model classes.
 
-## General Structure
+## Repository Structure
 
 ```text
-projects/
-├── api/                # API Test Automation project
-│   ├── tests/          # API test cases
-│   └── pytest.ini      # API specific configuration
-├── ui/                 # UI Test Automation project
-│   ├── pages/          # Page Object Model classes
-│   ├── tests/          # UI test cases
-│   └── pytest.ini      # UI specific configuration
-├── README.md           # Root projects documentation
-├── pytest.ini          # Root configuration to run all tests
-└── .gitignore          # Root git ignore file
+.
+├── api/
+│   ├── tests/              # API test cases
+│   ├── pytest.ini          # API-specific pytest settings
+│   └── README.md           # API track notes
+├── ui/
+│   ├── pages/              # Page Object Model classes
+│   ├── tests/              # UI test cases
+│   ├── pytest.ini          # UI-specific pytest settings
+│   └── README.md           # UI track notes
+├── pytest.ini              # Root pytest configuration
+├── requirements.txt        # Shared Python dependencies
+└── README.md
 ```
 
-## Prerequisites
+## Requirements
 
-- Python 3.x
-- pip (Python package manager)
+- Python 3.10+ recommended
+- Chrome or another Selenium-supported browser for UI tests
+- Network access to the public demo APIs and `https://www.saucedemo.com`
 
-## Installation
+## Setup
 
-It is recommended to use a virtual environment:
-
-```bash
-# Create a virtual environment
-python -m venv venv
-
-# Activate it (Windows)
-.\venv\Scripts\activate
-
-# Install dependencies
-pip install requests selenium pytest
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
 ## Running Tests
 
-You can run all tests from this root directory:
+Run the full suite from the repository root:
 
-```bash
+```powershell
 pytest
 ```
 
-Or run specific sub-projects:
+Run one track only:
 
-```bash
-# Run API tests
+```powershell
 pytest api/
-
-# Run UI tests
 pytest ui/
 ```
+
+## Validation Notes
+
+- API tests depend on external demo services; failures can be caused by service outages or response changes.
+- UI tests depend on a local browser driver managed by Selenium and the current SauceDemo behavior.
+- Keep locators in `ui/pages/` aligned with the live UI before treating test failures as application defects.
