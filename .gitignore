@@ -1,9 +1,16 @@
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
 .pytest_cache/
 .venv/
 venv/
-*.pyc
-*.pyo
-*.pyd
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
 .DS_Store
 Thumbs.db
