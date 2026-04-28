@@ -29,3 +29,6 @@ reports/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+reports/*
+!reports/.gitkeep
