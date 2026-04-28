@@ -1,51 +1,42 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
+from ui.config.settings import BASE_URL
+from ui.pages.base_page import BasePage
 
 
-class LoginPage:
+class LoginPage(BasePage):
     """
     Page Object Model for the Login page.
     """
-    # Base URL for the application
-    URL = "https://www.saucedemo.com/"
 
-    # Locators for elements on the Login page
     USERNAME_INPUT = (By.ID, "user-name")
     PASSWORD_INPUT = (By.ID, "password")
     LOGIN_BUTTON = (By.ID, "login-button")
     ERROR_MESSAGE = (By.CSS_SELECTOR, "h3[data-test='error']")
 
-    def __init__(self, driver):
-        """
-        Initialize the LoginPage with a WebDriver instance and a wait object.
-        """
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
-
     def open(self):
         """
         Navigate to the login page URL.
         """
-        self.driver.get(self.URL)
+        self.open_url(BASE_URL)
 
     def enter_username(self, username):
         """
         Enter the provided username into the username field.
         """
-        self.driver.find_element(*self.USERNAME_INPUT).send_keys(username)
+        self.type_text(self.USERNAME_INPUT, username)
 
     def enter_password(self, password):
         """
         Enter the provided password into the password field.
         """
-        self.driver.find_element(*self.PASSWORD_INPUT).send_keys(password)
+        self.type_text(self.PASSWORD_INPUT, password)
 
     def click_login(self):
         """
         Click the login button.
         """
-        self.driver.find_element(*self.LOGIN_BUTTON).click()
+        self.click(self.LOGIN_BUTTON)
 
     def login(self, username, password):
         """
@@ -59,7 +50,4 @@ class LoginPage:
         """
         Wait for an error message to appear and return its text.
         """
-        error_message = self.wait.until(
-            EC.visibility_of_element_located(self.ERROR_MESSAGE)
-        )
-        return error_message.text
+        return self.get_text(self.ERROR_MESSAGE)
