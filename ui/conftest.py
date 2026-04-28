@@ -8,8 +8,9 @@ from ui.config.settings import HEADLESS
 def driver():
     """
     Pytest fixture to initialize and quit the Chrome WebDriver.
-    Disables the password manager and credential service for a cleaner test environment.
-    Supports headless execution for CI environments.
+
+    The fixture supports both local visible browser execution and
+    headless execution for CI environments.
     """
     options = webdriver.ChromeOptions()
 
@@ -17,7 +18,10 @@ def driver():
         options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-extensions")
         options.add_argument("--window-size=1920,1080")
+        options.add_argument("--log-level=3")
 
     options.add_experimental_option(
         "prefs",
@@ -28,7 +32,11 @@ def driver():
     )
 
     driver = webdriver.Chrome(options=options)
-    driver.maximize_window()
+
+    if HEADLESS:
+        driver.set_window_size(1920, 1080)
+    else:
+        driver.maximize_window()
 
     yield driver
 

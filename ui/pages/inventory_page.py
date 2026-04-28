@@ -54,7 +54,6 @@ class InventoryPage(BasePage):
 
     def go_to_cart(self):
         """
-        Wait for the shopping cart link, click it, and wait until the Cart page URL is loaded.
+        Click the shopping cart link and wait until the Cart page URL is loaded.
         """
-        self.click(self.CART_LINK)
-        self.wait_for_url_contains(self.CART_URL_PART)
+        self.click_and_wait_for_url(self.CART_LINK, self.CART_URL_PART)

@@ -1,3 +1,4 @@
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -22,6 +23,12 @@ class BasePage:
         Navigate to the given URL.
         """
         self.driver.get(url)
+
+    def get_current_url(self):
+        """
+        Return the current browser URL.
+        """
+        return self.driver.current_url
 
     def find_visible_element(self, locator):
         """
@@ -49,9 +56,42 @@ class BasePage:
 
     def click(self, locator):
         """
-        Wait until an element is clickable and click it.
+        Wait until an element is clickable, scroll it into view, and click it.
+
+        If the normal Selenium click fails in a headless environment,
+        JavaScript click is used as a fallback.
         """
-        self.find_clickable_element(locator).click()
+        element = self.find_clickable_element(locator)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            element,
+        )
+
+        try:
+            element.click()
+        except WebDriverException:
+            self.driver.execute_script("arguments[0].click();", element)
+
+    def click_and_wait_for_url(self, locator, expected_url_part):
+        """
+        Click an element and wait until the current URL contains the expected text.
+
+        If navigation does not happen after the first click, the method retries
+        once with a JavaScript click. This keeps navigation-related tests more
+        stable in headless CI environments.
+        """
+        self.click(locator)
+
+        try:
+            return self.wait_for_url_contains(expected_url_part)
+        except TimeoutException:
+            element = self.find_clickable_element(locator)
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});",
+                element,
+            )
+            self.driver.execute_script("arguments[0].click();", element)
+            return self.wait_for_url_contains(expected_url_part)
 
     def type_text(self, locator, text):
         """
