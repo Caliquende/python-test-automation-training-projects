@@ -1,34 +1,33 @@
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Pytest cache
 .pytest_cache/
+
+# Virtual environments
 .venv/
 venv/
 env/
 
-# Environment / secrets
-.env
-.env.*
+# Test reports
+reports/*
+!reports/.gitkeep
 
 # Coverage
 .coverage
 htmlcov/
 coverage.xml
 
-# Test artifacts
-*.log
-screenshots/
-reports/
-
-# IDEs
+# IDE / editor
 .vscode/
 .idea/
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
-desktop.ini
 
-reports/*
-!reports/.gitkeep
+# Environment files
+.env
+.env.*

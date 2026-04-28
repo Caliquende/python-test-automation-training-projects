@@ -1,56 +1,175 @@
 # API Test Automation Project
 
-This sub-project focuses on REST API automation testing using Python and the `requests` library. It covers two different public APIs to demonstrate various testing techniques.
+This sub-project contains automated REST API tests using Python, Pytest, Requests, and a simple API client layer.
 
-## Features
+The goal of this project is not only to send API requests, but also to practice a maintainable API automation structure with separate layers for configuration, reusable clients, test data, assertions, markers, reporting, and CI execution.
 
-- **JSONPlaceholder Integration**: Tests for basic CRUD operations (GET, POST, PUT, DELETE).
-- **DummyJSON Integration**: Tests for authenticated endpoints, Bearer token management, and complex data structures (Products, Carts).
-- **Validation**: Strict status code checks, schema validation, and data integrity verification.
+## Tech Stack
+
+- Python
+- Pytest
+- Requests
+- API client layer
+- Pytest markers
+- JUnit XML reporting
+- GitHub Actions CI
 
 ## Project Structure
 
-```text
-api/
-├── tests/
-│   └── test_api_core_suite.py  # Main test suite for API core functionality
-├── .gitignore                  # API specific ignore rules
-├── pytest.ini                  # API specific pytest configuration
-└── README.md                   # This file
-```
+- `clients/`
+  - `base_client.py` — Shared HTTP request logic
+  - `jsonplaceholder_client.py` — JSONPlaceholder endpoint client
+  - `dummyjson_client.py` — DummyJSON endpoint client
+
+- `config/`
+  - `settings.py` — Base URLs and timeout configuration
+
+- `data/`
+  - `jsonplaceholder_payloads.py` — JSONPlaceholder payloads and expected values
+  - `dummyjson_payloads.py` — DummyJSON payloads and expected values
+
+- `tests/`
+  - `test_jsonplaceholder_client_suite.py` — JSONPlaceholder API tests
+  - `test_dummyjson_client_suite.py` — DummyJSON API tests
+
+- `pytest.ini` — API-specific Pytest configuration
+- `README.md` — API project documentation
+
+## Covered APIs
+
+This project covers two public demo APIs:
+
+- JSONPlaceholder
+- DummyJSON
+
+## Covered Flows
+
+### JSONPlaceholder
+
+- Get a single post
+- Get users
+- Create a post
+- Update a post
+- Delete a post
+
+### DummyJSON
+
+- Successful login
+- Access current user with a valid Bearer token
+- Reject current user request without token
+- Reject current user request with invalid token
+- Get limited product list
+- Add cart
+- Delete cart
+
+## Test Architecture Notes
+
+This project uses a small but layered API test automation structure.
+
+- `tests/` contains test scenarios and assertions
+- `clients/` contains API interaction logic
+- `config/` contains base URLs and timeout values
+- `data/` contains reusable payloads and expected values
+- `pytest.ini` contains test discovery and marker configuration
+
+Test files should describe API behavior. Raw `requests.get`, `requests.post`, `requests.put`, and `requests.delete` calls should stay inside client classes, not directly inside test scenarios.
+
+## Key Design Decisions
+
+### Base Client
+
+`BaseClient` centralizes shared HTTP methods such as GET, POST, PUT, and DELETE.
+
+This avoids repeating raw Requests logic across test files.
+
+### Service-Specific Clients
+
+Each API has its own client class:
+
+- `JsonPlaceholderClient`
+- `DummyJsonClient`
+
+This keeps endpoint logic organized and makes tests easier to read.
+
+### Configuration Layer
+
+Base URLs and timeout values are stored in `config/settings.py`.
+
+### Test Data Layer
+
+Payloads, IDs, usernames, token-related values, and expected values are stored under the `data/` folder.
+
+### Marker-Based Execution
+
+The project uses Pytest markers to separate fast smoke checks from broader regression checks.
 
 ## Setup
 
-Ensure you have the required dependencies installed:
+Install the required dependencies:
 
-```bash
-pip install requests pytest
-```
+    pip install pytest requests
 
 ## Running Tests
 
-From the `api` directory:
+From the repository root, run the full API suite:
 
-```bash
-pytest
-```
+    pytest api -v
 
-To see detailed output:
+Run only smoke API tests:
 
-```bash
-pytest -v
-```
+    pytest api -m smoke -v
 
-## Test Coverage
+Run API regression tests:
 
-- **JSONPlaceholder**:
-    - GET posts and users
-    - POST (create) new posts
-    - PUT (update) existing posts
-    - DELETE posts
-- **DummyJSON**:
-    - User login and token retrieval
-    - Authenticated profile access (`/user/me`)
-    - Error handling for missing or invalid tokens
-    - Product list retrieval and validation
-    - Shopping cart operations (add, delete)
+    pytest api -m regression -v
+
+Run a specific JSONPlaceholder test file:
+
+    pytest api/tests/test_jsonplaceholder_client_suite.py -v
+
+Run a specific DummyJSON test file:
+
+    pytest api/tests/test_dummyjson_client_suite.py -v
+
+## Test Reports
+
+Generate a JUnit XML report for the API suite:
+
+    pytest api -v --junitxml=reports/api-junit.xml
+
+Generated report files are stored under the `reports/` folder and should not be committed to version control.
+
+## Pytest Markers
+
+The project uses the following markers:
+
+- `smoke` — Fast critical API checks
+- `regression` — Broader API tests used to verify existing behavior after changes
+
+## Expected Results
+
+Full API suite:
+
+    12 passed
+
+Smoke API suite:
+
+    5 passed, 7 deselected
+
+Regression API suite:
+
+    12 passed
+
+## CI
+
+GitHub Actions runs the API test suite automatically on push and pull request.
+
+The workflow generates a JUnit XML report and uploads it as an artifact:
+
+- `api-junit-report`
+
+## Notes
+
+This is a beginner-friendly API automation project.
+
+It is intentionally small, but it demonstrates important automation architecture concepts such as client abstraction, config separation, reusable test data, marker-based execution, JUnit reporting, and CI integration.

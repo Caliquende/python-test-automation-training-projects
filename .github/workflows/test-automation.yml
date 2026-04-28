@@ -1,0 +1,74 @@
+name: Test Automation
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest requests
+
+      - name: Run API tests with JUnit report
+        run: |
+          pytest api -v --junitxml=reports/api-junit.xml
+
+      - name: Upload API JUnit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-junit-report
+          path: reports/api-junit.xml
+
+  ui-tests:
+    name: UI Tests
+    runs-on: ubuntu-latest
+
+    env:
+      HEADLESS: "true"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install UI dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest selenium
+
+      - name: Run UI tests with JUnit report
+        run: |
+          pytest ui -v --junitxml=reports/ui-junit.xml
+
+      - name: Upload UI JUnit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-junit-report
+          path: reports/ui-junit.xml
