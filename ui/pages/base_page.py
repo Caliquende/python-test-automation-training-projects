@@ -10,7 +10,7 @@ class BasePage:
 
     This class keeps common WebDriver interactions in one place.
     Page classes should use these helper methods instead of repeating
-    wait, click, type, and get text logic.
+    wait, click, type, get text, and navigation wait logic.
     """
 
     def __init__(self, driver):
@@ -73,3 +73,19 @@ class BasePage:
         """
         self.find_all_visible_elements(locator)
         return len(self.driver.find_elements(*locator))
+
+    def wait_for_url_contains(self, expected_url_part):
+        """
+        Wait until the current URL contains the expected text.
+        """
+        return self.wait.until(
+            EC.url_contains(expected_url_part)
+        )
+
+    def wait_for_text(self, locator, expected_text):
+        """
+        Wait until the given element contains the expected text.
+        """
+        return self.wait.until(
+            EC.text_to_be_present_in_element(locator, expected_text)
+        )

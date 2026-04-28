@@ -14,6 +14,7 @@ class InventoryPage(BasePage):
     ADD_BIKE_LIGHT_TO_CART_BUTTON = (By.ID, "add-to-cart-sauce-labs-bike-light")
     CART_LINK = (By.CSS_SELECTOR, ".shopping_cart_link")
     CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
+    CART_URL_PART = "cart.html"
 
     def get_title_text(self):
         """
@@ -45,8 +46,15 @@ class InventoryPage(BasePage):
         """
         return self.get_text(self.CART_BADGE)
 
+    def wait_until_cart_badge_text_is(self, expected_text):
+        """
+        Wait until the shopping cart badge shows the expected text.
+        """
+        self.wait_for_text(self.CART_BADGE, expected_text)
+
     def go_to_cart(self):
         """
-        Wait for the shopping cart link and click it to navigate to the Cart page.
+        Wait for the shopping cart link, click it, and wait until the Cart page URL is loaded.
         """
         self.click(self.CART_LINK)
+        self.wait_for_url_contains(self.CART_URL_PART)
