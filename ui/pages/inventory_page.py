@@ -10,8 +10,13 @@ class InventoryPage(BasePage):
 
     PAGE_TITLE = (By.CSS_SELECTOR, ".title")
     INVENTORY_ITEMS = (By.CSS_SELECTOR, ".inventory_item")
+
     ADD_BACKPACK_TO_CART_BUTTON = (By.ID, "add-to-cart-sauce-labs-backpack")
+    REMOVE_BACKPACK_FROM_CART_BUTTON = (By.ID, "remove-sauce-labs-backpack")
+
     ADD_BIKE_LIGHT_TO_CART_BUTTON = (By.ID, "add-to-cart-sauce-labs-bike-light")
+    REMOVE_BIKE_LIGHT_FROM_CART_BUTTON = (By.ID, "remove-sauce-labs-bike-light")
+
     CART_LINK = (By.CSS_SELECTOR, ".shopping_cart_link")
     CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
     CART_URL_PART = "cart.html"
@@ -30,15 +35,21 @@ class InventoryPage(BasePage):
 
     def add_backpack_to_cart(self):
         """
-        Wait for the Backpack Add to Cart button and click it.
+        Add the Backpack product to the cart and wait until the UI confirms it.
         """
-        self.click(self.ADD_BACKPACK_TO_CART_BUTTON)
+        self.click_and_wait_for_visible_element(
+            self.ADD_BACKPACK_TO_CART_BUTTON,
+            self.REMOVE_BACKPACK_FROM_CART_BUTTON,
+        )
 
     def add_bike_light_to_cart(self):
         """
-        Wait for the Bike Light Add to Cart button and click it.
+        Add the Bike Light product to the cart and wait until the UI confirms it.
         """
-        self.click(self.ADD_BIKE_LIGHT_TO_CART_BUTTON)
+        self.click_and_wait_for_visible_element(
+            self.ADD_BIKE_LIGHT_TO_CART_BUTTON,
+            self.REMOVE_BIKE_LIGHT_FROM_CART_BUTTON,
+        )
 
     def get_cart_badge_text(self):
         """

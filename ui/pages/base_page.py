@@ -54,18 +54,31 @@ class BasePage:
             EC.element_to_be_clickable(locator)
         )
 
-    def click(self, locator):
+    def scroll_to_element(self, element):
         """
-        Wait until an element is clickable, scroll it into view, and click it.
-
-        If the normal Selenium click fails in a headless environment,
-        JavaScript click is used as a fallback.
+        Scroll the element into the center of the viewport.
         """
-        element = self.find_clickable_element(locator)
         self.driver.execute_script(
             "arguments[0].scrollIntoView({block: 'center'});",
             element,
         )
+
+    def javascript_click(self, locator):
+        """
+        Click an element using JavaScript as a fallback.
+        """
+        element = self.find_clickable_element(locator)
+        self.scroll_to_element(element)
+        self.driver.execute_script("arguments[0].click();", element)
+
+    def click(self, locator):
+        """
+        Wait until an element is clickable, scroll it into view, and click it.
+
+        If the normal Selenium click fails, JavaScript click is used as a fallback.
+        """
+        element = self.find_clickable_element(locator)
+        self.scroll_to_element(element)
 
         try:
             element.click()
@@ -77,21 +90,30 @@ class BasePage:
         Click an element and wait until the current URL contains the expected text.
 
         If navigation does not happen after the first click, the method retries
-        once with a JavaScript click. This keeps navigation-related tests more
-        stable in headless CI environments.
+        once with JavaScript click.
         """
         self.click(locator)
 
         try:
             return self.wait_for_url_contains(expected_url_part)
         except TimeoutException:
-            element = self.find_clickable_element(locator)
-            self.driver.execute_script(
-                "arguments[0].scrollIntoView({block: 'center'});",
-                element,
-            )
-            self.driver.execute_script("arguments[0].click();", element)
+            self.javascript_click(locator)
             return self.wait_for_url_contains(expected_url_part)
+
+    def click_and_wait_for_visible_element(self, click_locator, expected_visible_locator):
+        """
+        Click an element and wait until another expected element becomes visible.
+
+        This is useful when a click causes a UI state change, such as an
+        Add to Cart button turning into a Remove button.
+        """
+        self.click(click_locator)
+
+        try:
+            return self.find_visible_element(expected_visible_locator)
+        except TimeoutException:
+            self.javascript_click(click_locator)
+            return self.find_visible_element(expected_visible_locator)
 
     def type_text(self, locator, text):
         """
