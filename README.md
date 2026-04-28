@@ -1,59 +1,215 @@
 # Python Test Automation Training Projects
 
-Training repository with two focused Python automation tracks:
+This repository contains two focused Python test automation tracks:
 
-1. **[API automation](api/README.md)**: REST API tests against JSONPlaceholder and DummyJSON with `requests` and `pytest`.
-2. **[UI automation](ui/README.md)**: SauceDemo browser tests with Selenium WebDriver, `pytest`, and Page Object Model classes.
+1. API automation with Pytest, Requests, API client classes, config separation, reusable test data, JUnit reporting, and GitHub Actions CI.
+2. UI automation with Selenium WebDriver, Pytest, Page Object Model, BasePage abstraction, config separation, reusable test data, JUnit reporting, and GitHub Actions CI.
+
+The goal of this repository is not only to write test scripts, but also to practice maintainable test automation architecture.
+
+## Tech Stack
+
+- Python
+- Pytest
+- Requests
+- Selenium WebDriver
+- Page Object Model
+- API client layer
+- JUnit XML reporting
+- GitHub Actions CI
 
 ## Repository Structure
 
-```text
-.
-├── api/
-│   ├── tests/              # API test cases
-│   ├── pytest.ini          # API-specific pytest settings
-│   └── README.md           # API track notes
-├── ui/
-│   ├── pages/              # Page Object Model classes
-│   ├── tests/              # UI test cases
-│   ├── pytest.ini          # UI-specific pytest settings
-│   └── README.md           # UI track notes
-├── pytest.ini              # Root pytest configuration
-├── requirements.txt        # Shared Python dependencies
-└── README.md
-```
+- `api/`
+  - `clients/` — API client classes and shared HTTP request logic
+  - `config/` — API base URLs and timeout configuration
+  - `data/` — Reusable API payloads and expected values
+  - `tests/` — API test scenarios
+  - `pytest.ini` — API-specific Pytest configuration
+  - `README.md` — API project documentation
 
-## Requirements
+- `ui/`
+  - `config/` — UI base URL, timeout, and headless configuration
+  - `data/` — Test users, expected UI texts, and product data
+  - `pages/` — Page Object Model classes and BasePage abstraction
+  - `tests/` — UI test scenarios
+  - `conftest.py` — Shared WebDriver fixture
+  - `pytest.ini` — UI-specific Pytest configuration
+  - `README.md` — UI project documentation
 
-- Python 3.10+ recommended
-- Chrome or another Selenium-supported browser for UI tests
-- Network access to the public demo APIs and `https://www.saucedemo.com`
+- `reports/`
+  - Stores generated JUnit XML reports locally
+  - Report files are ignored by Git
+
+- `.github/workflows/`
+  - GitHub Actions workflow for API and UI test execution
+
+- `pytest.ini`
+  - Root-level Pytest configuration
+
+- `requirements.txt`
+  - Shared Python dependencies
+
+## Covered Areas
+
+### API Automation
+
+The API track covers public demo APIs:
+
+- JSONPlaceholder
+- DummyJSON
+
+Main concepts practiced:
+
+- API client layer
+- Base client abstraction
+- Config separation
+- Reusable test data
+- Authenticated requests
+- Positive and negative API checks
+- Smoke and regression markers
+- JUnit XML reporting
+- GitHub Actions CI
+
+Expected result:
+
+    12 passed
+
+### UI Automation
+
+The UI track covers SauceDemo browser tests.
+
+Main concepts practiced:
+
+- Selenium WebDriver
+- Pytest fixtures
+- Page Object Model
+- BasePage abstraction
+- Config separation
+- Reusable test data
+- Headless browser execution for CI
+- Explicit waits and UI state validation
+- Smoke and regression markers
+- JUnit XML reporting
+- GitHub Actions CI
+
+Expected result:
+
+    4 passed
 
 ## Setup
 
-```powershell
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
+Create and activate a virtual environment:
 
-## Running Tests
+    python -m venv .venv
+    .venv\Scripts\activate
 
-Run the full suite from the repository root:
+Install dependencies:
 
-```powershell
-pytest
-```
+    pip install -r requirements.txt
 
-Run one track only:
+## Running All Tests
 
-```powershell
-pytest api/
-pytest ui/
-```
+Run the full test suite from the repository root:
+
+    pytest
+
+## Running API Tests
+
+Run the full API suite:
+
+    pytest api -v
+
+Run API smoke tests:
+
+    pytest api -m smoke -v
+
+Run API regression tests:
+
+    pytest api -m regression -v
+
+Generate API JUnit XML report:
+
+    pytest api -v --junitxml=reports/api-junit.xml
+
+## Running UI Tests
+
+Run the full UI suite:
+
+    pytest ui -v
+
+Run UI smoke tests:
+
+    pytest ui -m smoke -v
+
+Run UI regression tests:
+
+    pytest ui -m regression -v
+
+Generate UI JUnit XML report:
+
+    pytest ui -v --junitxml=reports/ui-junit.xml
+
+## Running UI Tests in Headless Mode
+
+For CI-like local execution:
+
+    $env:HEADLESS="true"
+    pytest ui -v --junitxml=reports/ui-junit.xml
+    Remove-Item Env:HEADLESS
+
+## Expected Marker Results
+
+API smoke:
+
+    5 passed, 7 deselected
+
+API regression:
+
+    12 passed
+
+UI smoke:
+
+    2 passed, 2 deselected
+
+UI regression:
+
+    4 passed
+
+## CI
+
+GitHub Actions runs both API and UI tests automatically on push and pull request.
+
+The workflow includes two jobs:
+
+- API Tests
+- UI Tests
+
+Each job generates and uploads a JUnit XML artifact:
+
+- api-junit-report
+- ui-junit-report
 
 ## Validation Notes
 
-- API tests depend on external demo services; failures can be caused by service outages or response changes.
-- UI tests depend on a local browser driver managed by Selenium and the current SauceDemo behavior.
-- Keep locators in `ui/pages/` aligned with the live UI before treating test failures as application defects.
+- API tests use public demo APIs, so failures may sometimes be caused by external service outages or response changes.
+- UI tests use SauceDemo, so failures may sometimes be caused by live UI behavior changes.
+- UI tests run in headless Chrome on GitHub Actions.
+- Test reports are generated under `reports/` and should not be committed.
+- Cache folders such as `.pytest_cache` and `__pycache__` should not be committed.
+
+## Project Status
+
+This is a beginner-friendly but structured test automation training repository.
+
+It is intentionally small, but it demonstrates important QA automation architecture concepts:
+
+- Layered test structure
+- Page Object Model
+- API client abstraction
+- Shared fixtures
+- Config separation
+- Test data separation
+- Marker-based execution
+- JUnit reporting
+- GitHub Actions CI
