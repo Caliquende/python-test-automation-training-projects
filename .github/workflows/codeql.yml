@@ -42,10 +42,12 @@ jobs:
           # EN: Extended security query pack — detects more vulnerability patterns.
           queries: security-extended
 
-      # TR: Otomatik derleme adımı (Python için genellikle yeterlidir).
-      # EN: Autobuild step (usually sufficient for Python projects).
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      # TR: Python için derleme adımı gerekmez.
+      # EN: Python does not require a build step.
+      - name: Build (Python)
+        run: |
+          echo "Skipping build for Python"
+
 
       # TR: CodeQL analizini çalıştırır ve sonuçları GitHub Security sekmesine yükler.
       # EN: Runs CodeQL analysis and uploads results to the GitHub Security tab.
