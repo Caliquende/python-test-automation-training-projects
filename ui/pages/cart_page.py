@@ -14,7 +14,7 @@ class CartPage(BasePage):
     PAGE_TITLE = (By.CSS_SELECTOR, ".title")
     CART_ITEMS = (By.CSS_SELECTOR, ".cart_item")
     FIRST_CART_ITEM_NAME = (By.CSS_SELECTOR, ".inventory_item_name")
-    REMOVE_ITEM_BUTTON = (By.CSS_SELECTOR, ".cart_button")
+    REMOVE_ITEM_BUTTON = (By.XPATH, "//button[text()='Remove']")
     CHECKOUT_BUTTON = (By.ID, "checkout")
     CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
 
@@ -30,7 +30,9 @@ class CartPage(BasePage):
         return self.get_text(self.FIRST_CART_ITEM_NAME)
 
     def remove_first_cart_item(self):
-        self.click(self.REMOVE_ITEM_BUTTON)
+        # TR: Direkt JS click ile tıklamayı garantiye alıyoruz (Headless CI ortamları için daha güvenilir)
+        # EN: Using JS click to ensure it clicks in Headless CI environments.
+        self.javascript_click(self.REMOVE_ITEM_BUTTON)
 
     def checkout(self, expected_url_part=None):
         """
@@ -47,9 +49,12 @@ class CartPage(BasePage):
         TR: Sepetteki ürün sayısı beklenen değere ulaşana kadar bekler.
         EN: Waits until the number of items in the cart matches the expected count.
         """
-        self.wait.until(
-            lambda driver: len(driver.find_elements(*self.CART_ITEMS)) == expected_count
-        )
+        if expected_count == 0:
+            self.wait.until(EC.invisibility_of_element_located(self.CART_ITEMS))
+        else:
+            self.wait.until(
+                lambda driver: len(driver.find_elements(*self.CART_ITEMS)) == expected_count
+            )
             
     def is_cart_empty(self):
         return len(self.driver.find_elements(*self.CART_BADGE)) == 0
