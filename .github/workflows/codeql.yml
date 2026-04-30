@@ -35,7 +35,7 @@ jobs:
       # TR: CodeQL analiz motorunu başlatır.
       # EN: Initializes the CodeQL analysis engine.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           # TR: Genişletilmiş güvenlik sorgu paketi — daha fazla güvenlik açığı tespit eder.
@@ -52,6 +52,6 @@ jobs:
       # TR: CodeQL analizini çalıştırır ve sonuçları GitHub Security sekmesine yükler.
       # EN: Runs CodeQL analysis and uploads results to the GitHub Security tab.
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
