@@ -22,10 +22,7 @@ from ui.data.ui_texts import (
 def _login_as_standard_user(login_page, inventory_page):
     """
     TR: Standart kullanıcı ile giriş yapar. 
-    Sayfa nesneleri artık fixture olarak otomatik gelir.
-    
     EN: Performs a standard user login. 
-    Page objects are now automatically provided as fixtures.
     """
     login_page.open()
     login_page.login(STANDARD_USER["username"], STANDARD_USER["password"])
@@ -115,6 +112,9 @@ def test_user_can_add_backpack_to_cart_and_remove_it_from_cart(login_page, inven
     assert cart_page.get_cart_item_count() == 1
 
     cart_page.remove_first_cart_item()
+    
+    # TR: Sepetin boşalmasını bekliyoruz.
+    # EN: Wait for the cart to become empty.
     cart_page.wait_until_cart_item_count_is(0)
 
     assert cart_page.get_cart_item_count() == 0
@@ -134,10 +134,10 @@ def test_user_can_add_backpack_to_cart_and_checkout(driver, login_page, inventor
 
     assert cart_page.get_cart_item_count() == 1
 
-    cart_page.checkout()
+    # TR: Checkout'a tıkla ve URL'in değişmesini bekle.
+    # EN: Click checkout and wait for the URL to change.
+    cart_page.checkout(expected_url_part=CHECKOUT_STEP_ONE_URL_PART)
 
-    # TR: Checkout sayfasına geçildiğini doğrularız.
-    # EN: Verify that we have navigated to the checkout page.
     assert cart_page.get_title_text() == CHECKOUT_STEP_ONE_TITLE
     assert CHECKOUT_STEP_ONE_URL_PART in driver.current_url
 
@@ -156,7 +156,7 @@ def test_user_can_add_two_items_to_cart_and_checkout(driver, login_page, invento
 
     assert cart_page.get_cart_item_count() == 2
 
-    cart_page.checkout()
+    cart_page.checkout(expected_url_part=CHECKOUT_STEP_ONE_URL_PART)
 
     assert cart_page.get_title_text() == CHECKOUT_STEP_ONE_TITLE
     assert CHECKOUT_STEP_ONE_URL_PART in driver.current_url

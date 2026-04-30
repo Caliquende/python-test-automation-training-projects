@@ -22,8 +22,8 @@ class CartPage(BasePage):
         return self.get_text(self.PAGE_TITLE)
 
     def get_cart_item_count(self):
-        # TR: find_elements kullanarak o anki listeyi döner (beklemez).
-        # EN: Returns the current list using find_elements (does not wait).
+        # TR: find_elements kullanarak o anki listeyi döner.
+        # EN: Returns the current list using find_elements.
         return len(self.driver.find_elements(*self.CART_ITEMS))
 
     def get_first_cart_item_name(self):
@@ -32,28 +32,24 @@ class CartPage(BasePage):
     def remove_first_cart_item(self):
         self.click(self.REMOVE_ITEM_BUTTON)
 
-    def checkout(self):
-        self.click(self.CHECKOUT_BUTTON)
+    def checkout(self, expected_url_part=None):
+        """
+        TR: Checkout butonuna tıklar. Eğer bir URL parçası verilirse o sayfaya geçene kadar bekler.
+        EN: Click checkout button. If a URL part is provided, wait until navigation.
+        """
+        if expected_url_part:
+            self.click_and_wait_for_url(self.CHECKOUT_BUTTON, expected_url_part)
+        else:
+            self.click(self.CHECKOUT_BUTTON)
 
     def wait_until_cart_item_count_is(self, expected_count):
         """
         TR: Sepetteki ürün sayısı beklenen değere ulaşana kadar bekler.
         EN: Waits until the number of items in the cart matches the expected count.
         """
-        if expected_count == 0:
-            # TR: Eğer 0 bekliyorsak, tüm elemanların DOM'dan kaybolmasını beklemek daha güvenlidir.
-            # EN: If expecting 0, it's safer to wait for all elements to be absent from the DOM.
-            self.wait.until(
-                EC.invisibility_of_element_located(self.CART_ITEMS)
-            )
-        else:
-            self.wait.until(
-                lambda driver: len(driver.find_elements(*self.CART_ITEMS)) == expected_count
-            )
+        self.wait.until(
+            lambda driver: len(driver.find_elements(*self.CART_ITEMS)) == expected_count
+        )
             
     def is_cart_empty(self):
-        """
-        TR: Sepetin tamamen boş olduğunu (badge'in olmadığını) kontrol eder.
-        EN: Checks if the cart is completely empty (no badge present).
-        """
         return len(self.driver.find_elements(*self.CART_BADGE)) == 0
