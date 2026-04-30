@@ -1,0 +1,37 @@
+# TR: Pre-commit yapılandırması — commit öncesi otomatik güvenlik ve kalite kontrolleri.
+# EN: Pre-commit configuration — automated security and quality checks before each commit.
+#
+# TR: Kurulum: pip install pre-commit && pre-commit install
+# EN: Setup:   pip install pre-commit && pre-commit install
+
+repos:
+  # TR: Genel pre-commit hook'ları (trailing whitespace, büyük dosya kontrolü vb.)
+  # EN: General pre-commit hooks (trailing whitespace, large file check, etc.)
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      # TR: .env, secrets vb. dosyaların yanlışlıkla commitlenmesini engeller.
+      # EN: Prevents accidental commit of private key files.
+      - id: detect-private-key
+
+  # TR: Bandit — Python güvenlik açığı tarayıcısı (commit öncesi hızlı tarama).
+  # EN: Bandit — Python security vulnerability scanner (quick pre-commit scan).
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        args: ["-c", "pyproject.toml"]
+        additional_dependencies: ["bandit[toml]"]
+
+  # TR: detect-secrets — API anahtarları, şifrelerin kazara commit edilmesini önler.
+  # EN: detect-secrets — prevents accidental commit of API keys, passwords and secrets.
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]

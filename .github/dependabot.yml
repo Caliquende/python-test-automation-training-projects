@@ -1,0 +1,32 @@
+# TR: Dependabot yapılandırması — bağımlılık güncellemelerini otomatik izler.
+# EN: Dependabot configuration — automatically monitors dependency updates.
+version: 2
+updates:
+  # TR: pip (Python) bağımlılıklarını haftalık kontrol eder.
+  # EN: Checks pip (Python) dependencies weekly.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    # TR: Aynı anda en fazla 5 güncelleme PR'ı açılmasını sağlar.
+    # EN: Limits the number of open update PRs to 5.
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    commit-message:
+      prefix: "deps"
+
+  # TR: GitHub Actions sürüm güncellemelerini haftalık kontrol eder.
+  # EN: Checks GitHub Actions version updates weekly.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "ci"
+      - "dependencies"
+    commit-message:
+      prefix: "ci"

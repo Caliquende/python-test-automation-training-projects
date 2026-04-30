@@ -100,3 +100,54 @@ jobs:
         with:
           name: ui-junit-report
           path: reports/ui-junit.xml
+
+  # ──────────────────────────────────────────────────────────────
+  # TR: Güvenlik Taraması — Bandit (statik analiz) ve pip-audit (bağımlılık CVE taraması)
+  # EN: Security Scan — Bandit (static analysis) and pip-audit (dependency CVE scanning)
+  # ──────────────────────────────────────────────────────────────
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project and security dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          # TR: Bandit ve pip-audit güvenlik araçlarını yükler.
+          # EN: Installs Bandit and pip-audit security tools.
+          pip install bandit[toml] pip-audit
+
+      # TR: Bandit ile Python kodlarını güvenlik açıkları için tarar.
+      # EN: Scans Python code for security vulnerabilities with Bandit.
+      - name: Run Bandit security scan
+        run: |
+          echo "🔒 Running Bandit static security analysis..."
+          mkdir -p reports
+          bandit -r . -f json -o reports/bandit-report.json --severity-level medium --confidence-level medium -x ./.venv,./venv,./env,./.pytest_cache || true
+          bandit -r . -f screen --severity-level medium --confidence-level medium -x ./.venv,./venv,./env,./.pytest_cache || true
+
+      # TR: pip-audit ile yüklü Python paketlerini CVE veritabanına karşı tarar.
+      # EN: Scans installed Python packages against the CVE database with pip-audit.
+      - name: Run pip-audit dependency scan
+        run: |
+          echo "🔍 Running pip-audit dependency vulnerability scan..."
+          pip-audit --format json --output reports/pip-audit-report.json || true
+          pip-audit || true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: reports/

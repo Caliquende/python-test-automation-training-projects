@@ -1,0 +1,55 @@
+# TR: CodeQL — GitHub'ın statik analiz motoru. Python kodunda güvenlik açıklarını tarar.
+# EN: CodeQL — GitHub's static analysis engine. Scans Python code for security vulnerabilities.
+name: "CodeQL Analysis"
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  # TR: Her Pazartesi 06:00 UTC'de zamanlanmış çalışır.
+  # EN: Runs on a scheduled basis every Monday at 06:00 UTC.
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  analyze:
+    name: Analyze Python
+    runs-on: ubuntu-latest
+    # TR: CodeQL taraması için gerekli izinler.
+    # EN: Required permissions for CodeQL scanning.
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ "python" ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # TR: CodeQL analiz motorunu başlatır.
+      # EN: Initializes the CodeQL analysis engine.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # TR: Genişletilmiş güvenlik sorgu paketi — daha fazla güvenlik açığı tespit eder.
+          # EN: Extended security query pack — detects more vulnerability patterns.
+          queries: security-extended
+
+      # TR: Otomatik derleme adımı (Python için genellikle yeterlidir).
+      # EN: Autobuild step (usually sufficient for Python projects).
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      # TR: CodeQL analizini çalıştırır ve sonuçları GitHub Security sekmesine yükler.
+      # EN: Runs CodeQL analysis and uploads results to the GitHub Security tab.
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
