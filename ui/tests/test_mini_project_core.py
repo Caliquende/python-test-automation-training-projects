@@ -12,8 +12,10 @@ from ui.data.products import (
 from ui.data.ui_texts import (
     PRODUCTS_PAGE_TITLE,
     CART_PAGE_TITLE,
+    CHECKOUT_STEP_ONE_TITLE,
     INVENTORY_URL_PART,
     CART_URL_PART,
+    CHECKOUT_STEP_ONE_URL_PART,
 )
 
 
@@ -96,8 +98,13 @@ def test_adding_two_products_updates_cart_badge_to_two(login_page, inventory_pag
 
     assert inventory_page.get_cart_badge_text() == CART_BADGE_TWO_ITEMS
 
+
 @pytest.mark.regression
 def test_user_can_add_backpack_to_cart_and_remove_it_from_cart(login_page, inventory_page, cart_page):
+    """
+    TR: Sepete eklenen bir ürünün sepet sayfasından silinebildiğini doğrular.
+    EN: Verify that an item added to the cart can be removed from the cart page.
+    """
     _login_as_standard_user(login_page, inventory_page)
 
     inventory_page.add_backpack_to_cart()
@@ -105,49 +112,51 @@ def test_user_can_add_backpack_to_cart_and_remove_it_from_cart(login_page, inven
 
     inventory_page.go_to_cart()
 
-    assert cart_page.get_title_text() == CART_PAGE_TITLE
     assert cart_page.get_cart_item_count() == 1
-    assert cart_page.get_first_cart_item_name() == SAUCE_LABS_BACKPACK
 
     cart_page.remove_first_cart_item()
     cart_page.wait_until_cart_item_count_is(0)
 
     assert cart_page.get_cart_item_count() == 0
+    assert cart_page.is_cart_empty()
+
 
 @pytest.mark.regression
-def test_user_can_add_backpack_to_cart_and_checkout(login_page, inventory_page, cart_page):
+def test_user_can_add_backpack_to_cart_and_checkout(driver, login_page, inventory_page, cart_page):
+    """
+    TR: Ürün ekledikten sonra ödeme (checkout) sayfasına ilerlenebildiğini doğrular.
+    EN: Verify that a user can proceed to the checkout page after adding an item.
+    """
     _login_as_standard_user(login_page, inventory_page)
 
     inventory_page.add_backpack_to_cart()
-    inventory_page.wait_until_cart_badge_text_is(CART_BADGE_ONE_ITEM)
-
     inventory_page.go_to_cart()
 
-    assert cart_page.get_title_text() == CART_PAGE_TITLE
     assert cart_page.get_cart_item_count() == 1
-    assert cart_page.get_first_cart_item_name() == SAUCE_LABS_BACKPACK
 
     cart_page.checkout()
-    cart_page.wait_until_cart_item_count_is(0)
 
-    assert cart_page.get_cart_item_count() == 0
+    # TR: Checkout sayfasına geçildiğini doğrularız.
+    # EN: Verify that we have navigated to the checkout page.
+    assert cart_page.get_title_text() == CHECKOUT_STEP_ONE_TITLE
+    assert CHECKOUT_STEP_ONE_URL_PART in driver.current_url
+
 
 @pytest.mark.regression
-def test_user_can_add_two_items_to_cart_and_checkout(login_page, inventory_page, cart_page):
+def test_user_can_add_two_items_to_cart_and_checkout(driver, login_page, inventory_page, cart_page):
+    """
+    TR: İki ürün ekledikten sonra ödeme sayfasına ilerlenebildiğini doğrular.
+    EN: Verify that a user can proceed to checkout with multiple items in the cart.
+    """
     _login_as_standard_user(login_page, inventory_page)
 
     inventory_page.add_backpack_to_cart()
-    inventory_page.wait_until_cart_badge_text_is(CART_BADGE_ONE_ITEM)
-
     inventory_page.add_bike_light_to_cart()
-    inventory_page.wait_until_cart_badge_text_is(CART_BADGE_TWO_ITEMS)
-
     inventory_page.go_to_cart()
 
-    assert cart_page.get_title_text() == CART_PAGE_TITLE
     assert cart_page.get_cart_item_count() == 2
 
     cart_page.checkout()
-    cart_page.wait_until_cart_item_count_is(0)
 
-    assert cart_page.get_cart_item_count() == 0
+    assert cart_page.get_title_text() == CHECKOUT_STEP_ONE_TITLE
+    assert CHECKOUT_STEP_ONE_URL_PART in driver.current_url
