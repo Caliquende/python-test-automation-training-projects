@@ -1,5 +1,6 @@
 """
-Client for DummyJSON API endpoints.
+TR: DummyJSON API uç noktaları için istemci (client).
+EN: Client for DummyJSON API endpoints.
 """
 
 from api.clients.base_client import BaseClient
@@ -8,16 +9,20 @@ from api.config.settings import DUMMYJSON_BASE_URL
 
 class DummyJsonClient(BaseClient):
     """
-    API client for DummyJSON authentication, user, product, and cart endpoints.
+    TR: DummyJSON kimlik doğrulama (auth), kullanıcı, ürün ve sepet uç noktaları için API istemcisi.
+    EN: API client for DummyJSON authentication, user, product, and cart endpoints.
     """
 
     def __init__(self):
+        # BaseClient'ı DummyJSON'ın temel URL'i ile başlatıyoruz.
+        # Initializing BaseClient with the DummyJSON base URL.
         super().__init__(DUMMYJSON_BASE_URL)
 
     @staticmethod
     def _build_auth_headers(access_token):
         """
-        Build Bearer token headers for protected endpoints.
+        TR: Korumalı uç noktalar için Bearer token başlıklarını oluşturur.
+        EN: Build Bearer token headers for protected endpoints.
         """
         return {
             "Authorization": f"Bearer {access_token}",
@@ -25,14 +30,17 @@ class DummyJsonClient(BaseClient):
 
     def login(self, payload):
         """
-        Log in with username and password.
+        TR: Kullanıcı adı ve şifre ile giriş yapar.
+        EN: Log in with username and password.
         """
         return self.post("/user/login", json=payload)
 
     def get_current_user(self, access_token=None):
         """
-        Get the current authenticated user.
-
+        TR: O anki oturum açmış kullanıcı bilgilerini çeker.
+        Access token sağlanmazsa istek yetkisiz (unauthorized) olarak gönderilir.
+        
+        EN: Get the current authenticated user.
         If access_token is not provided, the request is sent without Authorization header.
         """
         headers = None
@@ -44,7 +52,8 @@ class DummyJsonClient(BaseClient):
 
     def get_products(self, limit):
         """
-        Get products with a limit query parameter.
+        TR: Belirli bir limit ile ürünleri listeler (Query parameter kullanımı).
+        EN: Get products with a limit query parameter.
         """
         return self.get(
             "/products",
@@ -53,12 +62,14 @@ class DummyJsonClient(BaseClient):
 
     def add_cart(self, payload):
         """
-        Create a cart.
+        TR: Yeni bir sepet oluşturur.
+        EN: Create a cart.
         """
         return self.post("/carts/add", json=payload)
 
     def delete_cart(self, cart_id):
         """
-        Delete a cart by ID.
+        TR: ID'ye göre bir sepeti siler.
+        EN: Delete a cart by ID.
         """
         return self.delete(f"/carts/{cart_id}")

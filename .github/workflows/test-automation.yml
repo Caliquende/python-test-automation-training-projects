@@ -1,19 +1,29 @@
+# TR: GitHub Actions İş Akışı - Test Otomasyonu
+# EN: GitHub Actions Workflow - Test Automation
 name: Test Automation
 
 on:
+  # TR: 'main' veya 'master' branşlarına push yapıldığında çalışır.
+  # EN: Triggers on push to 'main' or 'master' branches.
   push:
     branches:
       - main
       - master
+  # TR: 'main' veya 'master' branşları için Pull Request açıldığında çalışır.
+  # EN: Triggers when a Pull Request is opened for 'main' or 'master' branches.
   pull_request:
     branches:
       - main
       - master
+  # TR: Manuel olarak GitHub üzerinden çalıştırılabilmesini sağlar.
+  # EN: Allows manual execution from the GitHub interface.
   workflow_dispatch:
 
 jobs:
   api-tests:
     name: API Tests
+    # TR: Testlerin çalışacağı işletim sistemi (Ubuntu).
+    # EN: The operating system where tests will run (Ubuntu).
     runs-on: ubuntu-latest
 
     steps:
@@ -37,10 +47,14 @@ jobs:
       - name: Run API tests with JUnit report
         run: |
           mkdir -p reports
+          # TR: api klasöründeki testleri çalıştırır ve JUnit XML raporu oluşturur.
+          # EN: Runs tests in the api folder and generates a JUnit XML report.
           pytest api -v --junitxml=reports/api-junit.xml
 
       - name: Upload API JUnit report
         uses: actions/upload-artifact@v4
+        # TR: Testler başarısız olsa bile raporun her zaman yüklenmesini sağlar.
+        # EN: Ensures the report is always uploaded even if tests fail.
         if: always()
         with:
           name: api-junit-report
@@ -51,6 +65,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      # TR: UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
+      # EN: Forces UI tests to run in headless mode.
       HEADLESS: "true"
 
     steps:
@@ -74,6 +90,8 @@ jobs:
       - name: Run UI tests with JUnit report
         run: |
           mkdir -p reports
+          # TR: ui klasöründeki testleri çalıştırır.
+          # EN: Runs tests in the ui folder.
           pytest ui -v --junitxml=reports/ui-junit.xml
 
       - name: Upload UI JUnit report

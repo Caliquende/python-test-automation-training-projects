@@ -2,15 +2,16 @@ import pytest
 from selenium import webdriver
 
 from ui.config.settings import HEADLESS
+from ui.pages.login_page import LoginPage
+from ui.pages.inventory_page import InventoryPage
+from ui.pages.cart_page import CartPage
 
 
 @pytest.fixture
 def driver():
     """
-    Pytest fixture to initialize and quit the Chrome WebDriver.
-
-    The fixture supports both local visible browser execution and
-    headless execution for CI environments.
+    TR: Chrome WebDriver'ı başlatan ve test bittikten sonra kapatan Pytest fixture'ı.
+    EN: Pytest fixture to initialize and quit the Chrome WebDriver.
     """
     options = webdriver.ChromeOptions()
 
@@ -41,3 +42,30 @@ def driver():
     yield driver
 
     driver.quit()
+
+
+@pytest.fixture
+def login_page(driver):
+    """
+    TR: Giriş sayfası nesnesini (Page Object) sağlar.
+    EN: Provides the Login page object.
+    """
+    return LoginPage(driver)
+
+
+@pytest.fixture
+def inventory_page(driver):
+    """
+    TR: Ürün listesi sayfası nesnesini sağlar.
+    EN: Provides the Inventory page object.
+    """
+    return InventoryPage(driver)
+
+
+@pytest.fixture
+def cart_page(driver):
+    """
+    TR: Sepet sayfası nesnesini sağlar.
+    EN: Provides the Cart page object.
+    """
+    return CartPage(driver)

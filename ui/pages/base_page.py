@@ -7,32 +7,40 @@ from ui.config.settings import DEFAULT_TIMEOUT
 
 class BasePage:
     """
-    Base class for all Page Object classes.
-
+    TR: Tüm Sayfa Nesnesi (Page Object) sınıfları için temel sınıf.
+    Bu sınıf, ortak WebDriver etkileşimlerini (tıklama, metin yazma, bekleme vb.) tek bir yerde toplar.
+    Böylece her sayfa sınıfında aynı Selenium kodlarını tekrar yazmak yerine buradaki yardımcı metodlar kullanılır.
+    
+    EN: Base class for all Page Object classes.
     This class keeps common WebDriver interactions in one place.
-    Page classes should use these helper methods instead of repeating
+    Page classes should use these helper methods instead of repeating 
     wait, click, type, get text, and navigation wait logic.
     """
 
     def __init__(self, driver):
+        # Driver nesnesini ve bekleme (Explicit Wait) ayarını başlatıyoruz.
+        # Initializing the driver and explicit wait setting.
         self.driver = driver
         self.wait = WebDriverWait(driver, DEFAULT_TIMEOUT)
 
     def open_url(self, url):
         """
-        Navigate to the given URL.
+        TR: Belirtilen URL'e gider.
+        EN: Navigate to the given URL.
         """
         self.driver.get(url)
 
     def get_current_url(self):
         """
-        Return the current browser URL.
+        TR: Tarayıcının o anki URL'ini döndürür.
+        EN: Return the current browser URL.
         """
         return self.driver.current_url
 
     def find_visible_element(self, locator):
         """
-        Wait until an element is visible and return it.
+        TR: Bir öğe görünür olana kadar bekler ve onu döndürür.
+        EN: Wait until an element is visible and return it.
         """
         return self.wait.until(
             EC.visibility_of_element_located(locator)
@@ -40,7 +48,8 @@ class BasePage:
 
     def find_all_visible_elements(self, locator):
         """
-        Wait until all matching elements are visible and return them.
+        TR: Eşleşen tüm öğeler görünür olana kadar bekler ve onları döndürür.
+        EN: Wait until all matching elements are visible and return them.
         """
         return self.wait.until(
             EC.visibility_of_all_elements_located(locator)
@@ -48,7 +57,8 @@ class BasePage:
 
     def find_clickable_element(self, locator):
         """
-        Wait until an element is clickable and return it.
+        TR: Bir öğe tıklanabilir olana kadar bekler ve onu döndürür.
+        EN: Wait until an element is clickable and return it.
         """
         return self.wait.until(
             EC.element_to_be_clickable(locator)
@@ -56,7 +66,8 @@ class BasePage:
 
     def scroll_to_element(self, element):
         """
-        Scroll the element into the center of the viewport.
+        TR: Öğeyi ekranın ortasına getirecek şekilde kaydırır (Scroll).
+        EN: Scroll the element into the center of the viewport.
         """
         self.driver.execute_script(
             "arguments[0].scrollIntoView({block: 'center'});",
@@ -65,7 +76,8 @@ class BasePage:
 
     def javascript_click(self, locator):
         """
-        Click an element using JavaScript as a fallback.
+        TR: Selenium'un normal tıklama metodu başarısız olursa JavaScript ile tıklar.
+        EN: Click an element using JavaScript as a fallback.
         """
         element = self.find_clickable_element(locator)
         self.scroll_to_element(element)
@@ -73,8 +85,10 @@ class BasePage:
 
     def click(self, locator):
         """
-        Wait until an element is clickable, scroll it into view, and click it.
-
+        TR: Bir öğe tıklanabilir olana kadar bekler, odağa alır ve tıklar.
+        Normal tıklama başarısız olursa JavaScript tıklaması kullanılır.
+        
+        EN: Wait until an element is clickable, scroll it into view, and click it.
         If the normal Selenium click fails, JavaScript click is used as a fallback.
         """
         element = self.find_clickable_element(locator)
@@ -83,29 +97,29 @@ class BasePage:
         try:
             element.click()
         except WebDriverException:
+            # Bazı durumlarda öğe başka bir şeyin altında kalabilir, bu durumda JS click daha güvenilirdir.
+            # Sometimes elements are obscured; JS click is more reliable in those cases.
             self.driver.execute_script("arguments[0].click();", element)
 
     def click_and_wait_for_url(self, locator, expected_url_part):
         """
-        Click an element and wait until the current URL contains the expected text.
-
-        If navigation does not happen after the first click, the method retries
-        once with JavaScript click.
+        TR: Bir öğeye tıklar ve URL beklenen metni içerene kadar bekler.
+        EN: Click an element and wait until the current URL contains the expected text.
         """
         self.click(locator)
 
         try:
             return self.wait_for_url_contains(expected_url_part)
         except TimeoutException:
+            # Eğer navigasyon gerçekleşmezse JS ile tekrar tıklamayı dener.
+            # If navigation doesn't happen, retries once with JS click.
             self.javascript_click(locator)
             return self.wait_for_url_contains(expected_url_part)
 
     def click_and_wait_for_visible_element(self, click_locator, expected_visible_locator):
         """
-        Click an element and wait until another expected element becomes visible.
-
-        This is useful when a click causes a UI state change, such as an
-        Add to Cart button turning into a Remove button.
+        TR: Bir öğeye tıklar ve başka bir öğe görünür olana kadar bekler.
+        EN: Click an element and wait until another expected element becomes visible.
         """
         self.click(click_locator)
 
@@ -117,7 +131,8 @@ class BasePage:
 
     def type_text(self, locator, text):
         """
-        Type text into an input field.
+        TR: Bir metin alanına yazı yazar (Önce temizler, sonra yazar).
+        EN: Type text into an input field (Clears first, then sends keys).
         """
         element = self.find_visible_element(locator)
         element.clear()
@@ -125,20 +140,23 @@ class BasePage:
 
     def get_text(self, locator):
         """
-        Wait until an element is visible and return its text.
+        TR: Bir öğenin metin içeriğini alır.
+        EN: Wait until an element is visible and return its text.
         """
         return self.find_visible_element(locator).text
 
     def count_elements(self, locator):
         """
-        Return the number of matching elements after waiting for them to be visible.
+        TR: Eşleşen öğelerin sayısını döndürür.
+        EN: Return the number of matching elements after waiting for them to be visible.
         """
         self.find_all_visible_elements(locator)
         return len(self.driver.find_elements(*locator))
 
     def wait_for_url_contains(self, expected_url_part):
         """
-        Wait until the current URL contains the expected text.
+        TR: URL belirli bir metni içerene kadar bekler.
+        EN: Wait until the current URL contains the expected text.
         """
         return self.wait.until(
             EC.url_contains(expected_url_part)
@@ -146,7 +164,8 @@ class BasePage:
 
     def wait_for_text(self, locator, expected_text):
         """
-        Wait until the given element contains the expected text.
+        TR: Bir öğe belirli bir metni içerene kadar bekler.
+        EN: Wait until the given element contains the expected text.
         """
         return self.wait.until(
             EC.text_to_be_present_in_element(locator, expected_text)

@@ -1,6 +1,6 @@
 import pytest
 
-from api.clients.dummyjson_client import DummyJsonClient
+
 from api.data.dummyjson_payloads import (
     LOGIN_PAYLOAD,
     EXPECTED_USERNAME,
@@ -10,20 +10,14 @@ from api.data.dummyjson_payloads import (
     CART_ID,
     ADD_CART_PAYLOAD,
     EXPECTED_CART_TOTAL_QUANTITY,
+    NON_EXISTENT_CART_ID,
 )
-
-
-@pytest.fixture
-def dummyjson_client():
-    """
-    Provide a DummyJSON API client for tests.
-    """
-    return DummyJsonClient()
 
 
 def _get_dummyjson_access_token(dummyjson_client):
     """
-    Log in to DummyJSON and return a valid access token for authorized requests.
+    TR: Yardımcı fonksiyon: DummyJSON'a giriş yapar ve yetkili istekler için geçerli bir access token döndürür.
+    EN: Helper function: Log in to DummyJSON and return a valid access token for authorized requests.
     """
     response = dummyjson_client.login(LOGIN_PAYLOAD)
 
@@ -31,6 +25,8 @@ def _get_dummyjson_access_token(dummyjson_client):
 
     body = response.json()
 
+    # Token'ın varlığını ve formatını kontrol ediyoruz.
+    # Checking for token existence and its format.
     assert isinstance(body, dict)
     assert "accessToken" in body
     assert isinstance(body["accessToken"], str)
@@ -43,7 +39,8 @@ def _get_dummyjson_access_token(dummyjson_client):
 @pytest.mark.regression
 def test_dummyjson_login_success_returns_access_and_refresh_tokens(dummyjson_client):
     """
-    Verify that a successful login returns access and refresh tokens.
+    TR: Başarılı bir girişin access ve refresh token döndürdüğünü doğrular.
+    EN: Verify that a successful login returns access and refresh tokens.
     """
     response = dummyjson_client.login(LOGIN_PAYLOAD)
 
@@ -56,6 +53,8 @@ def test_dummyjson_login_success_returns_access_and_refresh_tokens(dummyjson_cli
     assert isinstance(body["accessToken"], str)
     assert body["accessToken"].strip() != ""
 
+    # Refresh token genellikle daha uzun süreli oturumlar için kullanılır.
+    # Refresh tokens are usually used for longer-lived sessions.
     assert "refreshToken" in body
     assert isinstance(body["refreshToken"], str)
     assert body["refreshToken"].strip() != ""
@@ -67,10 +66,15 @@ def test_dummyjson_login_success_returns_access_and_refresh_tokens(dummyjson_cli
 @pytest.mark.regression
 def test_dummyjson_get_current_user_with_bearer_token_returns_200(dummyjson_client):
     """
-    Verify that a valid Bearer token can access the protected current user endpoint.
+    TR: Geçerli bir Bearer token ile korumalı bir uç noktaya (me) erişilebildiğini doğrular.
+    EN: Verify that a valid Bearer token can access the protected current user endpoint.
     """
+    # Önce giriş yapıp token alıyoruz.
+    # First, login and get a token.
     access_token = _get_dummyjson_access_token(dummyjson_client)
 
+    # Aldığımız token'ı kullanarak profil bilgilerini çekiyoruz.
+    # Fetching profile info using the obtained token.
     response = dummyjson_client.get_current_user(access_token)
 
     assert response.status_code == 200
@@ -87,10 +91,13 @@ def test_dummyjson_get_current_user_with_bearer_token_returns_200(dummyjson_clie
 @pytest.mark.regression
 def test_dummyjson_get_current_user_without_bearer_token_returns_auth_error(dummyjson_client):
     """
-    Verify that the protected current user endpoint rejects requests without a token.
+    TR: Negatif Test: Token olmadan korumalı uç noktaya erişimin reddedildiğini doğrular.
+    EN: Negative Test: Verify that the protected current user endpoint rejects requests without a token.
     """
     response = dummyjson_client.get_current_user()
 
+    # 401 (Unauthorized) veya 403 (Forbidden) dönmesi beklenir.
+    # Expected to return 401 (Unauthorized) or 403 (Forbidden).
     assert response.status_code in AUTH_ERROR_STATUS_CODES
 
     body = response.json()
@@ -104,7 +111,8 @@ def test_dummyjson_get_current_user_without_bearer_token_returns_auth_error(dumm
 @pytest.mark.regression
 def test_dummyjson_get_current_user_with_wrong_bearer_token_returns_auth_error(dummyjson_client):
     """
-    Verify that the protected current user endpoint rejects an invalid Bearer token.
+    TR: Negatif Test: Yanlış bir Bearer token ile erişimin reddedildiğini doğrular.
+    EN: Negative Test: Verify that the protected current user endpoint rejects an invalid Bearer token.
     """
     response = dummyjson_client.get_current_user(WRONG_ACCESS_TOKEN)
 
@@ -122,7 +130,8 @@ def test_dummyjson_get_current_user_with_wrong_bearer_token_returns_auth_error(d
 @pytest.mark.regression
 def test_dummyjson_get_products_returns_limited_product_list(dummyjson_client):
     """
-    Verify that the products endpoint returns a limited list with valid product fields.
+    TR: Ürünler uç noktasının sınırlı sayıda (limit) ürün döndürdüğünü doğrular.
+    EN: Verify that the products endpoint returns a limited list with valid product fields.
     """
     response = dummyjson_client.get_products(PRODUCTS_LIMIT)
 
@@ -133,6 +142,8 @@ def test_dummyjson_get_products_returns_limited_product_list(dummyjson_client):
     assert isinstance(body, dict)
     assert "products" in body
     assert isinstance(body["products"], list)
+    # Dönen ürün sayısının gönderdiğimiz limit ile aynı olduğunu kontrol ediyoruz.
+    # Checking if the returned product count matches the limit we sent.
     assert len(body["products"]) == PRODUCTS_LIMIT
 
     first_product = body["products"][0]
@@ -149,10 +160,13 @@ def test_dummyjson_get_products_returns_limited_product_list(dummyjson_client):
 @pytest.mark.regression
 def test_dummyjson_add_cart_returns_created_cart_fields(dummyjson_client):
     """
-    Verify that creating a cart returns the expected cart contract.
+    TR: Yeni bir sepet oluşturmanın beklenen veri yapısını döndürdüğünü doğrular.
+    EN: Verify that creating a cart returns the expected cart contract.
     """
     response = dummyjson_client.add_cart(ADD_CART_PAYLOAD)
 
+    # Not: Bazı API'lar yeni kaynak için 201 döndürür, DummyJSON 201 veya 200 dönebilir.
+    # Note: Some APIs return 201 for new resources; DummyJSON might return 201 or 200.
     assert response.status_code == 201
 
     body = response.json()
@@ -173,13 +187,16 @@ def test_dummyjson_add_cart_returns_created_cart_fields(dummyjson_client):
 
     assert "totalQuantity" in body
     assert isinstance(body["totalQuantity"], int)
+    # Toplam ürün miktarının doğruluğunu kontrol ediyoruz.
+    # Verifying the correctness of the total quantity.
     assert body["totalQuantity"] == EXPECTED_CART_TOTAL_QUANTITY
 
 
 @pytest.mark.regression
 def test_dummyjson_delete_cart_returns_deleted_marker_fields(dummyjson_client):
     """
-    Verify that deleting a cart returns simulated deletion marker fields.
+    TR: Bir sepeti silmenin silinme işaretlerini (isDeleted) döndürdüğünü doğrular.
+    EN: Verify that deleting a cart returns simulated deletion marker fields.
     """
     response = dummyjson_client.delete_cart(CART_ID)
 
@@ -189,7 +206,25 @@ def test_dummyjson_delete_cart_returns_deleted_marker_fields(dummyjson_client):
 
     assert isinstance(body, dict)
     assert body["id"] == CART_ID
+    # DummyJSON gerçek silme yapmaz, silindiğine dair bayrak döner.
+    # DummyJSON doesn't perform a real delete; it returns a flag indicating deletion.
     assert body["isDeleted"] is True
     assert "deletedOn" in body
     assert isinstance(body["deletedOn"], str)
     assert body["deletedOn"].strip() != ""
+
+@pytest.mark.regression
+def test_dummyjson_delete_cart_returns_404_for_non_existing_cart(dummyjson_client):
+    """
+    TR: Negatif Test: Var olmayan bir sepeti silme denemesinin 404 (Not Found) döndürdüğünü doğrular.
+    EN: Negative Test: Verify that attempting to delete a non-existent cart returns 404.
+    """
+    response = dummyjson_client.delete_cart(NON_EXISTENT_CART_ID)
+
+    assert response.status_code == 404
+
+    body = response.json()
+    assert isinstance(body, dict)
+    assert "message" in body
+    assert isinstance(body["message"], str)
+    assert body["message"].strip() != ""

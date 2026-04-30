@@ -6,9 +6,17 @@ from ui.pages.base_page import BasePage
 
 class LoginPage(BasePage):
     """
-    Page Object Model for the Login page.
+    TR: Giriş sayfası için Sayfa Nesnesi Modeli (Page Object Model).
+    Bu sınıf, giriş sayfasındaki elementlerin yerlerini (locators) ve 
+    bu sayfada yapılabilecek işlemleri (metodlar) tanımlar.
+    
+    EN: Page Object Model for the Login page.
+    This class defines the locators for elements on the login page 
+    and the actions (methods) that can be performed on this page.
     """
 
+    # Element konumlandırıcıları (Locators)
+    # By.ID, By.CSS_SELECTOR gibi yöntemlerle elementleri buluyoruz.
     USERNAME_INPUT = (By.ID, "user-name")
     PASSWORD_INPUT = (By.ID, "password")
     LOGIN_BUTTON = (By.ID, "login-button")
@@ -16,31 +24,36 @@ class LoginPage(BasePage):
 
     def open(self):
         """
-        Navigate to the login page URL.
+        TR: Giriş sayfası URL'ine gider.
+        EN: Navigate to the login page URL.
         """
         self.open_url(BASE_URL)
 
     def enter_username(self, username):
         """
-        Enter the provided username into the username field.
+        TR: Kullanıcı adı alanına belirtilen metni yazar.
+        EN: Enter the provided username into the username field.
         """
         self.type_text(self.USERNAME_INPUT, username)
 
     def enter_password(self, password):
         """
-        Enter the provided password into the password field.
+        TR: Şifre alanına belirtilen metni yazar.
+        EN: Enter the provided password into the password field.
         """
         self.type_text(self.PASSWORD_INPUT, password)
 
     def click_login(self):
         """
-        Click the login button.
+        TR: Giriş yap butonuna tıklar.
+        EN: Click the login button.
         """
         self.click(self.LOGIN_BUTTON)
 
     def login(self, username, password):
         """
-        Perform a full login flow with username and password.
+        TR: Kullanıcı adı ve şifre ile tam giriş akışını gerçekleştirir.
+        EN: Perform a full login flow with username and password.
         """
         self.enter_username(username)
         self.enter_password(password)
@@ -48,6 +61,7 @@ class LoginPage(BasePage):
 
     def get_error_message_text(self):
         """
-        Wait for an error message to appear and return its text.
+        TR: Hata mesajının görünmesini bekler ve metnini döndürür.
+        EN: Wait for an error message to appear and return its text.
         """
         return self.get_text(self.ERROR_MESSAGE)

@@ -1,22 +1,37 @@
 """
-Reusable payloads and expected values for DummyJSON tests.
+TR: DummyJSON testleri için yeniden kullanılabilir veri paketleri (payloads) ve beklenen değerler.
+EN: Reusable payloads and expected values for DummyJSON tests.
 """
 
+# Giriş yapmak için kullanılacak kullanıcı bilgileri.
+# User credentials to be used for login.
 LOGIN_PAYLOAD = {
     "username": "emilys",
     "password": "emilyspass",
 }
 
+# Giriş sonrası doğrulanacak beklenen kullanıcı adı.
+# Expected username to verify after login.
 EXPECTED_USERNAME = "emilys"
 
+# Hata durumlarını test etmek için yanlış token.
+# Wrong token for testing error scenarios.
 WRONG_ACCESS_TOKEN = "wrong_token"
 
+# Yetki hataları için beklenen HTTP durum kodları.
+# Expected HTTP status codes for authorization errors.
 AUTH_ERROR_STATUS_CODES = (401, 403)
 
+# Ürün listeleme testi için limit değeri.
+# Limit value for product listing test.
 PRODUCTS_LIMIT = 5
 
+# Sepet işlemleri için örnek ID.
+# Sample ID for cart operations.
 CART_ID = 1
 
+# Sepete ürün eklemek için gönderilecek veri yapısı.
+# The data structure to be sent to the API when adding items to a cart.
 ADD_CART_PAYLOAD = {
     "userId": 1,
     "products": [
@@ -31,4 +46,9 @@ ADD_CART_PAYLOAD = {
     ],
 }
 
+# Sepetteki toplam beklenen ürün adedi.
+# Total expected quantity of items in the cart.
 EXPECTED_CART_TOTAL_QUANTITY = 3
+
+# Var olmayan bir sepet için ID.
+NON_EXISTENT_CART_ID = 999
