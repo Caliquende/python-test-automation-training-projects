@@ -198,7 +198,18 @@ Each job generates and uploads a JUnit XML artifact:
 - Test reports are generated under `reports/` and should not be committed.
 - Cache folders such as `.pytest_cache` and `__pycache__` should not be committed.
 
+## Security
+
+This project implements the following security measures:
+
+- **Dependabot:** Automatically monitors and updates dependencies and GitHub Actions.
+- **CodeQL:** Performs Static Application Security Testing (SAST) to identify potential vulnerabilities.
+- **Security Policy:** Responsible disclosure and security guidelines are defined in [SECURITY.md](./SECURITY.md).
+- **SAST & Auditing:** Bandit and pip-audit are integrated into the CI/CD pipeline.
+- **Pre-commit Hooks:** Local checks for secrets, private keys, and code quality before every commit.
+
 ## Project Status
+
 
 This is a beginner-friendly but structured test automation training repository.
 
