@@ -110,6 +110,20 @@ Install the required dependencies:
 
     pip install pytest requests
 
+Create a local environment file from the example:
+
+    Copy-Item .env.example .env
+
+Required API values:
+
+- `JSONPLACEHOLDER_USER_ID`
+- `DUMMYJSON_USERNAME`
+- `DUMMYJSON_PASSWORD`
+- `DUMMYJSON_EXPECTED_USERNAME`
+- `DUMMYJSON_WRONG_ACCESS_TOKEN`
+
+The real `.env` file is ignored by Git. CI must receive these values through GitHub Actions secrets with the same names.
+
 ## Running Tests
 
 From the repository root, run the full API suite:

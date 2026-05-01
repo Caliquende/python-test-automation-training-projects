@@ -3,20 +3,23 @@ TR: DummyJSON testleri için yeniden kullanılabilir veri paketleri (payloads) v
 EN: Reusable payloads and expected values for DummyJSON tests.
 """
 
+from env_loader import get_required_env
+
+
 # Giriş yapmak için kullanılacak kullanıcı bilgileri.
 # User credentials to be used for login.
 LOGIN_PAYLOAD = {
-    "username": "emilys",
-    "password": "emilyspass",
+    "username": get_required_env("DUMMYJSON_USERNAME"),
+    "password": get_required_env("DUMMYJSON_PASSWORD"),
 }
 
 # Giriş sonrası doğrulanacak beklenen kullanıcı adı.
 # Expected username to verify after login.
-EXPECTED_USERNAME = "emilys"
+EXPECTED_USERNAME = get_required_env("DUMMYJSON_EXPECTED_USERNAME")
 
 # Hata durumlarını test etmek için yanlış token.
 # Wrong token for testing error scenarios.
-WRONG_ACCESS_TOKEN = "wrong_token"
+WRONG_ACCESS_TOKEN = get_required_env("DUMMYJSON_WRONG_ACCESS_TOKEN")
 
 # Yetki hataları için beklenen HTTP durum kodları.
 # Expected HTTP status codes for authorization errors.

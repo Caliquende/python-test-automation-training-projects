@@ -54,6 +54,9 @@ The goal of this repository is not only to write test scripts, but also to pract
 - `requirements.txt`
   - Shared Python dependencies
 
+- `.env.example`
+  - Example environment variable file for local test credentials and test user values
+
 ## Covered Areas
 
 ### API Automation
@@ -111,6 +114,12 @@ Create and activate a virtual environment:
 Install dependencies:
 
     pip install -r requirements.txt
+
+Create a local environment file:
+
+    Copy-Item .env.example .env
+
+Then fill the values in `.env`. The real `.env` file is ignored by Git and must not be committed.
 
 ## Running All Tests
 
@@ -198,6 +207,16 @@ The workflow includes two jobs:
 - API Tests
 - UI Tests
 
+Required GitHub Actions secrets:
+
+- `SAUCEDEMO_STANDARD_USERNAME`
+- `SAUCEDEMO_STANDARD_PASSWORD`
+- `JSONPLACEHOLDER_USER_ID`
+- `DUMMYJSON_USERNAME`
+- `DUMMYJSON_PASSWORD`
+- `DUMMYJSON_EXPECTED_USERNAME`
+- `DUMMYJSON_WRONG_ACCESS_TOKEN`
+
 Each job generates and uploads a JUnit XML artifact:
 
 - api-test-artifacts
@@ -212,6 +231,7 @@ On failures, these artifacts also include API request/response logs, UI screensh
 - UI tests run in headless Chrome on GitHub Actions.
 - Test reports are generated under `reports/` and should not be committed.
 - Failure artifacts are generated under `reports/` and should not be committed.
+- Real environment files such as `.env` must not be committed; commit only `.env.example`.
 - Cache folders such as `.pytest_cache` and `__pycache__` should not be committed.
 
 ## Security

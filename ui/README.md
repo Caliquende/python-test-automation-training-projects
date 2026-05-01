@@ -90,6 +90,19 @@ pip install selenium pytest
 
 Chrome must be installed on the machine. Recent Selenium versions can handle ChromeDriver automatically through Selenium Manager.
 
+Create a local environment file from the example:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Required UI values:
+
+- `SAUCEDEMO_STANDARD_USERNAME`
+- `SAUCEDEMO_STANDARD_PASSWORD`
+
+The real `.env` file is ignored by Git. CI must receive these values through GitHub Actions secrets with the same names.
+
 ## Running Tests
 
 From the repository root, run the UI suite:

@@ -3,10 +3,13 @@ TR: JSONPlaceholder testleri için yeniden kullanılabilir veri paketleri (paylo
 EN: Reusable payloads and expected values for JSONPlaceholder tests.
 """
 
+from env_loader import get_required_int_env
+
+
 # Testlerde kullanılacak sabit ID değerleri.
 # Constant ID values to be used in tests.
 POST_ID = 1
-USER_ID = 1
+USER_ID = get_required_int_env("JSONPLACEHOLDER_USER_ID")
 
 # Yeni bir gönderi oluştururken API'ye gönderilecek veri yapısı.
 # The data structure to be sent to the API when creating a new post.

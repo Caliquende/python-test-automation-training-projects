@@ -25,6 +25,12 @@ jobs:
     # TR: Testlerin çalışacağı işletim sistemi (Ubuntu).
     # EN: The operating system where tests will run (Ubuntu).
     runs-on: ubuntu-latest
+    env:
+      JSONPLACEHOLDER_USER_ID: ${{ secrets.JSONPLACEHOLDER_USER_ID }}
+      DUMMYJSON_USERNAME: ${{ secrets.DUMMYJSON_USERNAME }}
+      DUMMYJSON_PASSWORD: ${{ secrets.DUMMYJSON_PASSWORD }}
+      DUMMYJSON_EXPECTED_USERNAME: ${{ secrets.DUMMYJSON_EXPECTED_USERNAME }}
+      DUMMYJSON_WRONG_ACCESS_TOKEN: ${{ secrets.DUMMYJSON_WRONG_ACCESS_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -43,6 +49,28 @@ jobs:
           else
             pip install pytest requests
           fi
+
+      - name: Validate API secrets
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+
+          required = [
+              "JSONPLACEHOLDER_USER_ID",
+              "DUMMYJSON_USERNAME",
+              "DUMMYJSON_PASSWORD",
+              "DUMMYJSON_EXPECTED_USERNAME",
+              "DUMMYJSON_WRONG_ACCESS_TOKEN",
+          ]
+          missing = [name for name in required if not os.getenv(name)]
+
+          if missing:
+              print("Missing required GitHub Actions secrets: " + ", ".join(missing))
+              sys.exit(1)
+
+          print("Required API secrets are configured.")
+          PY
 
       - name: Run API tests with JUnit report
         run: |
@@ -70,6 +98,8 @@ jobs:
       # TR: UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
       # EN: Forces UI tests to run in headless mode.
       HEADLESS: "true"
+      SAUCEDEMO_STANDARD_USERNAME: ${{ secrets.SAUCEDEMO_STANDARD_USERNAME }}
+      SAUCEDEMO_STANDARD_PASSWORD: ${{ secrets.SAUCEDEMO_STANDARD_PASSWORD }}
 
     steps:
       - name: Checkout repository
@@ -88,6 +118,25 @@ jobs:
           else
             pip install pytest selenium
           fi
+
+      - name: Validate UI secrets
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+
+          required = [
+              "SAUCEDEMO_STANDARD_USERNAME",
+              "SAUCEDEMO_STANDARD_PASSWORD",
+          ]
+          missing = [name for name in required if not os.getenv(name)]
+
+          if missing:
+              print("Missing required GitHub Actions secrets: " + ", ".join(missing))
+              sys.exit(1)
+
+          print("Required UI secrets are configured.")
+          PY
 
       - name: Run UI tests with JUnit report
         run: |
