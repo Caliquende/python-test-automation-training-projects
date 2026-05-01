@@ -11,6 +11,8 @@ The goal of this project is not only to write UI tests, but also to practice a m
 - Pytest
 - Page Object Model
 - Pytest markers
+- Screenshot capture on failed UI tests
+- Browser console logging on failed UI tests
 
 ## Project Structure
 
@@ -120,6 +122,17 @@ Run all tests from the full workspace:
 pytest -v
 ```
 
+## Failure Artifacts
+
+When a UI test fails, the shared Pytest hook in `conftest.py` writes diagnostic artifacts under:
+
+```text
+reports/ui/screenshots/
+reports/ui/browser-console/
+```
+
+Screenshots help inspect the browser state at the failure point. Browser console logs help diagnose JavaScript or UI runtime problems.
+
 ## Pytest Markers
 
 The project uses the following markers:
@@ -164,7 +177,7 @@ Planned improvements:
 
 - Add a `BasePage` class
 - Move common wait, click, type, and get text actions into `BasePage`
-- Add reporting support with JUnit XML, pytest-html, or Allure
+- Add optional rich HTML or Allure reporting
 - Add GitHub Actions CI
 - Add more negative login scenarios
 - Add more cart and checkout flow coverage

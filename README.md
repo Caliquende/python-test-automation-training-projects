@@ -16,6 +16,10 @@ The goal of this repository is not only to write test scripts, but also to pract
 - Page Object Model
 - API client layer
 - JUnit XML reporting
+- Failure artifacts:
+  - UI screenshot on failed UI tests
+  - Browser console log on failed UI tests
+  - API request/response log on failed API tests
 - GitHub Actions CI
 
 ## Repository Structure
@@ -38,8 +42,8 @@ The goal of this repository is not only to write test scripts, but also to pract
   - `README.md` — UI project documentation
 
 - `reports/`
-  - Stores generated JUnit XML reports locally
-  - Report files are ignored by Git
+  - Stores generated JUnit XML reports and failure artifacts locally
+  - Report and artifact files are ignored by Git
 
 - `.github/workflows/`
   - GitHub Actions workflow for API and UI test execution
@@ -73,7 +77,7 @@ Main concepts practiced:
 
 Expected result:
 
-    12 passed
+    17 passed
 
 ### UI Automation
 
@@ -95,7 +99,7 @@ Main concepts practiced:
 
 Expected result:
 
-    4 passed
+    7 passed
 
 ## Setup
 
@@ -132,6 +136,10 @@ Generate API JUnit XML report:
 
     pytest api -v --junitxml=reports/api-junit.xml
 
+When an API test fails, request/response details are written under:
+
+    reports/api/http-exchanges/
+
 ## Running UI Tests
 
 Run the full UI suite:
@@ -150,6 +158,11 @@ Generate UI JUnit XML report:
 
     pytest ui -v --junitxml=reports/ui-junit.xml
 
+When a UI test fails, diagnostic artifacts are written under:
+
+    reports/ui/screenshots/
+    reports/ui/browser-console/
+
 ## Running UI Tests in Headless Mode
 
 For CI-like local execution:
@@ -162,19 +175,19 @@ For CI-like local execution:
 
 API smoke:
 
-    5 passed, 7 deselected
+    5 passed, 12 deselected
 
 API regression:
 
-    12 passed
+    17 passed
 
 UI smoke:
 
-    2 passed, 2 deselected
+    2 passed, 5 deselected
 
 UI regression:
 
-    4 passed
+    7 passed
 
 ## CI
 
@@ -187,8 +200,10 @@ The workflow includes two jobs:
 
 Each job generates and uploads a JUnit XML artifact:
 
-- api-junit-report
-- ui-junit-report
+- api-test-artifacts
+- ui-test-artifacts
+
+On failures, these artifacts also include API request/response logs, UI screenshots, and browser console logs when available.
 
 ## Validation Notes
 
@@ -196,6 +211,7 @@ Each job generates and uploads a JUnit XML artifact:
 - UI tests use SauceDemo, so failures may sometimes be caused by live UI behavior changes.
 - UI tests run in headless Chrome on GitHub Actions.
 - Test reports are generated under `reports/` and should not be committed.
+- Failure artifacts are generated under `reports/` and should not be committed.
 - Cache folders such as `.pytest_cache` and `__pycache__` should not be committed.
 
 ## Security

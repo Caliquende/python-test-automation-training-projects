@@ -11,9 +11,17 @@ __pycache__/
 venv/
 env/
 
-# Test reports
+# Test reports and failure artifacts
 reports/*
 !reports/.gitkeep
+reports/**/*.xml
+reports/**/*.json
+reports/**/*.log
+reports/**/*.png
+reports/**/screenshots/
+reports/**/browser-console/
+reports/**/http-exchanges/
+chromedriver/
 
 # Coverage
 .coverage

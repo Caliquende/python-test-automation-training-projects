@@ -57,8 +57,10 @@ jobs:
         # EN: Ensures the report is always uploaded even if tests fail.
         if: always()
         with:
-          name: api-junit-report
-          path: reports/api-junit.xml
+          name: api-test-artifacts
+          path: |
+            reports/api-junit.xml
+            reports/api/
 
   ui-tests:
     name: UI Tests
@@ -98,8 +100,10 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ui-junit-report
-          path: reports/ui-junit.xml
+          name: ui-test-artifacts
+          path: |
+            reports/ui-junit.xml
+            reports/ui/
 
   # ──────────────────────────────────────────────────────────────
   # TR: Güvenlik Taraması — Bandit (statik analiz) ve pip-audit (bağımlılık CVE taraması)

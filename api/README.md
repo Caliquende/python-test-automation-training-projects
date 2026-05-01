@@ -12,6 +12,7 @@ The goal of this project is not only to send API requests, but also to practice 
 - API client layer
 - Pytest markers
 - JUnit XML reporting
+- Request/response logging on failed API tests
 - GitHub Actions CI
 
 ## Project Structure
@@ -139,6 +140,12 @@ Generate a JUnit XML report for the API suite:
 
 Generated report files are stored under the `reports/` folder and should not be committed to version control.
 
+When an API test fails after making HTTP calls, request and response details are written as JSON under:
+
+    reports/api/http-exchanges/
+
+Sensitive fields such as authorization tokens and passwords are redacted before writing logs.
+
 ## Pytest Markers
 
 The project uses the following markers:
@@ -150,23 +157,25 @@ The project uses the following markers:
 
 Full API suite:
 
-    12 passed
+    17 passed
 
 Smoke API suite:
 
-    5 passed, 7 deselected
+    5 passed, 12 deselected
 
 Regression API suite:
 
-    12 passed
+    17 passed
 
 ## CI
 
 GitHub Actions runs the API test suite automatically on push and pull request.
 
-The workflow generates a JUnit XML report and uploads it as an artifact:
+The workflow generates test artifacts and uploads them:
 
-- `api-junit-report`
+- `api-test-artifacts`
+
+The artifact includes the JUnit XML report and API request/response logs when failures occur.
 
 ## Notes
 
