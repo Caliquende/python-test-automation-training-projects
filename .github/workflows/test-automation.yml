@@ -52,7 +52,7 @@ jobs:
           pytest api -v --junitxml=reports/api-junit.xml
 
       - name: Upload API JUnit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         # TR: Testler başarısız olsa bile raporun her zaman yüklenmesini sağlar.
         # EN: Ensures the report is always uploaded even if tests fail.
         if: always()
@@ -97,7 +97,7 @@ jobs:
           pytest ui -v --junitxml=reports/ui-junit.xml
 
       - name: Upload UI JUnit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ui-test-artifacts
@@ -150,7 +150,7 @@ jobs:
           pip-audit || true
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: security-reports
