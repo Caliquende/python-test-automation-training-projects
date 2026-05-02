@@ -6,20 +6,31 @@ EN: Reusable payloads and expected values for DummyJSON tests.
 from env_loader import get_required_env
 
 
-# Giriş yapmak için kullanılacak kullanıcı bilgileri.
-# User credentials to be used for login.
-LOGIN_PAYLOAD = {
-    "username": get_required_env("DUMMYJSON_USERNAME"),
-    "password": get_required_env("DUMMYJSON_PASSWORD"),
-}
+def get_login_payload():
+    """
+    TR: Giriş yapmak için kullanılacak kullanıcı bilgilerini çalışma zamanında döndürür.
+    EN: Return login credentials at runtime.
+    """
+    return {
+        "username": get_required_env("DUMMYJSON_USERNAME"),
+        "password": get_required_env("DUMMYJSON_PASSWORD"),
+    }
 
-# Giriş sonrası doğrulanacak beklenen kullanıcı adı.
-# Expected username to verify after login.
-EXPECTED_USERNAME = get_required_env("DUMMYJSON_EXPECTED_USERNAME")
 
-# Hata durumlarını test etmek için yanlış token.
-# Wrong token for testing error scenarios.
-WRONG_ACCESS_TOKEN = get_required_env("DUMMYJSON_WRONG_ACCESS_TOKEN")
+def get_expected_username():
+    """
+    TR: Giriş sonrası doğrulanacak beklenen kullanıcı adını çalışma zamanında döndürür.
+    EN: Return the expected username at runtime.
+    """
+    return get_required_env("DUMMYJSON_EXPECTED_USERNAME")
+
+
+def get_wrong_access_token():
+    """
+    TR: Hata durumlarını test etmek için yanlış token değerini çalışma zamanında döndürür.
+    EN: Return the wrong token used for error scenarios at runtime.
+    """
+    return get_required_env("DUMMYJSON_WRONG_ACCESS_TOKEN")
 
 # Yetki hataları için beklenen HTTP durum kodları.
 # Expected HTTP status codes for authorization errors.

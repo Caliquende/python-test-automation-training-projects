@@ -9,9 +9,12 @@ This module keeps user credentials away from test case code for better maintaina
 from env_loader import get_required_env
 
 
-# Standart kullanıcı giriş bilgileri.
-# Standard user credentials.
-STANDARD_USER = {
-    "username": get_required_env("SAUCEDEMO_STANDARD_USERNAME"),
-    "password": get_required_env("SAUCEDEMO_STANDARD_PASSWORD"),
-}
+def get_standard_user():
+    """
+    TR: Standart kullanıcı giriş bilgilerini çalışma zamanında döndürür.
+    EN: Return standard user credentials at runtime.
+    """
+    return {
+        "username": get_required_env("SAUCEDEMO_STANDARD_USERNAME"),
+        "password": get_required_env("SAUCEDEMO_STANDARD_PASSWORD"),
+    }

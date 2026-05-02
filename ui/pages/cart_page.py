@@ -57,4 +57,4 @@ class CartPage(BasePage):
             )
             
     def is_cart_empty(self):
-        return len(self.driver.find_elements(*self.CART_BADGE)) == 0
+        return self.get_cart_item_count() == 0

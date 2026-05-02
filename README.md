@@ -1,11 +1,11 @@
 # Python Test Automation Training Projects
 
-This repository contains two focused Python test automation tracks:
+This repository is a compact Python test automation training workspace with two tracks:
 
-1. API automation with Pytest, Requests, API client classes, config separation, reusable test data, JUnit reporting, and GitHub Actions CI.
-2. UI automation with Selenium WebDriver, Pytest, Page Object Model, BasePage abstraction, config separation, reusable test data, JUnit reporting, and GitHub Actions CI.
+1. API automation for public demo APIs using Pytest, Requests, reusable clients, separated config, reusable payloads, markers, JUnit reports, and failure diagnostics.
+2. UI automation for SauceDemo using Selenium WebDriver, Pytest, Page Object Model, shared fixtures, separated config, reusable test data, markers, JUnit reports, and failure diagnostics.
 
-The goal of this repository is not only to write test scripts, but also to practice maintainable test automation architecture.
+The repository is intentionally small. Its purpose is to practice maintainable automation structure, not to provide a production-scale test framework.
 
 ## Tech Stack
 
@@ -16,198 +16,122 @@ The goal of this repository is not only to write test scripts, but also to pract
 - Page Object Model
 - API client layer
 - JUnit XML reporting
-- Failure artifacts:
-  - UI screenshot on failed UI tests
-  - Browser console log on failed UI tests
-  - API request/response log on failed API tests
 - GitHub Actions CI
+- CodeQL, Bandit, pip-audit, Dependabot, and pre-commit security checks
 
 ## Repository Structure
 
 - `api/`
-  - `clients/` — API client classes and shared HTTP request logic
-  - `config/` — API base URLs and timeout configuration
-  - `data/` — Reusable API payloads and expected values
-  - `tests/` — API test scenarios
-  - `pytest.ini` — API-specific Pytest configuration
-  - `README.md` — API project documentation
+  - `clients/` - API client classes and shared HTTP request logic
+  - `config/` - API base URLs and timeout configuration
+  - `data/` - reusable API payloads and expected values
+  - `tests/` - API test scenarios
+  - `pytest.ini` - API-specific Pytest configuration
+  - `README.md` - API track documentation
 
 - `ui/`
-  - `config/` — UI base URL, timeout, and headless configuration
-  - `data/` — Test users, expected UI texts, and product data
-  - `pages/` — Page Object Model classes and BasePage abstraction
-  - `tests/` — UI test scenarios
-  - `conftest.py` — Shared WebDriver fixture
-  - `pytest.ini` — UI-specific Pytest configuration
-  - `README.md` — UI project documentation
+  - `config/` - UI base URL, timeout, and headless configuration
+  - `data/` - test users, expected UI texts, and product data
+  - `pages/` - Page Object Model classes and BasePage abstraction
+  - `tests/` - UI test scenarios
+  - `conftest.py` - shared WebDriver and page object fixtures
+  - `pytest.ini` - UI-specific Pytest configuration
+  - `README.md` - UI track documentation
 
 - `reports/`
-  - Stores generated JUnit XML reports and failure artifacts locally
-  - Report and artifact files are ignored by Git
+  - local JUnit XML reports and failure artifacts
+  - ignored by Git except for `reports/.gitkeep`
 
 - `.github/workflows/`
-  - GitHub Actions workflow for API and UI test execution
+  - API tests, UI tests, security scan, and CodeQL workflows
 
-- `pytest.ini`
-  - Root-level Pytest configuration
+- `.github/dependabot.yml`
+  - weekly pip and GitHub Actions dependency update checks
 
-- `requirements.txt`
-  - Shared Python dependencies
+- `.pre-commit-config.yaml`
+  - local commit-time quality and security hooks
 
 - `.env.example`
-  - Example environment variable file for local test credentials and test user values
+  - example environment variables for local test credentials and test values
+
+- `env_loader.py`
+  - lightweight root `.env` loader used by config/test data modules
 
 ## Covered Areas
 
 ### API Automation
 
-The API track covers public demo APIs:
+The API track covers:
 
 - JSONPlaceholder
 - DummyJSON
 
-Main concepts practiced:
+Main concepts:
 
 - API client layer
-- Base client abstraction
+- Shared base client
 - Config separation
-- Reusable test data
-- Authenticated requests
+- Reusable payloads and expected values
+- Authenticated and unauthenticated requests
 - Positive and negative API checks
 - Smoke and regression markers
-- JUnit XML reporting
-- GitHub Actions CI
+- JUnit XML reports
+- Failed request/response logging with sensitive field redaction
 
-Expected result:
+Expected current result:
 
-    17 passed
+```text
+17 passed
+```
 
 ### UI Automation
 
-The UI track covers SauceDemo browser tests.
+The UI track covers SauceDemo browser flows.
 
-Main concepts practiced:
+Main concepts:
 
 - Selenium WebDriver
 - Pytest fixtures
 - Page Object Model
 - BasePage abstraction
 - Config separation
-- Reusable test data
-- Headless browser execution for CI
+- Reusable users, products, and UI text constants
+- Headless browser execution through `HEADLESS=true`
 - Explicit waits and UI state validation
 - Smoke and regression markers
-- JUnit XML reporting
-- GitHub Actions CI
+- JUnit XML reports
+- Failure screenshots and browser console logs
 
-Expected result:
+Expected current result:
 
-    7 passed
+```text
+7 passed
+```
 
 ## Setup
 
 Create and activate a virtual environment:
 
-    python -m venv .venv
-    .venv\Scripts\activate
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
 
 Install dependencies:
 
-    pip install -r requirements.txt
+```powershell
+pip install -r requirements.txt
+```
 
 Create a local environment file:
 
-    Copy-Item .env.example .env
+```powershell
+Copy-Item .env.example .env
+```
 
 Then fill the values in `.env`. The real `.env` file is ignored by Git and must not be committed.
 
-## Running All Tests
-
-Run the full test suite from the repository root:
-
-    pytest
-
-## Running API Tests
-
-Run the full API suite:
-
-    pytest api -v
-
-Run API smoke tests:
-
-    pytest api -m smoke -v
-
-Run API regression tests:
-
-    pytest api -m regression -v
-
-Generate API JUnit XML report:
-
-    pytest api -v --junitxml=reports/api-junit.xml
-
-When an API test fails, request/response details are written under:
-
-    reports/api/http-exchanges/
-
-## Running UI Tests
-
-Run the full UI suite:
-
-    pytest ui -v
-
-Run UI smoke tests:
-
-    pytest ui -m smoke -v
-
-Run UI regression tests:
-
-    pytest ui -m regression -v
-
-Generate UI JUnit XML report:
-
-    pytest ui -v --junitxml=reports/ui-junit.xml
-
-When a UI test fails, diagnostic artifacts are written under:
-
-    reports/ui/screenshots/
-    reports/ui/browser-console/
-
-## Running UI Tests in Headless Mode
-
-For CI-like local execution:
-
-    $env:HEADLESS="true"
-    pytest ui -v --junitxml=reports/ui-junit.xml
-    Remove-Item Env:HEADLESS
-
-## Expected Marker Results
-
-API smoke:
-
-    5 passed, 12 deselected
-
-API regression:
-
-    17 passed
-
-UI smoke:
-
-    2 passed, 5 deselected
-
-UI regression:
-
-    7 passed
-
-## CI
-
-GitHub Actions runs both API and UI tests automatically on push and pull request.
-
-The workflow includes two jobs:
-
-- API Tests
-- UI Tests
-
-Required GitHub Actions secrets:
+Required local and CI values:
 
 - `SAUCEDEMO_STANDARD_USERNAME`
 - `SAUCEDEMO_STANDARD_PASSWORD`
@@ -217,39 +141,182 @@ Required GitHub Actions secrets:
 - `DUMMYJSON_EXPECTED_USERNAME`
 - `DUMMYJSON_WRONG_ACCESS_TOKEN`
 
-Each job generates and uploads a JUnit XML artifact:
+## Running Tests
 
-- api-test-artifacts
-- ui-test-artifacts
+Run these commands from the repository root. The repo also contains API/UI-specific `pytest.ini` files, so using the root commands keeps collection behavior predictable.
 
-On failures, these artifacts also include API request/response logs, UI screenshots, and browser console logs when available.
+Run the full suite from the repository root:
 
-## Validation Notes
+```powershell
+pytest
+```
 
-- API tests use public demo APIs, so failures may sometimes be caused by external service outages or response changes.
-- UI tests use SauceDemo, so failures may sometimes be caused by live UI behavior changes.
-- UI tests run in headless Chrome on GitHub Actions.
-- Test reports are generated under `reports/` and should not be committed.
-- Failure artifacts are generated under `reports/` and should not be committed.
-- Real environment files such as `.env` must not be committed; commit only `.env.example`.
-- Cache folders such as `.pytest_cache` and `__pycache__` should not be committed.
+Run the full API suite:
+
+```powershell
+pytest api -v
+```
+
+Run API smoke tests:
+
+```powershell
+pytest api -m smoke -v
+```
+
+Run API regression tests:
+
+```powershell
+pytest api -m regression -v
+```
+
+Generate the API JUnit XML report:
+
+```powershell
+pytest api -v --junitxml=reports/api-junit.xml
+```
+
+Run the full UI suite:
+
+```powershell
+pytest ui -v
+```
+
+Run UI smoke tests:
+
+```powershell
+pytest ui -m smoke -v
+```
+
+Run UI regression tests:
+
+```powershell
+pytest ui -m regression -v
+```
+
+Generate the UI JUnit XML report:
+
+```powershell
+pytest ui -v --junitxml=reports/ui-junit.xml
+```
+
+Run UI tests in headless mode:
+
+```powershell
+$env:HEADLESS = "true"
+pytest ui -v --junitxml=reports/ui-junit.xml
+Remove-Item Env:HEADLESS
+```
+
+## Reports and Failure Artifacts
+
+Generated files are written under `reports/` and should not be committed.
+
+API failure diagnostics:
+
+```text
+reports/api/http-exchanges/
+```
+
+UI failure diagnostics:
+
+```text
+reports/ui/screenshots/
+reports/ui/browser-console/
+```
+
+## Expected Marker Results
+
+API smoke:
+
+```text
+5 passed, 12 deselected
+```
+
+API regression:
+
+```text
+17 passed
+```
+
+UI smoke:
+
+```text
+2 passed, 5 deselected
+```
+
+UI regression:
+
+```text
+7 passed
+```
+
+## CI
+
+GitHub Actions runs on push and pull request targeting `main` or `master`, and can also be started manually.
+
+Workflow jobs:
+
+- `API Tests`
+  - installs Python 3.11 dependencies
+  - validates required API secrets
+  - runs `pytest api -v --junitxml=reports/api-junit.xml`
+  - uploads `api-test-artifacts`
+
+- `UI Tests`
+  - installs Python 3.11 dependencies
+  - forces `HEADLESS=true`
+  - validates required UI secrets
+  - runs `pytest ui -v --junitxml=reports/ui-junit.xml`
+  - uploads `ui-test-artifacts`
+
+- `Security Scan`
+  - installs Bandit and pip-audit
+  - writes `reports/bandit-report.json`
+  - writes `reports/pip-audit-report.json`
+  - uploads `security-reports`
+  - current scan commands are report-producing and non-blocking because the workflow uses `|| true`
+
+- `CodeQL Analysis`
+  - runs on push, pull request, and a weekly Monday schedule
+  - uses the Python `security-extended` query pack
+  - uploads findings to GitHub code scanning
+
+Dependabot checks pip and GitHub Actions updates weekly.
 
 ## Security
 
-This project implements the following security measures:
+Security guidance and vulnerability reporting are documented in [SECURITY.md](./SECURITY.md).
 
-- **Dependabot:** Automatically monitors and updates dependencies and GitHub Actions.
-- **CodeQL:** Performs Static Application Security Testing (SAST) to identify potential vulnerabilities.
-- **Security Policy:** Responsible disclosure and security guidelines are defined in [SECURITY.md](./SECURITY.md).
-- **SAST & Auditing:** Bandit and pip-audit are integrated into the CI/CD pipeline.
-- **Pre-commit Hooks:** Local checks for secrets, private keys, and code quality before every commit.
+Current controls:
+
+- `.env` and generated report artifacts are ignored by Git.
+- Required secrets are validated in CI before API and UI jobs run.
+- API failure logs redact sensitive fields before writing request/response diagnostics.
+- CodeQL runs as a separate code scanning workflow.
+- Bandit and pip-audit run in the CI security scan job and upload reports.
+- Pre-commit hooks are configured for whitespace/YAML checks, large-file checks, private-key detection, Bandit, and detect-secrets.
+
+Local pre-commit hooks are not automatic until installed:
+
+```powershell
+pip install pre-commit
+pre-commit install
+```
+
+## Validation Notes
+
+- API tests depend on public demo APIs. External outages or response changes can fail otherwise correct tests.
+- UI tests depend on the live SauceDemo site and a local/CI Chrome installation.
+- Selenium Manager is expected to handle ChromeDriver for recent Selenium versions.
+- Real environment files such as `.env` must not be committed.
+- Generated reports, screenshots, logs, caches, and browser driver folders should not be committed.
+- When changing tests, clients, fixtures, or config, run the affected marker group and the full affected suite.
 
 ## Project Status
 
-
 This is a beginner-friendly but structured test automation training repository.
 
-It is intentionally small, but it demonstrates important QA automation architecture concepts:
+It demonstrates:
 
 - Layered test structure
 - Page Object Model
@@ -259,4 +326,6 @@ It is intentionally small, but it demonstrates important QA automation architect
 - Test data separation
 - Marker-based execution
 - JUnit reporting
+- Failure diagnostics
 - GitHub Actions CI
+- Basic security scanning and dependency monitoring

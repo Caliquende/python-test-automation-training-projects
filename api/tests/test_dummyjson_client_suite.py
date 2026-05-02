@@ -2,9 +2,9 @@ import pytest
 
 
 from api.data.dummyjson_payloads import (
-    LOGIN_PAYLOAD,
-    EXPECTED_USERNAME,
-    WRONG_ACCESS_TOKEN,
+    get_login_payload,
+    get_expected_username,
+    get_wrong_access_token,
     AUTH_ERROR_STATUS_CODES,
     PRODUCTS_LIMIT,
     CART_ID,
@@ -14,12 +14,28 @@ from api.data.dummyjson_payloads import (
 )
 
 
+def _assert_non_empty_string(value):
+    assert isinstance(value, str)
+    assert value.strip() != ""
+
+
+def _assert_valid_access_token(body):
+    assert "accessToken" in body
+    _assert_non_empty_string(body["accessToken"])
+
+
+def _assert_error_message_body(body):
+    assert isinstance(body, dict)
+    assert "message" in body
+    _assert_non_empty_string(body["message"])
+
+
 def _get_dummyjson_access_token(dummyjson_client):
     """
     TR: Yardımcı fonksiyon: DummyJSON'a giriş yapar ve yetkili istekler için geçerli bir access token döndürür.
     EN: Helper function: Log in to DummyJSON and return a valid access token for authorized requests.
     """
-    response = dummyjson_client.login(LOGIN_PAYLOAD)
+    response = dummyjson_client.login(get_login_payload())
 
     assert response.status_code == 200
 
@@ -28,9 +44,7 @@ def _get_dummyjson_access_token(dummyjson_client):
     # Token'ın varlığını ve formatını kontrol ediyoruz.
     # Checking for token existence and its format.
     assert isinstance(body, dict)
-    assert "accessToken" in body
-    assert isinstance(body["accessToken"], str)
-    assert body["accessToken"].strip() != ""
+    _assert_valid_access_token(body)
 
     return body["accessToken"]
 
@@ -42,24 +56,22 @@ def test_dummyjson_login_success_returns_access_and_refresh_tokens(dummyjson_cli
     TR: Başarılı bir girişin access ve refresh token döndürdüğünü doğrular.
     EN: Verify that a successful login returns access and refresh tokens.
     """
-    response = dummyjson_client.login(LOGIN_PAYLOAD)
+    login_payload = get_login_payload()
+    response = dummyjson_client.login(login_payload)
 
     assert response.status_code == 200
 
     body = response.json()
 
     assert isinstance(body, dict)
-    assert "accessToken" in body
-    assert isinstance(body["accessToken"], str)
-    assert body["accessToken"].strip() != ""
+    _assert_valid_access_token(body)
 
     # Refresh token genellikle daha uzun süreli oturumlar için kullanılır.
     # Refresh tokens are usually used for longer-lived sessions.
     assert "refreshToken" in body
-    assert isinstance(body["refreshToken"], str)
-    assert body["refreshToken"].strip() != ""
+    _assert_non_empty_string(body["refreshToken"])
 
-    assert body["username"] == LOGIN_PAYLOAD["username"]
+    assert body["username"] == login_payload["username"]
 
 
 @pytest.mark.smoke
@@ -82,10 +94,9 @@ def test_dummyjson_get_current_user_with_bearer_token_returns_200(dummyjson_clie
     body = response.json()
 
     assert isinstance(body, dict)
-    assert body["username"] == EXPECTED_USERNAME
+    assert body["username"] == get_expected_username()
     assert "email" in body
-    assert isinstance(body["email"], str)
-    assert body["email"].strip() != ""
+    _assert_non_empty_string(body["email"])
 
 
 @pytest.mark.regression
@@ -102,10 +113,7 @@ def test_dummyjson_get_current_user_without_bearer_token_returns_auth_error(dumm
 
     body = response.json()
 
-    assert isinstance(body, dict)
-    assert "message" in body
-    assert isinstance(body["message"], str)
-    assert body["message"].strip() != ""
+    _assert_error_message_body(body)
 
 
 @pytest.mark.regression
@@ -114,16 +122,13 @@ def test_dummyjson_get_current_user_with_wrong_bearer_token_returns_auth_error(d
     TR: Negatif Test: Yanlış bir Bearer token ile erişimin reddedildiğini doğrular.
     EN: Negative Test: Verify that the protected current user endpoint rejects an invalid Bearer token.
     """
-    response = dummyjson_client.get_current_user(WRONG_ACCESS_TOKEN)
+    response = dummyjson_client.get_current_user(get_wrong_access_token())
 
     assert response.status_code in AUTH_ERROR_STATUS_CODES
 
     body = response.json()
 
-    assert isinstance(body, dict)
-    assert "message" in body
-    assert isinstance(body["message"], str)
-    assert body["message"].strip() != ""
+    _assert_error_message_body(body)
 
 
 @pytest.mark.smoke
@@ -151,8 +156,7 @@ def test_dummyjson_get_products_returns_limited_product_list(dummyjson_client):
     assert isinstance(first_product, dict)
     assert isinstance(first_product["id"], int)
     assert first_product["id"] > 0
-    assert isinstance(first_product["title"], str)
-    assert first_product["title"].strip() != ""
+    _assert_non_empty_string(first_product["title"])
     assert isinstance(first_product["price"], (int, float))
     assert first_product["price"] > 0
 
@@ -210,8 +214,7 @@ def test_dummyjson_delete_cart_returns_deleted_marker_fields(dummyjson_client):
     # DummyJSON doesn't perform a real delete; it returns a flag indicating deletion.
     assert body["isDeleted"] is True
     assert "deletedOn" in body
-    assert isinstance(body["deletedOn"], str)
-    assert body["deletedOn"].strip() != ""
+    _assert_non_empty_string(body["deletedOn"])
 
 @pytest.mark.regression
 def test_dummyjson_delete_cart_returns_404_for_non_existing_cart(dummyjson_client):
@@ -224,7 +227,4 @@ def test_dummyjson_delete_cart_returns_404_for_non_existing_cart(dummyjson_clien
     assert response.status_code == 404
 
     body = response.json()
-    assert isinstance(body, dict)
-    assert "message" in body
-    assert isinstance(body["message"], str)
-    assert body["message"].strip() != ""
+    _assert_error_message_body(body)

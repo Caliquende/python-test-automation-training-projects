@@ -10,9 +10,12 @@ The goal of this project is not only to write UI tests, but also to practice a m
 - Selenium WebDriver
 - Pytest
 - Page Object Model
+- BasePage abstraction
 - Pytest markers
+- Headless mode through `HEADLESS=true`
 - Screenshot capture on failed UI tests
 - Browser console logging on failed UI tests
+- GitHub Actions CI
 
 ## Project Structure
 
@@ -25,6 +28,7 @@ The goal of this project is not only to write UI tests, but also to practice a m
   - `ui_texts.py` — Expected UI texts and URL parts
 
 - `pages/`
+  - `base_page.py` — Shared wait, click, type, text, and navigation helpers
   - `login_page.py` — Login page locators and actions
   - `inventory_page.py` — Inventory page locators and actions
   - `cart_page.py` — Cart page locators and actions
@@ -105,28 +109,30 @@ The real `.env` file is ignored by Git. CI must receive these values through Git
 
 ## Running Tests
 
+Run these commands from the repository root. This avoids confusion from the UI-specific `pytest.ini` when invoking pytest from inside `ui/`.
+
 From the repository root, run the UI suite:
 
 ```bash
-pytest projects/ui -v
+pytest ui -v
 ```
 
 Run only smoke tests:
 
 ```bash
-pytest projects/ui -m smoke -v
+pytest ui -m smoke -v
 ```
 
 Run regression tests:
 
 ```bash
-pytest projects/ui -m regression -v
+pytest ui -m regression -v
 ```
 
 Run a specific UI test file:
 
 ```bash
-pytest projects/ui/tests/test_mini_project_core.py -v
+pytest ui/tests/test_mini_project_core.py -v
 ```
 
 Run all tests from the full workspace:
@@ -156,7 +162,7 @@ The project uses the following markers:
 Example:
 
 ```bash
-pytest projects/ui -m smoke -v
+pytest ui -m smoke -v
 ```
 
 ## Current Test Cases
@@ -173,28 +179,36 @@ pytest projects/ui -m smoke -v
 - `test_adding_two_products_updates_cart_badge_to_two`
   - Verifies that adding two products updates the cart badge count correctly
 
+- `test_user_can_add_backpack_to_cart_and_remove_it_from_cart`
+  - Verifies that an item added to the cart can be removed from the cart page
+
+- `test_user_can_add_backpack_to_cart_and_checkout`
+  - Verifies that a user can proceed to checkout after adding one item
+
+- `test_user_can_add_two_items_to_cart_and_checkout`
+  - Verifies that a user can proceed to checkout with multiple items
+
 ## Current Scope
 
 This is a beginner-friendly UI automation project. It is intentionally small, but it already demonstrates important automation architecture concepts:
 
 - Page Object Model
+- BasePage abstraction
 - Shared Pytest fixtures
 - Config separation
 - Reusable test data
 - Expected value constants
 - Marker-based test execution
+- Headless browser support through configuration
+- GitHub Actions CI
 
 ## Future Improvements
 
 Planned improvements:
 
-- Add a `BasePage` class
-- Move common wait, click, type, and get text actions into `BasePage`
 - Add optional rich HTML or Allure reporting
-- Add GitHub Actions CI
 - Add more negative login scenarios
 - Add more cart and checkout flow coverage
-- Add headless browser support through configuration
 
 ## Notes
 

@@ -126,6 +126,8 @@ The real `.env` file is ignored by Git. CI must receive these values through Git
 
 ## Running Tests
 
+Run these commands from the repository root. This avoids confusion from the API-specific `pytest.ini` when invoking pytest from inside `api/`.
+
 From the repository root, run the full API suite:
 
     pytest api -v

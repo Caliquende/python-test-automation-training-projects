@@ -12,6 +12,16 @@ from api.data.jsonplaceholder_payloads import (
 )
 
 
+def _assert_non_empty_string(value):
+    assert isinstance(value, str)
+    assert value.strip() != ""
+
+
+def _assert_empty_dict(body):
+    assert isinstance(body, dict)
+    assert len(body) == 0
+
+
 @pytest.mark.smoke
 @pytest.mark.regression
 def test_jsonplaceholder_get_single_post_returns_expected_fields(jsonplaceholder_client):
@@ -41,10 +51,8 @@ def test_jsonplaceholder_get_single_post_returns_expected_fields(jsonplaceholder
     assert isinstance(body["id"], int)
     assert body["userId"] == USER_ID
     assert isinstance(body["userId"], int)
-    assert isinstance(body["title"], str)
-    assert body["title"].strip() != ""
-    assert isinstance(body["body"], str)
-    assert body["body"].strip() != ""
+    _assert_non_empty_string(body["title"])
+    _assert_non_empty_string(body["body"])
 
 
 @pytest.mark.smoke
@@ -71,12 +79,9 @@ def test_jsonplaceholder_get_users_returns_non_empty_list(jsonplaceholder_client
     first_user = body[0]
 
     assert isinstance(first_user, dict)
-    assert isinstance(first_user["email"], str)
-    assert first_user["email"].strip() != ""
-    assert isinstance(first_user["username"], str)
-    assert first_user["username"].strip() != ""
-    assert isinstance(first_user["name"], str)
-    assert first_user["name"].strip() != ""
+    _assert_non_empty_string(first_user["email"])
+    _assert_non_empty_string(first_user["username"])
+    _assert_non_empty_string(first_user["name"])
 
 
 @pytest.mark.regression
@@ -145,8 +150,7 @@ def test_jsonplaceholder_delete_post_returns_200_and_empty_body(jsonplaceholder_
 
     # JSONPlaceholder silme işleminden sonra boş bir nesne döndürür.
     # JSONPlaceholder returns an empty object after a successful deletion.
-    assert isinstance(body, dict)
-    assert len(body) == 0
+    _assert_empty_dict(body)
 
 
 @pytest.mark.regression
@@ -156,18 +160,13 @@ def test_jsonplaceholder_get_post_returns_404_for_non_existing_post(jsonplacehol
     
     EN: Verify that attempting to retrieve a non-existent post returns 404.
     """
-    # DELETE isteği ile kaynağı siliyoruz.
-    # Deleting the resource using a DELETE request.
-    response = jsonplaceholder_client.delete_post(POST_ID)
+    response = jsonplaceholder_client.get_post(NON_EXISTENT_POST_ID)
 
-    assert response.status_code == 200
+    assert response.status_code == 404
 
     body = response.json()
+    _assert_empty_dict(body)
 
-    # JSONPlaceholder silme işleminden sonra boş bir nesne döndürür.
-    # JSONPlaceholder returns an empty object after a successful deletion.
-    assert isinstance(body, dict)
-    assert len(body) == 0
 
 @pytest.mark.regression
 def test_jsonplaceholder_update_non_existing_post_returns_404(jsonplaceholder_client):
@@ -188,8 +187,8 @@ def test_jsonplaceholder_update_non_existing_post_returns_404(jsonplaceholder_cl
     # Only validate JSON if not a 500 error, as mock APIs often return plain text for 500s.
     if response.status_code == 404:
         body = response.json()
-        assert isinstance(body, dict)
-        assert len(body) == 0
+        _assert_empty_dict(body)
+
 
 @pytest.mark.regression
 def test_jsonplaceholder_get_non_existing_post_returns_404(jsonplaceholder_client):
@@ -206,8 +205,8 @@ def test_jsonplaceholder_get_non_existing_post_returns_404(jsonplaceholder_clien
 
     # JSONPlaceholder silme işleminden sonra boş bir nesne döndürür.
     # JSONPlaceholder returns an empty object after a successful deletion.
-    assert isinstance(body, dict)
-    assert len(body) == 0
+    _assert_empty_dict(body)
+
 
 @pytest.mark.regression
 def test_jsonplaceholder_get_comments_returns_200(jsonplaceholder_client):

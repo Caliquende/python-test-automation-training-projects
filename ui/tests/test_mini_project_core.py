@@ -2,7 +2,7 @@ import pytest
 
 # Test verilerini ve sabitleri içe aktarıyoruz.
 # Importing test data and constants.
-from ui.data.users import STANDARD_USER
+from ui.data.users import get_standard_user
 from ui.data.products import (
     SAUCE_LABS_BACKPACK,
     EXPECTED_PRODUCT_COUNT,
@@ -24,13 +24,15 @@ def _login_as_standard_user(login_page, inventory_page):
     TR: Standart kullanıcı ile giriş yapar. 
     EN: Performs a standard user login. 
     """
+    standard_user = get_standard_user()
+
     login_page.open()
-    login_page.login(STANDARD_USER["username"], STANDARD_USER["password"])
+    login_page.login(standard_user["username"], standard_user["password"])
 
 
 @pytest.mark.smoke
 @pytest.mark.regression
-def test_logged_in_user_sees_product_list(driver, login_page, inventory_page):
+def test_logged_in_user_sees_product_list(login_page, inventory_page):
     """
     TR: Standart kullanıcının giriş yapıp ürün listesini gördüğünü doğrular.
     EN: Verify that a standard user can log in and see the product list.
@@ -39,12 +41,12 @@ def test_logged_in_user_sees_product_list(driver, login_page, inventory_page):
 
     assert inventory_page.get_title_text() == PRODUCTS_PAGE_TITLE
     assert inventory_page.get_product_count() == EXPECTED_PRODUCT_COUNT
-    assert INVENTORY_URL_PART in driver.current_url
+    assert INVENTORY_URL_PART in inventory_page.get_current_url()
 
 
 @pytest.mark.smoke
 @pytest.mark.regression
-def test_user_can_open_cart_after_login(driver, login_page, inventory_page, cart_page):
+def test_user_can_open_cart_after_login(login_page, inventory_page, cart_page):
     """
     TR: Giriş yapmış kullanıcının alışveriş sepetine gidebildiğini doğrular.
     EN: Verify that a logged-in user can navigate to the shopping cart page.
@@ -56,7 +58,7 @@ def test_user_can_open_cart_after_login(driver, login_page, inventory_page, cart
     inventory_page.go_to_cart()
 
     assert cart_page.get_title_text() == CART_PAGE_TITLE
-    assert CART_URL_PART in driver.current_url
+    assert CART_URL_PART in cart_page.get_current_url()
 
 
 @pytest.mark.regression
@@ -122,7 +124,7 @@ def test_user_can_add_backpack_to_cart_and_remove_it_from_cart(login_page, inven
 
 
 @pytest.mark.regression
-def test_user_can_add_backpack_to_cart_and_checkout(driver, login_page, inventory_page, cart_page):
+def test_user_can_add_backpack_to_cart_and_checkout(login_page, inventory_page, cart_page):
     """
     TR: Ürün ekledikten sonra ödeme (checkout) sayfasına ilerlenebildiğini doğrular.
     EN: Verify that a user can proceed to the checkout page after adding an item.
@@ -139,11 +141,11 @@ def test_user_can_add_backpack_to_cart_and_checkout(driver, login_page, inventor
     cart_page.checkout(expected_url_part=CHECKOUT_STEP_ONE_URL_PART)
 
     assert cart_page.get_title_text() == CHECKOUT_STEP_ONE_TITLE
-    assert CHECKOUT_STEP_ONE_URL_PART in driver.current_url
+    assert CHECKOUT_STEP_ONE_URL_PART in cart_page.get_current_url()
 
 
 @pytest.mark.regression
-def test_user_can_add_two_items_to_cart_and_checkout(driver, login_page, inventory_page, cart_page):
+def test_user_can_add_two_items_to_cart_and_checkout(login_page, inventory_page, cart_page):
     """
     TR: İki ürün ekledikten sonra ödeme sayfasına ilerlenebildiğini doğrular.
     EN: Verify that a user can proceed to checkout with multiple items in the cart.
@@ -159,4 +161,4 @@ def test_user_can_add_two_items_to_cart_and_checkout(driver, login_page, invento
     cart_page.checkout(expected_url_part=CHECKOUT_STEP_ONE_URL_PART)
 
     assert cart_page.get_title_text() == CHECKOUT_STEP_ONE_TITLE
-    assert CHECKOUT_STEP_ONE_URL_PART in driver.current_url
+    assert CHECKOUT_STEP_ONE_URL_PART in cart_page.get_current_url()
