@@ -1,0 +1,18 @@
+{
+    "id": "6f26a39d-70d5-4927-b716-0d93c7dc628d",
+    "name": "training-api",
+    "values": [
+        {
+            "key": "jsonplaceholder_base_url",
+            "value": "https://jsonplaceholder.typicode.com",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "dummyjson_base_url",
+            "value": "https://dummyjson.com",
+            "enabled": true,
+            "type": "default"
+        }
+    ]
+}

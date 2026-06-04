@@ -254,6 +254,24 @@ UI regression:
 
 GitHub Actions runs on push and pull request targeting `main` or `master`, and can also be started manually.
 
+### Newman CI
+
+The Newman CI workflow runs the Postman collection in `newman-practice/` on push, pull request, and manual dispatch. It writes HTML and JUnit reports to `reports/newman-report.html` and `reports/newman-report.xml`, and uploads those files as the `newman-reports` artifact with `if: always()` so reports are still uploaded after failures.
+
+Workflow path:
+
+```text
+.github/workflows/newman-ci.yml
+```
+
+Local Windows PowerShell command:
+
+```powershell
+newman run ".\newman-practice\collection\collection.json" -e ".\newman-practice\environment\environment.json" -r "cli,html,junit" --reporter-html-export ".\reports\newman-report.html" --reporter-junit-export ".\reports\newman-report.xml"
+```
+
+Public fake API base URLs used for Newman CI do not require GitHub Secrets. Real API keys, tokens, cookies, internal URLs, and customer data must not be committed.
+
 Workflow jobs:
 
 - `API Tests`

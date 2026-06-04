@@ -1,42 +1,58 @@
 # Python cache
+
 __pycache__/
 *.py[cod]
 *$py.class
 
 # Pytest cache
+
 .pytest_cache/
 
 # Virtual environments
+
 .venv/
 venv/
 env/
 
+# Environment files
+
+.env
+.env.*
+!.env.example
+
 # Test reports and failure artifacts
+
 reports/*
 !reports/.gitkeep
-reports/**/*.xml
-reports/**/*.json
-reports/**/*.log
-reports/**/*.png
-reports/**/screenshots/
-reports/**/browser-console/
-reports/**/http-exchanges/
-chromedriver/
 
 # Coverage
+
 .coverage
 htmlcov/
 coverage.xml
 
+# Browser drivers
+
+chromedriver/
+
+# Node / Newman local installs
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Postman local workspace files
+
+.postman/
+postman/
+
 # IDE / editor
+
 .vscode/
 .idea/
 
 # OS files
+
 .DS_Store
 Thumbs.db
-
-# Environment files
-.env
-.env.*
-!.env.example

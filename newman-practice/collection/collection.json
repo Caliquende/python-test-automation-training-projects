@@ -1,0 +1,361 @@
+{
+    "info": {
+        "_postman_id": "a507cab0-fe03-42dc-887c-5899752ad6f4",
+        "name": "Python Test Automation Training API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "55201556",
+        "_collection_link": "https://go.postman.co/collection/55201556-a507cab0-fe03-42dc-887c-5899752ad6f4?source=collection_link"
+    },
+    "item": [
+        {
+            "name": "JSONPlaceholder",
+            "item": [
+                {
+                    "name": "Positive Scenarios",
+                    "item": [
+                        {
+                            "name": "GET All Posts",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{jsonplaceholder_base_url}}/posts",
+                                    "host": [
+                                        "{{jsonplaceholder_base_url}}"
+                                    ],
+                                    "path": [
+                                        "posts"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "GET Single Post",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Post id is 20\", function () {\r\n    pm.expect(jsonData.id).to.equal(20);\r\n});\r\n\r\npm.test(\"Response body object fields\", function () {\r\n    pm.expect(jsonData).to.have.property('id');\r\n    pm.expect(jsonData).to.have.property('title');\r\n    pm.expect(jsonData).to.have.property('body');\r\n    pm.expect(jsonData).to.have.property('userId');\r\n});\r\n\r\npm.test(\"Response body is object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{jsonplaceholder_base_url}}/posts/20",
+                                    "host": [
+                                        "{{jsonplaceholder_base_url}}"
+                                    ],
+                                    "path": [
+                                        "posts",
+                                        "20"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "POST Create Post",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst jsonData = pm.response.json();\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Created post has an id\", function () {\r\n    pm.expect(jsonData).to.have.property(\"id\").that.is.a(\"number\");\r\n});\r\n\r\npm.test(\"Created post title is correct\", function () {\r\n    pm.expect(jsonData.title).to.eql(\"Junior QA Postman Practice\");\r\n});\r\n\r\npm.test(\"Created post body is correct\", function () {\r\n    pm.expect(jsonData.body).to.eql(\"This request was created during Postman practice.\");\r\n});\r\n\r\npm.test(\"Created post userId is correct\", function () {\r\n    pm.expect(jsonData.userId).to.eql(1);\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n  \"title\": \"Junior QA Postman Practice\",\r\n  \"body\": \"This request was created during Postman practice.\",\r\n  \"userId\": 1\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{jsonplaceholder_base_url}}/posts",
+                                    "host": [
+                                        "{{jsonplaceholder_base_url}}"
+                                    ],
+                                    "path": [
+                                        "posts"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Negative Scenarios",
+                    "item": [
+                        {
+                            "name": "GET Non Existing Post",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Response body is an empty object\", function () {\r\n    pm.expect(Object.keys(jsonData).length).to.eql(0);\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{jsonplaceholder_base_url}}/posts/999999",
+                                    "host": [
+                                        "{{jsonplaceholder_base_url}}"
+                                    ],
+                                    "path": [
+                                        "posts",
+                                        "999999"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "GET Wrong Endpoint",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Response body is an empty object\", function () {\r\n    pm.expect(Object.keys(jsonData).length).to.eql(0);\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{jsonplaceholder_base_url}}/wrong-endpoint",
+                                    "host": [
+                                        "{{jsonplaceholder_base_url}}"
+                                    ],
+                                    "path": [
+                                        "wrong-endpoint"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "DummyJSON",
+            "item": [
+                {
+                    "name": "Positive Scenarios",
+                    "item": [
+                        {
+                            "name": "GET All Products",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Body object type is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Body has a products array\", function () {\r\n    pm.expect(jsonData).to.have.property(\"products\").that.is.an(\"array\");\r\n});\r\n\r\npm.test(\"Body has numeric pagination fields\", function () {\r\n    pm.expect(jsonData).to.have.property(\"total\").that.is.a(\"number\");\r\n    pm.expect(jsonData).to.have.property(\"skip\").that.is.a(\"number\");\r\n    pm.expect(jsonData).to.have.property(\"limit\").that.is.a(\"number\");\r\n});\r\n\r\npm.test(\"Products count should match limit value\", function () {\r\n    pm.expect(jsonData.products.length).to.be.at.most(jsonData.limit);\r\n});\r\n\r\npm.test (\"Is header formatted as Json\", function () {\r\n    const contentType = pm.response.headers.get(\"Content-Type\");\r\n    pm.expect(contentType).to.include(\"application/json; charset=utf-8\");\r\n});\r\n\r\npm.test(\"Is response time less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{dummyjson_base_url}}/products",
+                                    "host": [
+                                        "{{dummyjson_base_url}}"
+                                    ],
+                                    "path": [
+                                        "products"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "GET Single Product",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status Code is 200\" , function (){\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Body object type is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Body object id is 1\", function () {\r\n    pm.expect(jsonData).to.have.property(\"id\").that.equals(1);\r\n});\r\n\r\npm.test(\"Body has title field\", function () {\r\n    pm.expect(jsonData).to.have.property(\"title\")\r\n});\r\n\r\npm.test(\"Body has price field\", function () {\r\n    pm.expect(jsonData).to.have.property(\"price\")\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{dummyjson_base_url}}/products/1",
+                                    "host": [
+                                        "{{dummyjson_base_url}}"
+                                    ],
+                                    "path": [
+                                        "products",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "POST Add Product",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status Code is 201\" , function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Body is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Product Title is 'Junior QA Test Product'\" , function () {\r\n    pm.expect(jsonData.title).to.eql(\"Junior QA Test Product\");\r\n});\r\n\r\npm.test(\"Product ID is generated as a number\", function () {\r\n    pm.expect(jsonData).to.have.property(\"id\").that.is.a(\"number\");\r\n});\r\n\r\npm.test(\"Price is 199\" , function () {\r\n    pm.expect(jsonData.price).to.eql(199);\r\n});\r\n\r\npm.test(\"Description is correct\" , function () {\r\n    pm.expect(jsonData.description).to.eql(\"Created from Postman practice\");\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\r\n  \"title\": \"Junior QA Test Product\",\r\n  \"price\": 199,\r\n  \"description\": \"Created from Postman practice\"\r\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{dummyjson_base_url}}/products/add",
+                                    "host": [
+                                        "{{dummyjson_base_url}}"
+                                    ],
+                                    "path": [
+                                        "products",
+                                        "add"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Negative Scenarios",
+                    "item": [
+                        {
+                            "name": "GET Non Existing Product",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const jsonData = pm.response.json();\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Body is an object\", function () {\r\n    pm.expect(jsonData).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Error message says product was not found\", function () {\r\n    pm.expect(jsonData).to.have.property(\"message\");\r\n    pm.expect(jsonData.message).to.include(\"not found\");\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{dummyjson_base_url}}/products/999999",
+                                    "host": [
+                                        "{{dummyjson_base_url}}"
+                                    ],
+                                    "path": [
+                                        "products",
+                                        "999999"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "GET Wrong Product Endpoint",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "type": "text/javascript",
+                                        "exec": [
+                                            "const responseText = pm.response.text();\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Response body is HTML page\", function () {\r\n    pm.expect(responseText).to.include(\"<!DOCTYPE html>\");\r\n});\r\n\r\npm.test(\"Page says not found\", function () {\r\n    pm.expect(responseText.toLowerCase()).to.include(\"not found\");\r\n});"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{dummyjson_base_url}}/productssss",
+                                    "host": [
+                                        "{{dummyjson_base_url}}"
+                                    ],
+                                    "path": [
+                                        "productssss"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "responseId",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
