@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
-from ui.config.settings import BASE_URL
-from ui.pages.base_page import BasePage
+from ui.selenium_pytest.config.settings import BASE_URL
+from ui.selenium_pytest.pages.base_page import BasePage
 
 
 class LoginPage(BasePage):

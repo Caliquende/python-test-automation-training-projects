@@ -2,14 +2,14 @@ import pytest
 
 # Test verilerini ve sabitleri içe aktarıyoruz.
 # Importing test data and constants.
-from ui.data.users import get_standard_user
-from ui.data.products import (
+from ui.selenium_pytest.data.users import get_standard_user
+from ui.selenium_pytest.data.products import (
     SAUCE_LABS_BACKPACK,
     EXPECTED_PRODUCT_COUNT,
     CART_BADGE_ONE_ITEM,
     CART_BADGE_TWO_ITEMS,
 )
-from ui.data.ui_texts import (
+from ui.selenium_pytest.data.ui_texts import (
     PRODUCTS_PAGE_TITLE,
     CART_PAGE_TITLE,
     CHECKOUT_STEP_ONE_TITLE,

@@ -1,474 +1,152 @@
 # Python Test Automation Training Projects
 
-This repository is a compact Python test automation training workspace with three focused areas:
+Structured junior-level QA automation practice repository.
 
-1. API automation for public demo APIs using Pytest, Requests, reusable clients, separated config, reusable payloads, markers, JUnit reports, and failure diagnostics.
-2. UI automation for SauceDemo using Selenium WebDriver, Pytest, Page Object Model, shared fixtures, separated config, reusable test data, markers, JUnit reports, and failure diagnostics.
-3. Postman/Newman API collection execution with environment variables, positive and negative scenarios, CLI/HTML/JUnit reports, GitHub Actions CI, and uploaded report artifacts.
+This repository contains small API, UI, and Postman/Newman automation examples. It is intended for learning and portfolio practice, not as a production-scale test framework.
 
-The repository is intentionally small. Its purpose is to practice maintainable automation structure, CI execution, reporting, and QA-oriented test validation, not to provide a production-scale test framework.
-
-## Tech Stack
-
-* Python
-* Pytest
-* Requests
-* Selenium WebDriver
-* Page Object Model
-* API client layer
-* Postman
-* Newman
-* HTML reports
-* JUnit XML reporting
-* GitHub Actions CI
-* GitHub Actions artifacts
-* CodeQL, Bandit, pip-audit, Dependabot, and pre-commit security checks
-
-## Repository Structure
-
-* `api/`
-
-  * `clients/` - API client classes and shared HTTP request logic
-  * `config/` - API base URLs and timeout configuration
-  * `data/` - reusable API payloads and expected values
-  * `tests/` - API test scenarios
-  * `pytest.ini` - API-specific Pytest configuration
-  * `README.md` - API track documentation
-
-* `ui/`
-
-  * `config/` - UI base URL, timeout, and headless configuration
-  * `data/` - test users, expected UI texts, and product data
-  * `pages/` - Page Object Model classes and BasePage abstraction
-  * `tests/` - UI test scenarios
-  * `conftest.py` - shared WebDriver and page object fixtures
-  * `pytest.ini` - UI-specific Pytest configuration
-  * `README.md` - UI track documentation
-
-* `newman-practice/`
-
-  * `collection/` - exported Postman collection JSON
-  * `environment/` - exported Postman environment JSON for public demo API base URLs
-
-* `reports/`
-
-  * local JUnit XML reports, Newman reports, screenshots, logs, and failure artifacts
-  * ignored by Git except for `reports/.gitkeep`
-
-* `.github/workflows/`
-
-  * API tests, UI tests, Newman API tests, security scan, and CodeQL workflows
-
-* `.github/dependabot.yml`
-
-  * weekly pip and GitHub Actions dependency update checks
-
-* `.pre-commit-config.yaml`
-
-  * local commit-time quality and security hooks
-
-* `.env.example`
-
-  * example environment variables for local test credentials and test values
-
-* `env_loader.py`
-
-  * lightweight root `.env` loader used by config/test data modules
-
-## Covered Areas
-
-### API Automation
-
-The API track covers:
-
-* JSONPlaceholder
-* DummyJSON
-
-Main concepts:
-
-* API client layer
-* Shared base client
-* Config separation
-* Reusable payloads and expected values
-* Authenticated and unauthenticated requests
-* Positive and negative API checks
-* Smoke and regression markers
-* JUnit XML reports
-* Failed request/response logging with sensitive field redaction
-
-Expected current result:
+## Structure
 
 ```text
-17 passed
+api/
+  pytest/
+    clients/
+    config/
+    data/
+    tests/
+    conftest.py
+    pytest.ini
+    README.md
+  newman/
+    collection/
+      collection.json
+    environment/
+      environment.json
+    README.md
+ui/
+  selenium_pytest/
+    config/
+    data/
+    pages/
+    tests/
+    conftest.py
+    pytest.ini
+    README.md
+  playwright_pytest/
+    README.md
+    .gitkeep
+reports/
+  .gitkeep
+.github/workflows/
 ```
 
-### UI Automation
+## Active Practice Areas
 
-The UI track covers SauceDemo browser flows.
+* API automation with Python, Pytest, and Requests under `api/pytest/`.
+* API collection execution with exported Postman files and Newman under `api/newman/`.
+* UI automation with Selenium and Pytest under `ui/selenium_pytest/`.
+* Future Playwright/Pytest placeholder under `ui/playwright_pytest/`.
 
-Main concepts:
+## Local Setup
 
-* Selenium WebDriver
-* Pytest fixtures
-* Page Object Model
-* BasePage abstraction
-* Config separation
-* Reusable users, products, and UI text constants
-* Headless browser execution through `HEADLESS=true`
-* Explicit waits and UI state validation
-* Smoke and regression markers
-* JUnit XML reports
-* Failure screenshots and browser console logs
-
-Expected current result:
-
-```text
-7 passed
-```
-
-### Postman and Newman API Checks
-
-The Postman/Newman track covers public demo API scenarios from an exported Postman collection.
-
-The Newman collection is stored under:
-
-```text
-newman-practice/
-```
-
-Main concepts:
-
-* Postman collection structure
-* Postman environment variables
-* Public demo API base URL separation
-* Positive API scenarios
-* Negative API scenarios
-* Status code validation
-* Response body validation
-* Response type checks
-* Header and response time checks
-* Newman CLI execution
-* HTML report generation
-* JUnit XML report generation
-* GitHub Actions CI execution
-* Uploaded CI report artifacts
-
-Current Newman scope:
-
-```text
-10 requests
-10 test scripts
-40 assertions
-0 failed
-```
-
-## Setup
-
-Create and activate a virtual environment:
-
-```powershell
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-Install dependencies:
+Install Python dependencies:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-Create a local environment file:
+Create a local environment file if you want to run the Python API/UI suites with local values:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Then fill the values in `.env`. The real `.env` file is ignored by Git and must not be committed.
+The real `.env` file is ignored by Git.
 
-Required local and CI values for the Python API/UI suites:
-
-* `SAUCEDEMO_STANDARD_USERNAME`
-* `SAUCEDEMO_STANDARD_PASSWORD`
-* `JSONPLACEHOLDER_USER_ID`
-* `DUMMYJSON_USERNAME`
-* `DUMMYJSON_PASSWORD`
-* `DUMMYJSON_EXPECTED_USERNAME`
-* `DUMMYJSON_WRONG_ACCESS_TOKEN`
-
-The Newman collection uses public fake API base URLs from the exported Postman environment file and does not require GitHub Secrets.
-
-## Running Tests
-
-Run these commands from the repository root. The repo also contains API/UI-specific `pytest.ini` files, so using the root commands keeps collection behavior predictable.
-
-Run the full Python test suite from the repository root:
+## Run API Pytest Suite
 
 ```powershell
-pytest
+pytest api/pytest -v
 ```
 
-Run the full API suite:
+JUnit report:
 
 ```powershell
-pytest api -v
+pytest api/pytest -v --junitxml=reports/api-junit.xml
 ```
 
-Run API smoke tests:
+## Run Selenium Pytest UI Suite
 
 ```powershell
-pytest api -m smoke -v
+pytest ui/selenium_pytest -v
 ```
 
-Run API regression tests:
+JUnit report:
 
 ```powershell
-pytest api -m regression -v
+pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
 ```
 
-Generate the API JUnit XML report:
+Set `HEADLESS=true` for headless UI execution.
 
-```powershell
-pytest api -v --junitxml=reports/api-junit.xml
-```
-
-Run the full UI suite:
-
-```powershell
-pytest ui -v
-```
-
-Run UI smoke tests:
-
-```powershell
-pytest ui -m smoke -v
-```
-
-Run UI regression tests:
-
-```powershell
-pytest ui -m regression -v
-```
-
-Generate the UI JUnit XML report:
-
-```powershell
-pytest ui -v --junitxml=reports/ui-junit.xml
-```
-
-Run UI tests in headless mode:
-
-```powershell
-$env:HEADLESS = "true"
-pytest ui -v --junitxml=reports/ui-junit.xml
-Remove-Item Env:HEADLESS
-```
-
-## Running the Postman Collection with Newman
-
-Run the Newman collection from the repository root.
+## Run Newman Collection
 
 CLI only:
 
 ```powershell
-newman run ".\newman-practice\collection\collection.json" -e ".\newman-practice\environment\environment.json"
+newman run ".\api\newman\collection\collection.json" -e ".\api\newman\environment\environment.json"
 ```
 
-CLI and HTML report:
+CLI, HTML, and JUnit XML:
 
 ```powershell
-newman run ".\newman-practice\collection\collection.json" -e ".\newman-practice\environment\environment.json" -r "cli,html" --reporter-html-export ".\reports\newman-report.html"
+newman run ".\api\newman\collection\collection.json" -e ".\api\newman\environment\environment.json" -r "cli,html,junit" --reporter-html-export ".\reports\newman-report.html" --reporter-junit-export ".\reports\newman-report.xml"
 ```
 
-CLI and JUnit XML report:
+Generated reports are written under `reports/` and should not be committed.
 
-```powershell
-newman run ".\newman-practice\collection\collection.json" -e ".\newman-practice\environment\environment.json" -r "cli,junit" --reporter-junit-export ".\reports\newman-report.xml"
+## GitHub Actions
+
+Current workflows:
+
+* `Test Automation`: runs API Tests, UI Tests, and Security Scan jobs.
+* `Newman API Tests`: runs the exported Postman collection with Newman.
+* `CodeQL`: runs GitHub code scanning for Python.
+
+The API workflow command is:
+
+```bash
+pytest api/pytest -v --junitxml=reports/api-junit.xml
 ```
 
-CLI, HTML, and JUnit XML reports:
+The UI workflow command is:
 
-```powershell
-newman run ".\newman-practice\collection\collection.json" -e ".\newman-practice\environment\environment.json" -r "cli,html,junit" --reporter-html-export ".\reports\newman-report.html" --reporter-junit-export ".\reports\newman-report.xml"
+```bash
+pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
 ```
 
-The CLI output is useful for quick local feedback. The HTML report is useful for human review and failure triage. The JUnit XML report is useful for CI systems and test result parsing.
+The Newman workflow uses:
 
-## Reports and Failure Artifacts
+```bash
+api/newman/collection/collection.json
+api/newman/environment/environment.json
+```
 
-Generated files are written under `reports/` and should not be committed.
+## Reports
 
-API failure diagnostics:
+Generated report paths include:
 
 ```text
+reports/api-junit.xml
+reports/ui-junit.xml
+reports/newman-report.html
+reports/newman-report.xml
 reports/api/http-exchanges/
-```
-
-UI failure diagnostics:
-
-```text
 reports/ui/screenshots/
 reports/ui/browser-console/
 ```
 
-Newman reports:
+Only `reports/.gitkeep` should be committed.
 
-```text
-reports/newman-report.html
-reports/newman-report.xml
-```
+## Notes
 
-The `reports/` directory is kept in the repository with `.gitkeep`, while generated report files are ignored by Git.
-
-## Expected Marker Results
-
-API smoke:
-
-```text
-5 passed, 12 deselected
-```
-
-API regression:
-
-```text
-17 passed
-```
-
-UI smoke:
-
-```text
-2 passed, 5 deselected
-```
-
-UI regression:
-
-```text
-7 passed
-```
-
-Newman local run:
-
-```text
-10 requests
-10 test scripts
-40 assertions
-0 failed
-```
-
-## CI
-
-GitHub Actions runs on push and pull request targeting `main` or `master`, and can also be started manually.
-
-Workflow jobs:
-
-* `API Tests`
-
-  * installs Python 3.11 dependencies
-  * validates required API secrets
-  * runs `pytest api -v --junitxml=reports/api-junit.xml`
-  * uploads `api-test-artifacts`
-
-* `UI Tests`
-
-  * installs Python 3.11 dependencies
-  * forces `HEADLESS=true`
-  * validates required UI secrets
-  * runs `pytest ui -v --junitxml=reports/ui-junit.xml`
-  * uploads `ui-test-artifacts`
-
-* `Newman API Tests`
-
-  * installs Node.js 20
-  * installs Newman and `newman-reporter-html`
-  * runs the exported Postman collection from `newman-practice/`
-  * writes HTML and JUnit reports under `reports/`
-  * uploads `newman-reports` with `if: always()` so reports are still available after failures
-
-* `Security Scan`
-
-  * installs Bandit and pip-audit
-  * writes `reports/bandit-report.json`
-  * writes `reports/pip-audit-report.json`
-  * uploads `security-reports`
-  * current scan commands are report-producing and non-blocking because the workflow uses `|| true`
-
-* `CodeQL Analysis`
-
-  * runs on push, pull request, and a weekly Monday schedule
-  * uses the Python `security-extended` query pack
-  * uploads findings to GitHub code scanning
-
-Dependabot checks pip and GitHub Actions updates weekly.
-
-### Newman CI
-
-The Newman CI workflow runs the Postman collection in `newman-practice/` on push, pull request, and manual dispatch.
-
-Workflow path:
-
-```text
-.github/workflows/newman-ci.yml
-```
-
-It writes reports to:
-
-```text
-reports/newman-report.html
-reports/newman-report.xml
-```
-
-It uploads those files as the `newman-reports` artifact with `if: always()` so reports are still uploaded after failures.
-
-Public fake API base URLs used for Newman CI do not require GitHub Secrets. Real API keys, tokens, cookies, internal URLs, and customer data must not be committed.
-
-## Security
-
-Security guidance and vulnerability reporting are documented in [SECURITY.md](./SECURITY.md).
-
-Current controls:
-
-* `.env` and generated report artifacts are ignored by Git.
-* Required secrets are validated in CI before API and UI jobs run.
-* API failure logs redact sensitive fields before writing request/response diagnostics.
-* CodeQL runs as a separate code scanning workflow.
-* Bandit and pip-audit run in the CI security scan job and upload reports.
-* Pre-commit hooks are configured for whitespace/YAML checks, large-file checks, private-key detection, Bandit, and detect-secrets.
-
-Local pre-commit hooks are not automatic until installed:
-
-```powershell
-pip install pre-commit
-pre-commit install
-```
-
-## Validation Notes
-
-* API tests depend on public demo APIs. External outages or response changes can fail otherwise correct tests.
-* UI tests depend on the live SauceDemo site and a local/CI Chrome installation.
-* Newman checks depend on public demo APIs and their current response behavior.
-* Selenium Manager is expected to handle ChromeDriver for recent Selenium versions.
-* Real environment files such as `.env` must not be committed.
-* Generated reports, screenshots, logs, caches, and browser driver folders should not be committed.
-* When changing tests, clients, fixtures, config, or collection files, run the affected marker group and the full affected suite.
-
-## Project Status
-
-This is a structured junior-level QA automation practice repository.
-
-It demonstrates:
-
-* Layered test structure
-* Page Object Model
-* API client abstraction
-* Shared fixtures
-* Config separation
-* Test data separation
-* Postman collection execution with Newman
-* Marker-based execution
-* JUnit reporting
-* HTML reporting
-* Failure diagnostics
-* GitHub Actions CI
-* Report artifact handling
-* Basic security scanning and dependency monitoring
-
-It does not aim to be a production-scale test automation framework.
+The tests use public demo applications and APIs, so failures can be caused by external service changes, network issues, or missing local environment values.

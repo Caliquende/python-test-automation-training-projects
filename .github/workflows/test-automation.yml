@@ -75,9 +75,9 @@ jobs:
       - name: Run API tests with JUnit report
         run: |
           mkdir -p reports
-          # TR: api klasöründeki testleri çalıştırır ve JUnit XML raporu oluşturur.
-          # EN: Runs tests in the api folder and generates a JUnit XML report.
-          pytest api -v --junitxml=reports/api-junit.xml
+          # TR: api/pytest klasöründeki testleri çalıştırır ve JUnit XML raporu oluşturur.
+          # EN: Runs tests in the api/pytest folder and generates a JUnit XML report.
+          pytest api/pytest -v --junitxml=reports/api-junit.xml
 
       - name: Upload API JUnit report
         uses: actions/upload-artifact@v4
@@ -141,9 +141,9 @@ jobs:
       - name: Run UI tests with JUnit report
         run: |
           mkdir -p reports
-          # TR: ui klasöründeki testleri çalıştırır.
-          # EN: Runs tests in the ui folder.
-          pytest ui -v --junitxml=reports/ui-junit.xml
+          # TR: ui/selenium_pytest klasöründeki testleri çalıştırır.
+          # EN: Runs tests in the ui/selenium_pytest folder.
+          pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
 
       - name: Upload UI JUnit report
         uses: actions/upload-artifact@v4

@@ -2,7 +2,7 @@ from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from ui.config.settings import DEFAULT_TIMEOUT
+from ui.selenium_pytest.config.settings import DEFAULT_TIMEOUT
 
 
 class BasePage:

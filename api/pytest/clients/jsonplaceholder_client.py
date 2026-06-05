@@ -3,8 +3,8 @@ TR: JSONPlaceholder API uç noktaları için istemci (client).
 EN: Client for JSONPlaceholder API endpoints.
 """
 
-from api.clients.base_client import BaseClient
-from api.config.settings import JSONPLACEHOLDER_BASE_URL
+from api.pytest.clients.base_client import BaseClient
+from api.pytest.config.settings import JSONPLACEHOLDER_BASE_URL
 
 
 class JsonPlaceholderClient(BaseClient):

@@ -32,8 +32,8 @@ jobs:
 
       - name: Run Newman collection
         run: |
-          newman run newman-practice/collection/collection.json \
-            -e newman-practice/environment/environment.json \
+          newman run api/newman/collection/collection.json \
+            -e api/newman/environment/environment.json \
             -r cli,html,junit \
             --reporter-html-export reports/newman-report.html \
             --reporter-junit-export reports/newman-report.xml

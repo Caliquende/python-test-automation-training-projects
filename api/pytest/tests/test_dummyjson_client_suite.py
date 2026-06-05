@@ -1,7 +1,7 @@
 import pytest
 
 
-from api.data.dummyjson_payloads import (
+from api.pytest.data.dummyjson_payloads import (
     get_login_payload,
     get_expected_username,
     get_wrong_access_token,

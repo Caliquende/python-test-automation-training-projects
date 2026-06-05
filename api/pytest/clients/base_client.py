@@ -7,7 +7,7 @@ from copy import deepcopy
 
 import requests
 
-from api.config.settings import DEFAULT_TIMEOUT
+from api.pytest.config.settings import DEFAULT_TIMEOUT
 
 
 SENSITIVE_KEYS = {

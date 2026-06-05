@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-from ui.pages.base_page import BasePage
+from ui.selenium_pytest.pages.base_page import BasePage
 
 
 class CartPage(BasePage):

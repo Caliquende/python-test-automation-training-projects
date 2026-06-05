@@ -3,7 +3,7 @@ import pytest
 # JSONPlaceholder API istemcisini ve test verilerini içe aktarıyoruz.
 # Importing the JSONPlaceholder API client and test data.
 
-from api.data.jsonplaceholder_payloads import (
+from api.pytest.data.jsonplaceholder_payloads import (
     POST_ID,
     USER_ID,
     CREATE_POST_PAYLOAD,

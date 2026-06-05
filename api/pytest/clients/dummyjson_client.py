@@ -3,8 +3,8 @@ TR: DummyJSON API uç noktaları için istemci (client).
 EN: Client for DummyJSON API endpoints.
 """
 
-from api.clients.base_client import BaseClient
-from api.config.settings import DUMMYJSON_BASE_URL
+from api.pytest.clients.base_client import BaseClient
+from api.pytest.config.settings import DUMMYJSON_BASE_URL
 
 
 class DummyJsonClient(BaseClient):

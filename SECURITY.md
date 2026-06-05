@@ -34,7 +34,7 @@ Reports will be reviewed as soon as possible.
 * Configure CI credentials as GitHub Actions secrets.
 * Required CI secrets are validated before the API and UI jobs run.
 * API failure diagnostics redact sensitive fields before writing request/response logs.
-* The Newman collection uses public demo API base URLs and does not require GitHub Secrets.
+* The Newman collection under `api/newman/` uses public fake API base URLs and does not require GitHub Secrets.
 
 Required secret names for the Python API/UI test suites:
 

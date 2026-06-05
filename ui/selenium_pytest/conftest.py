@@ -5,10 +5,10 @@ import pytest
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 
-from ui.config.settings import HEADLESS
-from ui.pages.login_page import LoginPage
-from ui.pages.inventory_page import InventoryPage
-from ui.pages.cart_page import CartPage
+from ui.selenium_pytest.config.settings import HEADLESS
+from ui.selenium_pytest.pages.login_page import LoginPage
+from ui.selenium_pytest.pages.inventory_page import InventoryPage
+from ui.selenium_pytest.pages.cart_page import CartPage
 
 
 UI_REPORTS_DIR = Path("reports") / "ui"

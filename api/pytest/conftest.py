@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from api.clients.jsonplaceholder_client import JsonPlaceholderClient
-from api.clients.dummyjson_client import DummyJsonClient
+from api.pytest.clients.jsonplaceholder_client import JsonPlaceholderClient
+from api.pytest.clients.dummyjson_client import DummyJsonClient
 
 
 API_HTTP_LOGS_DIR = Path("reports") / "api" / "http-exchanges"
