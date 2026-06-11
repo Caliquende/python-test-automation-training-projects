@@ -91,12 +91,12 @@ jobs:
             reports/api-junit.xml
             reports/api/
 
-  ui-tests:
-    name: UI Tests
+  selenium-ui-tests:
+    name: Selenium UI Tests
     runs-on: ubuntu-latest
     env:
-      # TR: UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
-      # EN: Forces UI tests to run in headless mode.
+      # TR: Selenium UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
+      # EN: Forces Selenium UI tests to run in headless mode.
       HEADLESS: "true"
       SAUCEDEMO_STANDARD_USERNAME: ${{ secrets.SAUCEDEMO_STANDARD_USERNAME }}
       SAUCEDEMO_STANDARD_PASSWORD: ${{ secrets.SAUCEDEMO_STANDARD_PASSWORD }}
@@ -152,10 +152,12 @@ jobs:
             reports/ui-junit.xml
             reports/ui/
 
-  playwright-tests:
+  playwright-ui-tests:
     name: Playwright UI Tests
     runs-on: ubuntu-latest
     env:
+      # TR: Playwright UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
+      # EN: Forces Playwright UI tests to run in headless mode.
       SAUCEDEMO_STANDARD_USERNAME: ${{ secrets.SAUCEDEMO_STANDARD_USERNAME }}
       SAUCEDEMO_STANDARD_PASSWORD: ${{ secrets.SAUCEDEMO_STANDARD_PASSWORD }}
 
