@@ -17,5 +17,7 @@ BASE_URL = "https://www.saucedemo.com/"
 DEFAULT_TIMEOUT = 10
 
 # 'Headless' modun aktif olup olmadığını ortam değişkenlerinden (environment variables) kontrol eder.
+# Varsayılan olarak headless çalışır; headed çalışma için HEADLESS=false kullanılabilir.
 # Checks if 'Headless' mode is active from environment variables.
-HEADLESS = os.getenv("HEADLESS", "false").lower() == "true"
+# Runs headless by default; use HEADLESS=false for headed execution.
+HEADLESS = os.getenv("HEADLESS", "true").lower() == "true"

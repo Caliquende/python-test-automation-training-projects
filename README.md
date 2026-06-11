@@ -1,8 +1,18 @@
 # Python Test Automation Training Projects
 
-Structured junior-level QA automation practice repository.
+Structured QA automation practice repository for API, Selenium UI, Playwright UI, and exported Newman examples.
 
-This repository contains small API, UI, and Postman/Newman automation examples. It is intended for learning and portfolio practice, not as a production-scale test framework.
+This repository is intended for learning and portfolio practice, not as a production-scale test framework.
+
+## Documentation
+
+- [API overview](api/README.md)
+- [API Pytest suite](api/pytest/README.md)
+- [UI overview](ui/README.md)
+- [Selenium Pytest suite](ui/selenium_pytest/README.md)
+- [Playwright Pytest suite](ui/playwright_pytest/README.md)
+- [TodoMVC Playwright project](ui/playwright_pytest/todo_mvc/README.md)
+- [SauceDemo Playwright project](ui/playwright_pytest/sauce_demo/README.md)
 
 ## Structure
 
@@ -14,13 +24,10 @@ api/
     data/
     tests/
     conftest.py
-    pytest.ini
     README.md
   newman/
     collection/
-      collection.json
     environment/
-      environment.json
     README.md
 ui/
   selenium_pytest/
@@ -29,22 +36,23 @@ ui/
     pages/
     tests/
     conftest.py
-    pytest.ini
     README.md
   playwright_pytest/
+    todo_mvc/
+    sauce_demo/
     README.md
-    .gitkeep
 reports/
   .gitkeep
-.github/workflows/
+pytest.ini
+requirements.txt
 ```
 
 ## Active Practice Areas
 
-* API automation with Python, Pytest, and Requests under `api/pytest/`.
-* API collection execution with exported Postman files and Newman under `api/newman/`.
-* UI automation with Selenium and Pytest under `ui/selenium_pytest/`.
-* Future Playwright/Pytest placeholder under `ui/playwright_pytest/`.
+- API automation with Python, Pytest, and Requests under `api/pytest/`
+- API collection execution with exported Postman files and Newman under `api/newman/`
+- UI automation with Selenium and Pytest under `ui/selenium_pytest/`
+- UI automation with Playwright Python and Pytest under `ui/playwright_pytest/`
 
 ## Local Setup
 
@@ -54,7 +62,13 @@ Install Python dependencies:
 pip install -r requirements.txt
 ```
 
-Create a local environment file if you want to run the Python API/UI suites with local values:
+Install Playwright browsers when needed:
+
+```powershell
+playwright install
+```
+
+Create a local environment file for environment-backed API and UI test data:
 
 ```powershell
 Copy-Item .env.example .env
@@ -62,73 +76,58 @@ Copy-Item .env.example .env
 
 The real `.env` file is ignored by Git.
 
-## Run API Pytest Suite
+## Run Tests
+
+Run all Pytest tests from the repository root:
 
 ```powershell
-pytest api/pytest -v
+pytest
 ```
 
-JUnit report:
+Run API Pytest tests:
 
 ```powershell
-pytest api/pytest -v --junitxml=reports/api-junit.xml
+pytest api/pytest/tests
 ```
 
-## Run Selenium Pytest UI Suite
+Run Selenium UI tests:
 
 ```powershell
-pytest ui/selenium_pytest -v
+pytest ui/selenium_pytest/tests
 ```
 
-JUnit report:
+Run Playwright UI tests:
 
 ```powershell
-pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
+pytest ui/playwright_pytest
 ```
 
-Set `HEADLESS=true` for headless UI execution.
+Run Playwright tests headed:
 
-## Run Newman Collection
+```powershell
+pytest ui/playwright_pytest --headed
+```
 
-CLI only:
+## Markers
+
+The root `pytest.ini` defines:
+
+- `smoke`
+- `regression`
+
+Examples:
+
+```powershell
+pytest -m smoke
+pytest -m regression
+```
+
+## Newman Collection
+
+The Newman assets are under `api/newman/`. Run them from the repository root when Newman is installed:
 
 ```powershell
 newman run ".\api\newman\collection\collection.json" -e ".\api\newman\environment\environment.json"
-```
-
-CLI, HTML, and JUnit XML:
-
-```powershell
-newman run ".\api\newman\collection\collection.json" -e ".\api\newman\environment\environment.json" -r "cli,html,junit" --reporter-html-export ".\reports\newman-report.html" --reporter-junit-export ".\reports\newman-report.xml"
-```
-
-Generated reports are written under `reports/` and should not be committed.
-
-## GitHub Actions
-
-Current workflows:
-
-* `Test Automation`: runs API Tests, UI Tests, and Security Scan jobs.
-* `Newman API Tests`: runs the exported Postman collection with Newman.
-* `CodeQL`: runs GitHub code scanning for Python.
-
-The API workflow command is:
-
-```bash
-pytest api/pytest -v --junitxml=reports/api-junit.xml
-```
-
-The UI workflow command is:
-
-```bash
-pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
-```
-
-The Newman workflow uses:
-
-```bash
-api/newman/collection/collection.json
-api/newman/environment/environment.json
 ```
 
 ## Reports
@@ -149,4 +148,4 @@ Only `reports/.gitkeep` should be committed.
 
 ## Notes
 
-The tests use public demo applications and APIs, so failures can be caused by external service changes, network issues, or missing local environment values.
+The tests use public demo applications and APIs. Failures can be caused by external service changes, network issues, browser startup problems, or missing local environment values.
