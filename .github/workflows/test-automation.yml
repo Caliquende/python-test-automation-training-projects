@@ -1,5 +1,6 @@
 # TR: GitHub Actions İş Akışı - Test Otomasyonu
 # EN: GitHub Actions Workflow - Test Automation
+
 name: Test Automation
 
 on:
@@ -9,12 +10,14 @@ on:
     branches:
       - main
       - master
+
   # TR: 'main' veya 'master' branşları için Pull Request açıldığında çalışır.
   # EN: Triggers when a Pull Request is opened for 'main' or 'master' branches.
   pull_request:
     branches:
       - main
       - master
+
   # TR: Manuel olarak GitHub üzerinden çalıştırılabilmesini sağlar.
   # EN: Allows manual execution from the GitHub interface.
   workflow_dispatch:
@@ -34,10 +37,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -64,11 +67,9 @@ jobs:
               "DUMMYJSON_WRONG_ACCESS_TOKEN",
           ]
           missing = [name for name in required if not os.getenv(name)]
-
           if missing:
               print("Missing required GitHub Actions secrets: " + ", ".join(missing))
               sys.exit(1)
-
           print("Required API secrets are configured.")
           PY
 
@@ -80,7 +81,7 @@ jobs:
           pytest api/pytest -v --junitxml=reports/api-junit.xml
 
       - name: Upload API JUnit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         # TR: Testler başarısız olsa bile raporun her zaman yüklenmesini sağlar.
         # EN: Ensures the report is always uploaded even if tests fail.
         if: always()
@@ -93,7 +94,6 @@ jobs:
   ui-tests:
     name: UI Tests
     runs-on: ubuntu-latest
-
     env:
       # TR: UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
       # EN: Forces UI tests to run in headless mode.
@@ -103,10 +103,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -130,11 +130,9 @@ jobs:
               "SAUCEDEMO_STANDARD_PASSWORD",
           ]
           missing = [name for name in required if not os.getenv(name)]
-
           if missing:
               print("Missing required GitHub Actions secrets: " + ", ".join(missing))
               sys.exit(1)
-
           print("Required UI secrets are configured.")
           PY
 
@@ -146,7 +144,7 @@ jobs:
           pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
 
       - name: Upload UI JUnit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ui-test-artifacts
@@ -157,17 +155,16 @@ jobs:
   playwright-tests:
     name: Playwright UI Tests
     runs-on: ubuntu-latest
-
     env:
       SAUCEDEMO_STANDARD_USERNAME: ${{ secrets.SAUCEDEMO_STANDARD_USERNAME }}
       SAUCEDEMO_STANDARD_PASSWORD: ${{ secrets.SAUCEDEMO_STANDARD_PASSWORD }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -179,7 +176,7 @@ jobs:
           else
             pip install pytest pytest-playwright
           fi
-          playwright install --with-deps chromium
+          python -m playwright install --with-deps chromium
 
       - name: Validate Playwright UI secrets
         run: |
@@ -192,27 +189,43 @@ jobs:
               "SAUCEDEMO_STANDARD_PASSWORD",
           ]
           missing = [name for name in required if not os.getenv(name)]
-
           if missing:
               print("Missing required GitHub Actions secrets: " + ", ".join(missing))
               sys.exit(1)
-
           print("Required Playwright UI secrets are configured.")
           PY
 
-      - name: Run Playwright UI tests with JUnit report
+      - name: Run Playwright UI tests with JUnit and failure evidence
         run: |
-          mkdir -p reports
-          # TR: ui/playwright_pytest klasöründeki Playwright testlerini çalıştırır.
-          # EN: Runs Playwright tests in the ui/playwright_pytest folder.
-          pytest ui/playwright_pytest -v --junitxml=reports/playwright-ui-junit.xml
+          mkdir -p reports test-results/playwright
+          pytest \
+            ui/playwright_pytest/todo_mvc/tests \
+            ui/playwright_pytest/sauce_demo/tests \
+            -v \
+            --browser=chromium \
+            --tracing=retain-on-failure \
+            --screenshot=only-on-failure \
+            --video=off \
+            --output=test-results/playwright \
+            --junitxml=reports/playwright-ui-junit.xml
 
       - name: Upload Playwright UI JUnit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-ui-test-artifacts
           path: reports/playwright-ui-junit.xml
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload Playwright failure artifacts
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-failure-artifacts-ubuntu-chromium
+          path: test-results/playwright/
+          if-no-files-found: ignore
+          retention-days: 14
 
   # ──────────────────────────────────────────────────────────────
   # TR: Güvenlik Taraması — Bandit (statik analiz) ve pip-audit (bağımlılık CVE taraması)
@@ -224,10 +237,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -245,7 +258,7 @@ jobs:
       # EN: Scans Python code for security vulnerabilities with Bandit.
       - name: Run Bandit security scan
         run: |
-          echo "🔒 Running Bandit static security analysis..."
+          echo " Running Bandit static security analysis..."
           mkdir -p reports
           bandit -r . -f json -o reports/bandit-report.json --severity-level medium --confidence-level medium -x ./.venv,./venv,./env,./.pytest_cache || true
           bandit -r . -f screen --severity-level medium --confidence-level medium -x ./.venv,./venv,./env,./.pytest_cache || true
@@ -254,12 +267,12 @@ jobs:
       # EN: Scans installed Python packages against the CVE database with pip-audit.
       - name: Run pip-audit dependency scan
         run: |
-          echo "🔍 Running pip-audit dependency vulnerability scan..."
+          echo " Running pip-audit dependency vulnerability scan..."
           pip-audit --format json --output reports/pip-audit-report.json || true
           pip-audit || true
 
       - name: Upload security reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: security-reports
