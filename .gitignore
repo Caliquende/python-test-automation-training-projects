@@ -56,3 +56,6 @@ postman/
 
 .DS_Store
 Thumbs.db
+
+test-results/*
+!test-results/.gitkeep
