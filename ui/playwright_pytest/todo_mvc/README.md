@@ -22,6 +22,7 @@ The TodoMVC suite currently covers:
 - updating the active todo count after completing items
 - verifying filter navigation updates the URL and visible todos
 - clearing completed todos
+- controlled artifact debugging with trace, video, and screenshot capture
 
 ## Structure
 
@@ -31,6 +32,8 @@ ui/playwright_pytest/todo_mvc/
     todo_page.py
   tests/
     test_todomvc_basic.py
+  debug_artifacts/
+    trace_artifact_debugging_control_fail.py
   conftest.py
   README.md
 ```
@@ -115,6 +118,31 @@ Run regression tests:
 
 ```powershell
 pytest ui/playwright_pytest/todo_mvc/tests -m regression
+```
+
+## Trace, Video, and Screenshot Artifacts
+
+`debug_artifacts/trace_artifact_debugging_control_fail.py` is intentionally failing. It runs a real TodoMVC user flow and then uses a wrong final assertion so Playwright can produce debugging artifacts.
+
+The file is separated from the normal `tests/` folder and does not start with `test_`, so standard commands such as `pytest ui/playwright_pytest` do not collect it.
+
+Run it from the repository root:
+
+```powershell
+pytest ui/playwright_pytest/todo_mvc/debug_artifacts/trace_artifact_debugging_control_fail.py --tracing on --video on --screenshot on --output test-results
+```
+
+Expected result:
+
+- the test fails by design
+- trace, video, and screenshot artifacts are written under `test-results/`
+- generated artifacts are ignored by Git
+- this file is run directly only when artifact evidence is needed
+
+Open a generated trace archive with:
+
+```powershell
+playwright show-trace .\test-results\<trace-file>.zip
 ```
 
 The tests are part of the repository's Playwright suite and use the root `pytest.ini`.

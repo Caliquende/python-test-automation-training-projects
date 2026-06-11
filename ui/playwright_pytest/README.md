@@ -52,6 +52,15 @@ Run Playwright tests headed:
 pytest ui/playwright_pytest --headed
 ```
 
+Generate trace, video, and screenshot artifacts for the controlled failing TodoMVC debugging file:
+
+```powershell
+pytest ui/playwright_pytest/todo_mvc/debug_artifacts/trace_artifact_debugging_control_fail.py --tracing on --video on --screenshot on --output test-results
+```
+
+This command is expected to fail. It exists to create debugging artifacts under `test-results/`.
+The file is outside the normal TodoMVC `tests/` folder and does not start with `test_`, so normal Pytest discovery does not include it.
+
 Run the full repository Pytest suite:
 
 ```powershell
