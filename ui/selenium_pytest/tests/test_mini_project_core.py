@@ -77,6 +77,7 @@ def test_user_can_add_backpack_to_cart_and_see_it_in_cart(login_page, inventory_
     inventory_page.go_to_cart()
 
     assert cart_page.get_title_text() == CART_PAGE_TITLE
+    cart_page.wait_until_cart_item_count_is(1)
     assert cart_page.get_cart_item_count() == 1
     assert cart_page.get_first_cart_item_name() == SAUCE_LABS_BACKPACK
 
@@ -111,6 +112,7 @@ def test_user_can_add_backpack_to_cart_and_remove_it_from_cart(login_page, inven
 
     inventory_page.go_to_cart()
 
+    cart_page.wait_until_cart_item_count_is(1)
     assert cart_page.get_cart_item_count() == 1
 
     cart_page.remove_first_cart_item()
@@ -134,6 +136,7 @@ def test_user_can_add_backpack_to_cart_and_checkout(login_page, inventory_page, 
     inventory_page.add_backpack_to_cart()
     inventory_page.go_to_cart()
 
+    cart_page.wait_until_cart_item_count_is(1)
     assert cart_page.get_cart_item_count() == 1
 
     # TR: Checkout'a tıkla ve URL'in değişmesini bekle.
@@ -156,6 +159,7 @@ def test_user_can_add_two_items_to_cart_and_checkout(login_page, inventory_page,
     inventory_page.add_bike_light_to_cart()
     inventory_page.go_to_cart()
 
+    cart_page.wait_until_cart_item_count_is(2)
     assert cart_page.get_cart_item_count() == 2
 
     cart_page.checkout(expected_url_part=CHECKOUT_STEP_ONE_URL_PART)
