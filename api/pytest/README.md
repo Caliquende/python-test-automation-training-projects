@@ -105,3 +105,7 @@ reports/api/http-exchanges/
 ```
 
 Sensitive fields such as authorization tokens and passwords are redacted before writing logs.
+
+## CI results
+
+The [Test Automation workflow](../../.github/workflows/test-automation.yml) uploads `api-test-artifacts`, including `reports/api-junit.xml` and any generated API failure evidence. Open a completed run in [Actions](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/test-automation.yml) and download it from **Artifacts**. See the [root README](../../README.md#reports-and-failure-evidence) for access and retention details.
