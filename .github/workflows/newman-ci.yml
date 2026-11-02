@@ -24,8 +24,8 @@ jobs:
 
       - name: Install Newman and HTML reporter
         run: |
-          npm install -g newman
-          npm install -g newman-reporter-html
+          npm install -g newman@6.2.3
+          npm install -g newman-reporter-html@1.0.5
 
       - name: Create reports folder
         run: mkdir -p reports

@@ -8,6 +8,7 @@ This repository is intended for learning and portfolio practice, not as a produc
 
 * [API overview](api/README.md)
 * [API Pytest suite](api/pytest/README.md)
+* [Newman collection](api/newman/README.md)
 * [UI overview](ui/README.md)
 * [Selenium Pytest suite](ui/selenium_pytest/README.md)
 * [Playwright Pytest suite](ui/playwright_pytest/README.md)
@@ -153,6 +154,12 @@ newman run ".\api\newman\collection\collection.json" -e ".\api\newman\environmen
 
 ## GitHub Actions
 
+[![Test Automation](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/test-automation.yml/badge.svg?branch=main)](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/test-automation.yml)
+[![Newman API Tests](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/newman-ci.yml/badge.svg?branch=main)](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/newman-ci.yml)
+[![CodeQL Analysis](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/codeql.yml)
+
+The badges show the latest workflow status on `main`; open a run to inspect its jobs and commit. Example runs for the 28 October 2026 merge: [Test Automation](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/40674984557), [Newman](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/40674984563), and [CodeQL](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/40674984614).
+
 The repository uses the following workflows:
 
 * `.github/workflows/test-automation.yml`
@@ -179,6 +186,19 @@ ui/playwright_pytest/README.md
 ```
 
 ## Reports and Failure Evidence
+
+To inspect CI results, open a completed run from its workflow page or the examples above, then download an artifact from the run's **Artifacts** section. Downloading requires a GitHub account signed in with read access. Artifacts expire; availability depends on the repository's retention settings. The Playwright artifacts have a 14-day retention period.
+
+| Artifact | Contents |
+| --- | --- |
+| `api-test-artifacts` | API JUnit XML and any API failure evidence |
+| `ui-test-artifacts` | Selenium JUnit XML and any UI failure evidence |
+| `playwright-ui-test-artifacts` | Playwright JUnit XML |
+| `playwright-failure-artifacts-ubuntu-chromium` | Playwright traces and screenshots when generated on failure |
+| `newman-reports` | Newman HTML and JUnit XML |
+| `security-reports` | Bandit and pip-audit JSON reports |
+
+Failure-only artifacts can be absent from a successful run. Upload steps run even on failure, but an artifact can still be absent if no matching file was produced. The security scan is **informational**: Bandit and pip-audit exit codes are suppressed, so a green job does not establish that there are no vulnerabilities or scan errors. Inspect `security-reports` for findings.
 
 Generated output paths include:
 

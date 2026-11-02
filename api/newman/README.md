@@ -73,3 +73,7 @@ Current expected result:
 * 10 test scripts
 * 40 assertions
 * 0 failed
+
+## CI results
+
+The [Newman workflow](../../.github/workflows/newman-ci.yml) uses Node.js 20 and installs Newman 6.2.3 and the HTML reporter 1.0.5. It uploads the HTML and JUnit reports as `newman-reports`. Open a completed run in [Actions](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/newman-ci.yml) and download the artifact from **Artifacts**. See the [root README](../../README.md#reports-and-failure-evidence) for access and retention details.

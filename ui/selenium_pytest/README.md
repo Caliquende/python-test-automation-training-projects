@@ -126,3 +126,7 @@ reports/ui/browser-console/
 ```
 
 Generated report files should not be committed.
+
+## CI results
+
+The [Test Automation workflow](../../.github/workflows/test-automation.yml) uploads `ui-test-artifacts`, including `reports/ui-junit.xml` and any generated Selenium failure evidence. Open a completed run in [Actions](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/test-automation.yml) and download it from **Artifacts**. See the [root README](../../README.md#reports-and-failure-evidence) for access and retention details.
