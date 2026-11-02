@@ -27,7 +27,7 @@ jobs:
     name: API Tests
     # TR: Testlerin çalışacağı işletim sistemi (Ubuntu).
     # EN: The operating system where tests will run (Ubuntu).
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       JSONPLACEHOLDER_USER_ID: ${{ secrets.JSONPLACEHOLDER_USER_ID }}
       DUMMYJSON_USERNAME: ${{ secrets.DUMMYJSON_USERNAME }}
@@ -46,7 +46,7 @@ jobs:
 
       - name: Install API dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install pip==26.1.2
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           else
@@ -80,6 +80,10 @@ jobs:
           # EN: Runs tests in the api/pytest folder and generates a JUnit XML report.
           pytest api/pytest -v --junitxml=reports/api-junit.xml
 
+      - name: Verify API JUnit report exists
+        if: always()
+        run: test -s reports/api-junit.xml
+
       - name: Upload API JUnit report
         uses: actions/upload-artifact@v7
         # TR: Testler başarısız olsa bile raporun her zaman yüklenmesini sağlar.
@@ -90,10 +94,11 @@ jobs:
           path: |
             reports/api-junit.xml
             reports/api/
+          if-no-files-found: error
 
   selenium-ui-tests:
     name: Selenium UI Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       # TR: Selenium UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
       # EN: Forces Selenium UI tests to run in headless mode.
@@ -112,7 +117,7 @@ jobs:
 
       - name: Install UI dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install pip==26.1.2
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           else
@@ -143,6 +148,10 @@ jobs:
           # EN: Runs tests in the ui/selenium_pytest folder.
           pytest ui/selenium_pytest -v --junitxml=reports/ui-junit.xml
 
+      - name: Verify UI JUnit report exists
+        if: always()
+        run: test -s reports/ui-junit.xml
+
       - name: Upload UI JUnit report
         uses: actions/upload-artifact@v7
         if: always()
@@ -151,10 +160,11 @@ jobs:
           path: |
             reports/ui-junit.xml
             reports/ui/
+          if-no-files-found: error
 
   playwright-ui-tests:
     name: Playwright UI Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       # TR: Playwright UI testlerinin arayüzsüz (headless) modda çalışmasını zorunlu kılar.
       # EN: Forces Playwright UI tests to run in headless mode.
@@ -172,7 +182,7 @@ jobs:
 
       - name: Install Playwright dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install pip==26.1.2
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           else
@@ -211,13 +221,17 @@ jobs:
             --output=test-results/playwright \
             --junitxml=reports/playwright-ui-junit.xml
 
+      - name: Verify Playwright UI JUnit report exists
+        if: always()
+        run: test -s reports/playwright-ui-junit.xml
+
       - name: Upload Playwright UI JUnit report
         uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-ui-test-artifacts
           path: reports/playwright-ui-junit.xml
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
 
       - name: Upload Playwright failure artifacts
@@ -235,7 +249,7 @@ jobs:
   # ──────────────────────────────────────────────────────────────
   security-scan:
     name: Security Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -248,13 +262,13 @@ jobs:
 
       - name: Install project and security dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install pip==26.1.2
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           fi
           # TR: Bandit ve pip-audit güvenlik araçlarını yükler.
           # EN: Installs Bandit and pip-audit security tools.
-          pip install bandit[toml] pip-audit
+          pip install "bandit[toml]==1.9.4" "pip-audit==2.10.1"
 
       # TR: Bandit ile Python kodlarını güvenlik açıkları için tarar.
       # EN: Scans Python code for security vulnerabilities with Bandit.
@@ -273,9 +287,16 @@ jobs:
           pip-audit --format json --output reports/pip-audit-report.json || true
           pip-audit || true
 
+      - name: Verify security reports exist
+        if: always()
+        run: |
+          test -s reports/bandit-report.json
+          test -s reports/pip-audit-report.json
+
       - name: Upload security reports
         uses: actions/upload-artifact@v7
         if: always()
         with:
           name: security-reports
           path: reports/
+          if-no-files-found: error

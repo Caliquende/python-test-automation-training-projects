@@ -11,7 +11,7 @@ permissions:
 jobs:
   newman-api-tests:
     name: Run Postman collection with Newman
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -38,6 +38,12 @@ jobs:
             --reporter-html-export reports/newman-report.html \
             --reporter-junit-export reports/newman-report.xml
 
+      - name: Verify Newman reports exist
+        if: always()
+        run: |
+          test -s reports/newman-report.html
+          test -s reports/newman-report.xml
+
       - name: Upload Newman reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,4 +52,4 @@ jobs:
           path: |
             reports/newman-report.html
             reports/newman-report.xml
-          if-no-files-found: warn
+          if-no-files-found: error

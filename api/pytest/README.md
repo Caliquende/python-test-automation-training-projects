@@ -104,7 +104,7 @@ When an API test fails after making HTTP calls, request and response details are
 reports/api/http-exchanges/
 ```
 
-Sensitive fields such as authorization tokens and passwords are redacted before writing logs.
+The client masks recognized sensitive dictionary keys such as `authorization`, `password`, and `access_token`. This is not a guarantee that every secret or personal value is removed; use demo data only and review artifacts before sharing. Diagnostics require a recorded exchange from a failed test call; setup failures or errors before an exchange is recorded may not produce a file.
 
 ## CI results
 

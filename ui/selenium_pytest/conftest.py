@@ -48,15 +48,12 @@ def pytest_runtest_makereport(item, call):
     screenshot_path = screenshots_dir / f"{artifact_name}.png"
     console_log_path = console_logs_dir / f"{artifact_name}.log"
 
-    try:
-        driver.save_screenshot(str(screenshot_path))
-    except WebDriverException as exc:
-        screenshot_path.write_text(
-            f"Screenshot could not be captured: {exc}\n",
-            encoding="utf-8",
-        )
-
     log_lines = []
+    try:
+        if not driver.save_screenshot(str(screenshot_path)):
+            log_lines.append("Screenshot could not be captured.")
+    except WebDriverException as exc:
+        log_lines.append(f"Screenshot could not be captured: {exc}")
 
     try:
         log_lines.append(f"URL: {driver.current_url}")
