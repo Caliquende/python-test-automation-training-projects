@@ -34,6 +34,17 @@ Negative scenarios:
 
 Data not found means the resource path is valid but the requested item does not exist. Wrong endpoint means the route itself is invalid.
 
+## Installation
+
+Install Node.js 20 and npm. To use the same direct package versions as CI, run these commands separately:
+
+```powershell
+npm install -g newman@6.2.3
+npm install -g newman-reporter-html@1.0.5
+```
+
+The HTML reporter is needed for commands using `html`; the CLI and JUnit reporters are included with Newman. Global installation may require appropriate npm permissions. Verify with `node --version` and `newman --version`.
+
 ## Local Windows PowerShell Commands
 
 CLI only:

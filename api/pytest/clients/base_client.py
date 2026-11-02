@@ -4,6 +4,7 @@ EN: Base API client for reusable HTTP request logic.
 """
 
 from copy import deepcopy
+from urllib.parse import urlsplit, urlunsplit
 
 import requests
 
@@ -20,6 +21,10 @@ SENSITIVE_KEYS = {
     "refreshtoken",
     "set-cookie",
     "token",
+    "api_key",
+    "api-key",
+    "x-api-key",
+    "client_secret",
 }
 
 
@@ -66,37 +71,40 @@ class BaseClient:
 
         return value
 
-    def _record_exchange(self, method, url, request_kwargs, response):
+    def _record_exchange(self, method, url, request_kwargs, response=None, error=None):
         """
         TR: Başarısız API testlerinde yazdırılmak üzere request/response bilgisini saklar.
         EN: Store request/response data for failed API test diagnostics.
         """
         request_data = deepcopy(request_kwargs)
         request_data = self._redact_sensitive_values(request_data)
-        response_headers = self._redact_sensitive_values(dict(response.headers))
-
-        try:
-            response_body = response.json()
-        except ValueError:
-            response_body = response.text
-
-        response_body = self._redact_sensitive_values(response_body)
+        parts = urlsplit(url)
+        # User info, query and fragment may contain credentials even under unknown names.
+        safe_url = urlunsplit((parts.scheme, parts.netloc.rsplit("@", 1)[-1], parts.path, "", ""))
+        response_data = None
+        if response is not None:
+            try:
+                response_body = self._redact_sensitive_values(response.json())
+            except ValueError:
+                response_body = "[non-JSON response omitted]"
+            response_data = {
+                "status_code": response.status_code,
+                "headers": self._redact_sensitive_values(dict(response.headers)),
+                "body": response_body,
+            }
 
         self.request_history.append(
             {
                 "request": {
                     "method": method,
-                    "url": url,
+                    "url": safe_url,
                     "params": request_data.get("params"),
                     "headers": request_data.get("headers"),
                     "json": request_data.get("json"),
                     "timeout": request_data.get("timeout"),
                 },
-                "response": {
-                    "status_code": response.status_code,
-                    "headers": response_headers,
-                    "body": response_body,
-                },
+                "response": response_data,
+                "error_type": type(error).__name__ if error is not None else None,
             }
         )
 
@@ -108,7 +116,11 @@ class BaseClient:
         url = self._build_url(endpoint)
         request_kwargs["timeout"] = self.timeout
 
-        response = requests.request(method, url, **request_kwargs)
+        try:
+            response = requests.request(method, url, **request_kwargs)
+        except requests.RequestException as exc:
+            self._record_exchange(method, url, request_kwargs, error=exc)
+            raise
         self._record_exchange(method, url, request_kwargs, response)
 
         return response

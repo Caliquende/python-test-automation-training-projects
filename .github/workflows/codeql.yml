@@ -15,7 +15,7 @@ on:
 jobs:
   analyze:
     name: Analyze Python
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # TR: CodeQL taraması için gerekli izinler.
     # EN: Required permissions for CodeQL scanning.
     permissions:

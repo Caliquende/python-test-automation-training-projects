@@ -38,9 +38,10 @@ ui/selenium_pytest/
   tests/
     test_mini_project_core.py
   conftest.py
-  pytest.ini
   README.md
 ```
+
+The suite uses the [repository-root pytest.ini](../../pytest.ini).
 
 ## Page Object Model
 
@@ -63,7 +64,7 @@ Assertions remain in `tests/test_mini_project_core.py`.
 - `inventory_page`
 - `cart_page`
 
-The `driver` fixture creates and quits Chrome WebDriver for each test.
+The `driver` fixture creates and quits Chrome WebDriver for each test. Install Chrome or Chrome for Testing separately from Playwright's Chromium. If no driver is supplied, [Selenium Manager](https://www.selenium.dev/documentation/selenium_manager/) can discover or download a compatible driver; this can require network access. See the [root setup instructions](../../README.md#local-setup) for SauceDemo test data.
 
 ## Wait and Browser Mode
 
@@ -118,14 +119,14 @@ pytest ui/selenium_pytest/tests --junitxml=reports/ui-junit.xml
 
 ## Failure Artifacts
 
-When a Selenium UI test fails, the Pytest hook writes diagnostics under:
+When a Selenium test fails during its test call and a driver is available, the Pytest hook attempts to write diagnostics under:
 
 ```text
 reports/ui/screenshots/
 reports/ui/browser-console/
 ```
 
-Generated report files should not be committed.
+Driver setup failures may not produce these diagnostics. Screenshot or console capture can also fail; review artifacts before sharing and use demo credentials only. Generated report files should not be committed.
 
 ## CI results
 

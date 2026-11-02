@@ -64,11 +64,13 @@ requirements.txt
 
 ## Local Setup
 
-Install Python dependencies:
+CI uses Python 3.11. Install Python 3.11 and the project dependencies from the repository root:
 
 ```powershell
 python -m pip install -r requirements.txt
 ```
+
+Direct Python packages are pinned in `requirements.txt`; transitive dependencies are not locked, so a future installation may resolve different transitive versions. CI uses Ubuntu 24.04 for all three workflows, Python 3.11 for Pytest, and Node.js 20 for Newman.
 
 Install Chromium for the Playwright suite:
 
@@ -76,13 +78,23 @@ Install Chromium for the Playwright suite:
 python -m playwright install chromium
 ```
 
-Create a local environment file for environment-backed API and UI test data:
+The Selenium suite uses Chrome separately from Playwright's Chromium installation. Install Chrome or Chrome for Testing; Selenium Manager can discover or download a compatible ChromeDriver when needed. Driver discovery and downloads may require network access. See the [Selenium Manager documentation](https://www.selenium.dev/documentation/selenium_manager/).
+
+Create a local environment file for environment-backed API and UI test data if one does not already exist:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-The real `.env` file is ignored by Git.
+Then fill in the values below in `.env` or provide them as environment variables. Existing environment variables take precedence over `.env` values. The `.env` file is ignored by Git; do not commit credentials.
+
+| Suite | Required variables | How to choose values |
+| --- | --- | --- |
+| Selenium and SauceDemo Playwright | `SAUCEDEMO_STANDARD_USERNAME`, `SAUCEDEMO_STANDARD_PASSWORD` | Use the standard-user credentials displayed on the [SauceDemo login page](https://www.saucedemo.com/). |
+| API Pytest: JSONPlaceholder | `JSONPLACEHOLDER_USER_ID` | Integer user ID; `1` is used in the [JSONPlaceholder examples](https://jsonplaceholder.typicode.com/). This is read during test collection. |
+| API Pytest: DummyJSON | `DUMMYJSON_USERNAME`, `DUMMYJSON_PASSWORD`, `DUMMYJSON_EXPECTED_USERNAME`, `DUMMYJSON_WRONG_ACCESS_TOKEN` | Use a demo username and password from [DummyJSON's authentication documentation](https://dummyjson.com/docs/auth); set the expected username to the same username and the wrong token to a non-empty invalid token for the negative test. |
+
+The TodoMVC Playwright tests and Newman collection do not require these `.env` values. A full `pytest` run collects the JSONPlaceholder module, so it needs `JSONPLACEHOLDER_USER_ID` even when running only another suite through a marker filter. The tests access public demo services and need network access.
 
 ## Run Tests
 
@@ -158,7 +170,13 @@ newman run ".\api\newman\collection\collection.json" -e ".\api\newman\environmen
 [![Newman API Tests](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/newman-ci.yml/badge.svg?branch=main)](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/newman-ci.yml)
 [![CodeQL Analysis](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Caliquende/python-test-automation-training-projects/actions/workflows/codeql.yml)
 
-The badges show the latest workflow status on `main`; open a run to inspect its jobs and commit. Example runs for the 28 October 2026 merge: [Test Automation](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/40674984557), [Newman](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/40674984563), and [CodeQL](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/40674984614).
+The badges show the latest workflow status on `main`; open a run to inspect its jobs and commit. For a historical example, see the [2 November 2026 CI evidence snapshot](docs/ci-evidence.md) and its linked original runs. The snapshot is not a live status report.
+
+CodeQL results are available under **Security > Code scanning**. A successful analysis means the job completed; check alerts separately before drawing conclusions about findings.
+
+### Running CI in your own repository
+
+Configure repository Actions secrets before running the Pytest jobs. API Tests requires `JSONPLACEHOLDER_USER_ID`, `DUMMYJSON_USERNAME`, `DUMMYJSON_PASSWORD`, `DUMMYJSON_EXPECTED_USERNAME`, and `DUMMYJSON_WRONG_ACCESS_TOKEN`. Selenium and Playwright require `SAUCEDEMO_STANDARD_USERNAME` and `SAUCEDEMO_STANDARD_PASSWORD`. The jobs validate these settings and fail before testing if any are absent. GitHub may not provide repository secrets to workflows triggered by forked pull requests; see [GitHub's secrets documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets). Newman needs no repository secrets. Use demo data only and never commit secret values.
 
 The repository uses the following workflows:
 

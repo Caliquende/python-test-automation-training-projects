@@ -29,6 +29,7 @@ class InventoryPage(BasePage):
     CART_LINK = (By.CSS_SELECTOR, ".shopping_cart_link")
     CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
     CART_URL_PART = "cart.html"
+    CART_LIST = (By.CSS_SELECTOR, ".cart_list")
 
     def get_title_text(self):
         """
@@ -80,7 +81,8 @@ class InventoryPage(BasePage):
 
     def go_to_cart(self):
         """
-        TR: Sepet ikonuna tıklar ve sepet sayfasının URL'i yüklenene kadar bekler.
-        EN: Click the shopping cart link and wait until the Cart page URL is loaded.
+        TR: Sepete gider ve sepet içeriğinin görünmesini bekler.
+        EN: Navigate to the cart and wait until its content is visible.
         """
         self.click_and_wait_for_url(self.CART_LINK, self.CART_URL_PART)
+        self.find_visible_element(self.CART_LIST)
