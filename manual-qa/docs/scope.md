@@ -100,7 +100,7 @@ Manual observation date / detailed expected-vs-actual logs: Not recorded. No man
 
 S1–S7 and P1–P7 refer to the test functions in Section 7. A repeated ID indicates one test asserting multiple behaviors, not an additional distinct test. All PASS entries refer specifically to CI run #56.
 
-ID	Feature / assessed behavior	Selenium code	Selenium CI	Playwright code	Playwright CI	Coverage gap
+|ID	|Feature / assessed behavior	|Selenium code	|Selenium CI	|Playwright code	|Playwright CI	|Coverage gap|
 
 B01	Valid login leads to product listing	COVERED (S1)	PASS	COVERED (P1)	PASS	None identified for this behavior
 
