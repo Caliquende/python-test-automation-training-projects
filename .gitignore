@@ -64,3 +64,5 @@ test-results/*
 archive.json
 package.json
 package-lock.json
+
+/dependabot-actions-update/dependabot-actions-update/
