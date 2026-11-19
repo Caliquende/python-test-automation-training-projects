@@ -1,74 +1,97 @@
-# SauceDemo · Manual QA Case Study
+# SauceDemo · Manual Software Testing Case Study
 
-> **Status:** Working draft · Documentation in progress  
+> **Status:** Test design reviewed · **CONDITIONAL PASS (19 Nov 2026)**  
 > **Application under test:** [SauceDemo / Swag Labs](https://www.saucedemo.com/)  
-> **Project:** [Python Test Automation Training Projects](https://github.com/Caliquende/python-test-automation-training-projects)
+> **Project:** [Python Test Automation Training Projects](https://github.com/Caliquende/python-test-automation-training-projects)  
+> **Approval authority:** ChatGPT acting as Product Owner (PO) for this **training exercise only**; not official SauceDemo stakeholder approval.
 
-A practical software testing case study that connects **test scope**, **requirements**, **acceptance criteria**, **existing automation coverage**, and **manual observations**. The current documentation covers the login-to-checkout journey in SauceDemo.
-
-This project separates what has been **specified**, **asserted in automation**, **observed manually**, and **verified by CI**. A passing test run is not treated as proof of behavior that its tests do not assert.
+This manual software testing case study connects scope, exercise-level requirements, test design techniques, decision tables, state transitions, manual execution results, defect triage, and the pre-existing Selenium/Playwright automation baseline. It covers the login-to-checkout journey, without claiming complete product coverage.
 
 ## Documentation
 
-| Document | Purpose | Current state |
-|:--|:--|:--|
-| [**Scope & Coverage Assessment**](docs/scope.md) | Defines six functional areas, maps 14 behaviors (`B01–B14`) to existing Selenium/Playwright assertions, and identifies coverage gaps. | Baseline assessment · **16 Nov 2026** |
-| [**Requirements & Acceptance Criteria**](docs/requirements.md) | Defines six candidate requirements (`REQ-001–006`), 14 acceptance criteria (`AC-001–014`), a traceability matrix, and six manual observation records. | Exercise-level PO approval · **17 Nov 2026** |
+| Document | Contents | Status |
+|---|---|---|
+| [Scope & Coverage Assessment](docs/scope.md) | Six functional areas; 14 original baseline behaviors (`B01–B14`); automation gap assessment | Baseline: 16 Nov 2026 |
+| [Requirements & Acceptance Criteria](docs/requirements.md) | Six requirement groups (`REQ-001–006`); **17** exercise-approved ACs (`AC-001–017`); traceability, manual observations, AC-016 defect candidate | Updated: 19 Nov 2026 |
+| [Test Design Techniques](docs/design-techniques.md) | Equivalence Partitioning (EP), Boundary Value Analysis (BVA) feasibility, test-design screening | Reviewed: 18 Nov 2026 |
+| [Decision Tables & State Transitions](docs/decision_tables_and_state_transitions.md) | Cart/Checkout decision tables, state transitions, test-case candidates, Q6 final quality gate | Reviewed: 19 Nov 2026; **CP** |
 
-**Approval context:** The 14 ACs are marked `APPROVED (by ChatGPT as PO)` **for this training exercise only**. They are not official requirements or approvals from Sauce Labs or the SauceDemo product owner.
+**Version note:** These links are the **intended repository layout for the updated local deliverables**. The revised files have not been pushed to GitHub by this work. The original 14-behavior scope baseline remains historical; AC-015–017 extend the requirements beyond it. The 18 Nov `design-techniques.md` assessment predates AC-015–017 and must not be interpreted as having screened them.
 
-## Functional coverage
+## Functional coverage and outcomes
 
-| Area | Behaviors reviewed |
-|:--|:--|
-| **Login** | Valid and invalid sign-in |
-| **Inventory** | Product listing and price sorting |
-| **Cart** | Navigation, add/remove operations, item count and badge |
-| **Checkout Information** | Entry into checkout, valid information and required-field validation |
-| **Checkout Overview** | Item details and displayed financial summary |
-| **Checkout Complete** | Checkout completion screen and confirmation |
+| Area | Scope and results |
+|---|---|
+| Login | Valid and invalid sign-in; invalid login manually observed |
+| Inventory | Six-product inventory and price-low-to-high sorting |
+| Cart | Cart navigation, one/two-item add/remove, two-to-one removal (AC-015), duplicate-add policy (AC-017: manual PASS) |
+| Checkout Information | One/two-item entry, required-field combinations, **empty-cart checkout restriction (AC-016: manual FAIL)** |
+| Checkout Overview | Items and displayed totals; arithmetic checked for a two-item example; tax-rate correctness unverified |
+| Checkout Complete | Finish navigation and visible confirmation |
 
-### Automation baseline
+### Automation baseline — historical, not new execution
 
-The [scope assessment](docs/scope.md) reviews the **16 Nov 2026** CI baseline, [GitHub Actions run #56](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/43870142191).
+The [16 Nov 2026 scope assessment](docs/scope.md) cites [GitHub Actions run #56](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/43870142191):
 
 | Evidence | Recorded result | Interpretation |
-|:--|:--|:--|
-| Selenium / Pytest | **10/10 PASS** in the referenced run | Includes **7 SauceDemo functional tests** and 3 supporting tests |
-| Playwright / Pytest | **15/15 PASS** in the referenced run | Includes **7 SauceDemo functional tests** and 8 TodoMVC tests |
-| SauceDemo behavior coverage | **8/14 behaviors** have matching assertions in both reviewed suites | These are behavior mappings, **not** eight distinct test functions per suite |
-| Remaining automation gaps | **6/14 behaviors** lack matching assertions in the reviewed suites | Invalid login, sorting, checkout form submission/validation, overview and completion |
-| Firefox / WebKit | **NOT VERIFIED** | No corresponding execution evidence in the referenced run |
+|---|---|---|
+| Selenium / Pytest | **10/10 PASS** | 7 SauceDemo functional tests plus 3 supporting tests |
+| Playwright / Pytest | **15/15 PASS** | 7 SauceDemo functional tests plus 8 TodoMVC tests |
+| Original SauceDemo behavior coverage | **8/14** behaviors asserted by both reviewed suites | Baseline behavior mappings, not unique tests per behavior |
+| Original automation gaps | **6/14** behaviors without matching assertions | Invalid login, sorting, checkout form/validation, overview and completion |
+| AC-015–017 automation | **NOT VERIFIED / no matching assertion identified** | New exercise ACs were not part of the 14-behavior baseline |
+| Firefox / WebKit | **NOT VERIFIED** | No matching execution evidence in the cited run |
 
-The existing SauceDemo functional tests reach **Checkout Information**; they do not establish automated coverage of the full checkout journey.
+Existing SauceDemo automation reaches Checkout Information; the cited run does not establish automated completion of checkout or execution of the newly designed decision-table scenarios.
 
-### Manual review
+### Manual execution and defect triage
 
-The [requirements document](docs/requirements.md) records observations from **17 Nov 2026** for six behaviors outside the reviewed automation coverage:
+Manual checks were executed by the **Software Test Engineer**. Recorded outcomes are part of the test documentation; screenshot distribution is not required for a manual execution PASS. The documents distinguish **manual execution**, **candidate test-case design**, and **historical CI**.
 
-- **AC-002:** Invalid sign-in rejection
-- **AC-004:** Price-low-to-high sorting
-- **AC-011:** Continue with customer information
-- **AC-012:** Required-field validation (seven blank-field combinations)
-- **AC-013:** Checkout overview and displayed totals
-- **AC-014:** Checkout completion confirmation
+- **17 Nov:** AC-002, AC-004, AC-011, AC-012 (seven blank-field combinations), AC-013 and AC-014 have recorded manual observations.
+- **19 Nov:** AC-015 (remove one of two cart items) **PASS**; AC-016 (empty-cart Checkout restriction) **FAIL**; AC-017 (same product not added twice) **PASS** under the exercise PO policy.
+- **AC-016 defect candidate:** With an empty cart, selecting Checkout navigated to `checkout-step-one.html` instead of remaining on Cart. A separate screenshot shows a zero-total Checkout Overview, but does not independently prove its navigation path. This is a failure **against the exercise-level AC**, not confirmation of a violation of official SauceDemo requirements.
+- **AC-017 policy:** The exercise PO specified at most one instance of a product. The observed refusal to add a duplicate matches that criterion. Detailed interaction sequence was not separately recorded.
 
-The observations are recorded as text with their outcomes and limitations. **Screenshots, screenshot filenames and image links are deliberately excluded for privacy.** The exported documents therefore do not provide independently inspectable screenshot evidence. Tax-rate correctness and backend order persistence are not claimed as verified.
+**Evidence boundary:** Screenshots and screenshot filenames are intentionally excluded from these exported documents. No independent screenshot review, tax-formula verification, backend order-persistence check, or new automation run is claimed.
 
-## Repository layout
+## Final Quality Gate — Q6/6
+
+**Decision: CONDITIONAL PASS (CP) for the test-design handoff.** Requirements traceability and selected design coverage passed review. Manual execution is **PASS as an activity**, while individual application results retain their own PASS/FAIL verdicts. The open AC-016 defect candidate and remaining unverified conditions prevent a blanket application PASS.
+
+**Residual risks:** Three-or-more-product cart/checkout behavior, cancel/back navigation and recovery, malformed/whitespace-only/length-boundary inputs without approved limits, tax-rate correctness, and backend persistence. These are **NOT VERIFIED**, not assumed defects.
+
+## Intended repository layout
 
 ```text
 manual-qa/
 ├── README.md
 └── docs/
     ├── scope.md
-    └── requirements.md
+    ├── requirements.md
+    ├── design-techniques.md
+    └── decision_tables_and_state_transitions.md
 ```
 
-## Current boundaries and next steps
+The two newly updated Markdown documents and README are provided locally; paths above are the intended placement after a separately authorized GitHub push. Formal standalone test-case files, test plan, and defect ticket are not claimed to exist.
 
-This is a **documentation-first, work-in-progress case study**, not a claim of complete SauceDemo test coverage.
+## Abbreviations and status legend
 
-The planned manual QA work continues with test design techniques (EP/BVA and decision tables), a test plan, manual test cases, execution records, and traceability. Missing automated behaviors are tracked separately for later Playwright regression work.
+| Term | Meaning |
+|---|---|
+| AC | Acceptance Criterion |
+| AUT | Application Under Test |
+| BVA | Boundary Value Analysis |
+| CHST / ST | Checkout / Cart State Transition |
+| CI | Continuous Integration |
+| CP | Conditional Pass |
+| DT | Decision Table |
+| EP | Equivalence Partitioning |
+| PO | Product Owner (exercise role) |
+| REQ | Requirement |
+| TC | Test Case; IDs in the design document are **proposed**, not formal execution records |
+| UI | User Interface |
+| PASS / FAIL | Outcome for the explicitly named check or application criterion |
+| NOT VERIFIED | Evidence or approved expected behavior is insufficient for the named condition |
 
-For details, see [the scope assessment](docs/scope.md) and [the acceptance criteria and observation log](docs/requirements.md).
+**Next actions:** Triage AC-016 against the exercise PO requirement; verify the remaining risk scenarios if they enter scope; create formal test cases/execution logs or automation assertions separately when requested. Do not treat the design CP as an application release sign-off.

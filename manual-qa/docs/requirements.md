@@ -1,17 +1,17 @@
 # SauceDemo — Requirements and Acceptance Criteria
 
 **Document:** `manual-qa/docs/requirements.md`  
-**Assessment date:** 2026-11-17  
+**Assessment date:** 2026-11-17; updated 2026-11-19  
 **Application under test:** https://www.saucedemo.com/  
 **Repository:** https://github.com/Caliquende/python-test-automation-training-projects  
 **Scope baseline:** [scope.md](scope.md)  
 **Source baseline reviewed:** `a2942f72d1b57ee7705d2da2d2c0181bd013527d`  
 **CI reference for existing assertions:** [Test Automation — run #56](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/43870142191) at commit `78825f13eda1f4f23b2c7b464bf19c1ea550d589`  
-**Document status:** APPROVED (by ChatGPT as PO) — approval within this training exercise only; these are not official SauceDemo customer requirements.
+**Document status:** AC-001–017 APPROVED (exercise PO only); manual execution recorded; AC-016 FAIL (open defect candidate); Final Quality Gate CONDITIONAL PASS for design deliverables. These are not official SauceDemo customer requirements.
 
 ## 1. Purpose and Boundaries
 
-Create testable, uniquely identified acceptance criteria for the six functional areas selected in the SauceDemo scope assessment: Login, Inventory, Cart, Checkout Information, Checkout Overview and Checkout Complete. The objective is to define observable expected behavior and map it to the existing automated assertions or a documented coverage gap. All 14 acceptance criteria have exercise-level approval from ChatGPT acting as Product Owner (PO); this does not constitute official SauceDemo stakeholder approval. Manual behavior observations made during the 2026-11-17 interactive review are recorded below; screenshots and screenshot references are intentionally excluded from this deliverable for user security.
+Create testable, uniquely identified acceptance criteria for the six functional areas selected in the SauceDemo scope assessment: Login, Inventory, Cart, Checkout Information, Checkout Overview and Checkout Complete. The objective is to define observable expected behavior and map it to the existing automated assertions or a documented coverage gap. All 17 acceptance criteria have exercise-level approval from ChatGPT acting as Product Owner (PO); this does not constitute official SauceDemo stakeholder approval. Manual behavior observations made during the 2026-11-17 interactive review are recorded below; screenshots and screenshot references are intentionally excluded from this deliverable for user security.
 
 **Test environment (reported):** Windows 11; Brave (Chromium-based); version not supplied.  
 **Manual evidence:** Six previously unautomated behaviors were reviewed interactively on 2026-11-17, and actual results were recorded in Section 4. Screenshots and their filenames are withheld from this document for user security; this limits independent review by anyone who only receives this file.  
@@ -24,7 +24,7 @@ Create testable, uniquely identified acceptance criteria for the six functional 
 - **CODE ASSERTED**: reviewed test code contains an assertion for that behavior; the relevant tests passed in the referenced run. Code coverage is separate from approval; the exercise-level PO approval documented here does not constitute official SauceDemo stakeholder acceptance.
 - **SESSION-OBSERVED**: observed or reported during the 2026-11-17 interactive manual review; the textual actual result is recorded, but image evidence is withheld from the deliverable for user security.
 - **NOT VERIFIED**: a particular condition (for example, backend processing, tax-rate correctness or a URL not shown in the available observation) was not independently established.
-- **APPROVED (by ChatGPT as PO)**: exercise-level acceptance of the AC by ChatGPT in the Product Owner role. Applies to all 14 ACs; it is not official SauceDemo product-owner approval, and it does not imply automation coverage or execution PASS.
+- **APPROVED (by ChatGPT as PO)**: exercise-level acceptance of the AC by ChatGPT in the Product Owner role. Applies to all 17 ACs; it is not official SauceDemo product-owner approval, and it does not imply automation coverage or execution PASS.
 
 ## 2. Candidate Requirements and Acceptance Criteria
 
@@ -85,8 +85,26 @@ Create testable, uniquely identified acceptance criteria for the six functional 
 **Then** the cart contains zero cart-item rows and the removed product is no longer visible.  
 **Basis:** CODE ASSERTED (`S5`, `P5`, `B08`). **AC status:** APPROVED (by ChatGPT as PO).
 
+**AC-015 — Remove one product from a multi-item cart**  
+**Given** the Cart page contains `Sauce Labs Backpack` and `Sauce Labs Bike Light`,  
+**When** the user removes `Sauce Labs Bike Light` on the Cart page,  
+**Then** `Sauce Labs Bike Light` is absent, `Sauce Labs Backpack` remains, the numeric cart badge displays `1`, and the user remains on the Cart page.  
+**Basis:** USER-REPORTED manual test (2026-11-19; `DT-001/R03`, `ST-03`, `TC-003` in local `decision-tables.md`). No matching automated assertion established. **AC status:** APPROVED (by ChatGPT as PO) on 2026-11-19 for this training exercise only.
+
+**AC-017 — Prevent duplicate product addition**  
+**Given** a product is already present in the cart,  
+**When** the user attempts to add that same product again,  
+**Then** the cart retains one instance of that product and its quantity remains `1`.  
+**Basis:** Manual test observation on 2026-11-19: the same product was not added a second time. **AC status:** APPROVED (by ChatGPT as exercise PO) on 2026-11-19; the precise attempted UI interaction was not recorded. This is a single-instance cart policy for the training exercise, not an official SauceDemo requirement.
+
 ### REQ-004 — Checkout Information
 **Candidate requirement:** A user with a populated cart should be able to open the information form, provide required information and receive an observable response to missing information.
+
+**AC-016 — Prevent checkout with an empty cart**  
+**Given** the cart contains zero products,  
+**When** the user selects Checkout,  
+**Then** checkout does not advance and the user remains on the Cart page.  
+**Basis:** Manual test on 2026-11-19: empty-cart Checkout navigated to `checkout-step-one.html`, contrary to this newly approved exercise-level requirement. **AC status:** APPROVED (by ChatGPT as exercise PO) on 2026-11-19. **Test verdict:** FAIL — defect candidate; official SauceDemo intended behavior is not established.
 
 **AC-009 — Open checkout with one item**  
 **Given** the cart contains one product,  
@@ -132,7 +150,7 @@ Create testable, uniquely identified acceptance criteria for the six functional 
 
 ## 3. AC-to-Coverage Traceability
 
-`S1–S7` and `P1–P7` refer to the mapping in `scope.md`. The table distinguishes existing automation assertions from manual observations. All 14 ACs have exercise-level PO approval, which does not imply execution coverage.
+`S1–S7` and `P1–P7` refer to the mapping in `scope.md`. The table distinguishes existing automation assertions from manual observations. All 17 ACs have exercise-level PO approval, which does not imply execution coverage.
 
 | AC | Requirement | Scope behavior | Selenium assertion | Playwright assertion | Existing CI result | Review need |
 |---|---|---|---|---|---|---|
@@ -150,10 +168,13 @@ Create testable, uniquely identified acceptance criteria for the six functional 
 | AC-012 | REQ-004 | B12 | None identified | None identified | NO TEST | 7 combinations recorded; screenshot withheld |
 | AC-013 | REQ-005 | B13 | None identified | None identified | NO TEST | Manual result recorded; screenshot withheld |
 | AC-014 | REQ-006 | B14 | None identified | None identified | NO TEST | Confirmation and `checkout-complete.html` URL recorded; screenshot withheld |
+| AC-015 | REQ-003 | Not included in B01–B14 baseline | None identified | None identified | NO TEST | Manual two-to-one cart removal on 2026-11-19; exercise PO-approved; `DT-001/R03`, `ST-03`, `TC-003` |
+| AC-016 | REQ-004 | Outside B01–B14 baseline | None identified | None identified | NO TEST | Manual FAIL: empty cart navigates to checkout information; defect candidate, 2026-11-19 |
+| AC-017 | REQ-003 | Outside B01–B14 baseline | None identified | None identified | NO TEST | Manual PASS against exercise PO policy: same product not added twice; interaction detail not recorded |
 
 ## 4. Requirements Review and Testability Checklist
 
-Assess each criterion against the application observations or source-backed assertions. The 14 ACs are APPROVED (by ChatGPT as PO) within this training exercise; CODE ASSERTED indicates existing automation coverage, not official stakeholder approval.
+Assess each criterion against the application observations or source-backed assertions. The 17 ACs are APPROVED (by ChatGPT as PO) within this training exercise; CODE ASSERTED indicates existing automation coverage, not official stakeholder approval.
 
 - [ ] Each AC has a unique ID and links to one REQ.
 - [ ] Every AC identifies an actionable trigger and an observable expected result.
@@ -190,25 +211,45 @@ The following entries are textual records of the interactive manual-review sessi
 
 **Evidence privacy:** Screenshots were used in the interactive review but are deliberately not embedded, linked, named or distributed with this document. An external reviewer cannot independently reproduce the screenshot-based verification from the document alone. No backend-order proof or independent tax-rate rule is asserted.
 
+### Additional manual observation — 2026-11-19
+
+| AC ID | Observation date/time | Preconditions / Test Data | Action | Expected Result | Actual Result | Evidence | Observation Status |
+|---|---|---|---|---|---|---|---|
+| AC-015 | 2026-11-19; time not recorded | Cart page with Backpack and Bike Light | Remove Bike Light | Backpack remains, Bike Light disappears, badge `1`, remain on Cart | Software Test Engineer executed the two-to-one removal check during Cart decision-table and state-transition review | Software Test Engineer manual execution record; screenshot not embedded | PASS — manual execution; independent replay not claimed |
+| AC-016 | 2026-11-19; time not recorded | Empty cart | Select Checkout | Stay on Cart; checkout blocked | Navigated to `checkout-step-one.html` | Test engineer execution record; separate screenshot shows a zero-total Checkout Overview, but its navigation path is not independently established | FAIL — defect candidate against exercise PO AC |
+| AC-017 | 2026-11-19; time not recorded | Product already in cart | Attempt to add same product again | One instance; quantity remains `1` | Same product was not added a second time | Test engineer execution record; detailed action sequence not supplied | PASS — observed behavior matches exercise PO policy; detailed reproduction NOT VERIFIED |
+
 ## 5. Verification and Validation Record
 
 | Stage | Output checked | Expected result | Actual evidence | Verdict |
 |---|---|---|---|---|
-| Verification — authoring | Requirement and AC structure | Six requirement groups; at least 10 unique AC IDs; traceable scenarios | Six REQ sections, 14 unique AC entries and 14 corresponding traceability rows verified in the draft | PASS (structure only) |
+| Verification — authoring | Requirement and AC structure | Six requirement groups; at least 10 unique AC IDs; traceable scenarios | Six REQ sections, 17 unique AC entries and 17 corresponding traceability rows verified in the draft | PASS (structure only) |
 | Verification — source | Existing automation baseline | Identified assertions and relevant run link | Source reviewed in GitHub; 7 Selenium + 7 Playwright SauceDemo tests in successful run #56 | PASS (baseline only) |
 | Verification — observations | Six manual observation entries; test data, action, expected, actual, evidence privacy and status recorded | Every targeted AC has a complete textual observation entry | AC-002, AC-004, AC-011, AC-012, AC-013, AC-014 recorded; no screenshot material or filenames included | PASS (textual records only) |
 | Validation — observed behavior | Match six draft ACs to the session's observable behavior | Explicit actual results for each targeted behavior | Observed login rejection, sorting, form advancement, empty-field rejection, overview and completion confirmation; unverified tax rule clearly scoped; completion URL recorded | PASS for stated UI observations; exceptions NOT VERIFIED |
 | Validation — external evidence reproducibility | Independent reviewer can inspect underlying screenshot evidence | Screenshots are intentionally withheld for user security | Not independently inspectable from the exported document alone | BLOCKED (privacy restriction) |
-| Validation — exercise PO approval | All 14 ACs receive explicit exercise-level approval from the assigned PO role | ChatGPT acting as PO approved AC-001 through AC-014 within this training exercise | APPROVED (by ChatGPT as PO) — 14/14 | PASS (exercise approval only) |
+| Validation — exercise PO approval | All 17 ACs receive explicit exercise-level approval from the assigned PO role | ChatGPT acting as PO approved AC-001 through AC-017 within this training exercise | APPROVED (by ChatGPT as PO) — 17/17 | PASS (exercise approval only) |
 | Validation — stakeholder requirements | Official product requirements are approved by an authorized product owner | Explicit official requirement authority | Not available; exercise role-play does not confer official SauceDemo approval | BLOCKED |
 
 ## 6. Known Limitations and Next Action
 
 - Source code and CI demonstrate **assertion coverage**, not official authorization of business requirements; exercise-level PO approval is recorded separately.
-- This document now contains six dated manual observation entries from the 2026-11-17 review. Source screenshots remain withheld for the user's security; external independent screenshot verification is therefore unavailable.
+- This document contains six manual observation entries from 2026-11-17 and three additional manual test records (AC-015–017) from 2026-11-19. Source screenshots remain withheld for the user's security; external independent screenshot verification is therefore unavailable.
 - No new SauceDemo test run, code change, defect report or fix is claimed by this file.
-- The six targeted observation gaps are recorded in Section 4. `Tax` formula correctness remains NOT VERIFIED. The checkout-complete URL was observed in the browser address bar during the interactive review.
-- Submit this complete textual `requirements.md` for final review. Do not require or attach screenshots: the evidence column uses the user-specified privacy statement.
+- The six original targeted observation gaps and AC-015–017 manual results are recorded in Section 4. Empty-cart checkout fails the newly approved exercise AC-016 and is a defect candidate; duplicate-add behavior meets exercise AC-017. The attached zero-total Overview screenshot is not proof of the exact navigation sequence. `Tax` formula correctness remains NOT VERIFIED. The checkout-complete URL was observed in the browser address bar during the interactive review.
+- The AC-015–017 amendments are local only; no GitHub update is claimed. Final design review Q6/6: CONDITIONAL PASS; AC-016 remains an open defect candidate against the exercise PO criterion. Do not require or attach screenshots: the evidence column uses the user-specified privacy statement.
+
+### Final Quality Gate — 2026-11-19
+
+| Gate | Expected | Actual | Result |
+|---|---|---|---|
+| Requirements | All AC-001–017 unique and traceable | 17 AC entries and 17 traceability rows; six REQ groups | PASS |
+| Manual execution | Results recorded without requiring screenshot distribution | Software Test Engineer performed the manual tests; AC-016 FAIL, AC-017 PASS; earlier observations preserved | PASS — execution; outcomes vary |
+| Design consistency | AC-015–017 reflected in decision/state models | See local `decision_tables_and_state_transitions.md` (DT-001/DT-003, ST-03/ST-08, CHST-07) | PASS — local design |
+| Residual risk | Unverified behavior explicit | 3+ products, navigation recovery, input limits, tax rule and backend persistence remain unverified | CONDITIONAL PASS |
+| Application acceptance | No untriaged failed AC | AC-016 is an open defect candidate relative to exercise PO rule; official product policy not confirmed | FAIL — AC-016; triage open |
+
+**Overall:** CONDITIONAL PASS for design-document handoff, not a PASS for all application behavior. No new automation execution, defect fix or GitHub synchronization is claimed.
 
 ## 7. Sources
 
