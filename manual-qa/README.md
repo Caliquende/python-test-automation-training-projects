@@ -16,7 +16,7 @@ This manual software testing case study connects scope, exercise-level requireme
 | [Test Design Techniques](docs/design-techniques.md) | Equivalence Partitioning (EP), Boundary Value Analysis (BVA) feasibility, test-design screening | Reviewed: 18 Nov 2026 |
 | [Decision Tables & State Transitions](docs/decision_tables_and_state_transitions.md) | Cart/Checkout decision tables, state transitions, test-case candidates, Q6 final quality gate | Reviewed: 19 Nov 2026; **CP** |
 
-**Version note:** These links are the **intended repository layout for the updated local deliverables**. The revised files have not been pushed to GitHub by this work. The original 14-behavior scope baseline remains historical; AC-015–017 extend the requirements beyond it. The 18 Nov `design-techniques.md` assessment predates AC-015–017 and must not be interpreted as having screened them.
+**Version note:** The original 14-behavior scope baseline remains historical; AC-015–017 extend the requirements beyond it. The 18 Nov `design-techniques.md` assessment predates AC-015–017 and must not be interpreted as having screened them.
 
 ## Functional coverage and outcomes
 
@@ -44,6 +44,28 @@ The [16 Nov 2026 scope assessment](docs/scope.md) cites [GitHub Actions run #56]
 
 Existing SauceDemo automation reaches Checkout Information; the cited run does not establish automated completion of checkout or execution of the newly designed decision-table scenarios.
 
+### Defect candidate — AC-016: Empty cart allows checkout
+
+**Status:** OPEN — manually observed; **Severity/Priority:** Not assigned; **Type:** Functional behavior against an exercise-level acceptance criterion.
+
+| Field | Detail |
+|---|---|
+| Application | [SauceDemo](https://www.saucedemo.com/) |
+| Test environment | Windows 11, Brave (Chromium-based); browser version not recorded |
+| Preconditions | Signed in; shopping cart contains **zero products** |
+| Reproduction steps | 1. Open the empty cart. 2. Select **Checkout**. |
+| Expected result (AC-016) | Checkout is blocked and the user remains on the Cart page (`cart.html`). |
+| Actual result | Checkout proceeds to `https://www.saucedemo.com/checkout-step-one.html`. |
+| Result | **FAIL** against AC-016; reported as a defect candidate by the Software Test Engineer |
+| Additional observation | A separately provided Checkout Overview screenshot displays `Item total: $0`, `Tax: $0.00`, and `Total: $0.00`. The screenshot does **not**, by itself, establish the navigation sequence from the empty cart to that page. |
+| Reproducibility | Observed during manual testing on 19 Nov 2026; repeated-run count not recorded |
+| Supporting evidence | Tester observation and screenshot reviewed in the study conversation; image not embedded or linked here |
+
+**Upstream GitHub Issue:** [saucelabs/sample-app-web#201 — Empty cart allows users to proceed to checkout](https://github.com/saucelabs/sample-app-web/issues/201)  
+**Issue status (verified 19 Nov 2026):** OPEN; no maintainer response recorded at verification time.
+
+**Upstream issue caveat:** AC-016 was defined by the Product Owner **for this training exercise**, not by Sauce Labs. The upstream issue has been submitted; maintainers have not yet confirmed whether empty-cart checkout is intended behavior. The observed navigation is factual; violation of official product requirements is **NOT VERIFIED**.
+
 ### Manual execution and defect triage
 
 Manual checks were executed by the **Software Test Engineer**. Recorded outcomes are part of the test documentation; screenshot distribution is not required for a manual execution PASS. The documents distinguish **manual execution**, **candidate test-case design**, and **historical CI**.
@@ -61,7 +83,7 @@ Manual checks were executed by the **Software Test Engineer**. Recorded outcomes
 
 **Residual risks:** Three-or-more-product cart/checkout behavior, cancel/back navigation and recovery, malformed/whitespace-only/length-boundary inputs without approved limits, tax-rate correctness, and backend persistence. These are **NOT VERIFIED**, not assumed defects.
 
-## Intended repository layout
+## Repository layout
 
 ```text
 manual-qa/
@@ -73,7 +95,7 @@ manual-qa/
     └── decision_tables_and_state_transitions.md
 ```
 
-The two newly updated Markdown documents and README are provided locally; paths above are the intended placement after a separately authorized GitHub push. Formal standalone test-case files, test plan, and defect ticket are not claimed to exist.
+The documentation files shown above are present in the repository following PR #30. The updated README with the upstream Issue #201 reference is prepared for a separate commit. Formal standalone test-case files and a test plan are not claimed to exist.
 
 ## Abbreviations and status legend
 
@@ -94,4 +116,4 @@ The two newly updated Markdown documents and README are provided locally; paths 
 | PASS / FAIL | Outcome for the explicitly named check or application criterion |
 | NOT VERIFIED | Evidence or approved expected behavior is insufficient for the named condition |
 
-**Next actions:** Triage AC-016 against the exercise PO requirement; verify the remaining risk scenarios if they enter scope; create formal test cases/execution logs or automation assertions separately when requested. Do not treat the design CP as an application release sign-off.
+**Next actions:** Track the upstream response to [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201); verify the remaining risk scenarios if they enter scope; create formal test cases/execution logs or automation assertions separately when requested. Do not treat the design CP as an application release sign-off.
