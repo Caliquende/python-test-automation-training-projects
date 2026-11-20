@@ -1,4 +1,8 @@
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -143,7 +147,21 @@ class BasePage:
         TR: Bir öğenin metin içeriğini alır.
         EN: Wait until an element is visible and return its text.
         """
-        return self.find_visible_element(locator).text
+        find_visible = EC.visibility_of_element_located(locator)
+
+        def read_visible_text(driver):
+            element = find_visible(driver)
+            if not element:
+                return False
+
+            try:
+                # Keep an empty string a successful result for WebDriverWait.
+                return (element.text,)
+            except StaleElementReferenceException:
+                return False
+
+        (text,) = self.wait.until(read_visible_text, f"Could not read text from {locator}")
+        return text
 
     def count_elements(self, locator):
         """
