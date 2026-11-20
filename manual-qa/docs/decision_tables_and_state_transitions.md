@@ -96,7 +96,7 @@ Conditions: F = First Name nonempty; L = Last Name nonempty; P = Postal Code non
 
 **Q5 review evidence:** On 19 November 2026, the user confirmed CHST-01 and CHST-02 URL/title and AC-009/010; CHST-03 URL/title and AC-011; CHST-04 same-page error behavior across the seven Q4 combinations and AC-012; and Finish navigation to `checkout-complete.html`, title `Checkout: Complete!`, confirmation `Thank you for your order!`, and dispatch text for **CHST-06 / AC-014**. CHST-05 is a review/observation self-loop, not a Finish transition; its detailed item/totals evidence is recorded in `requirements.md` (17 November) rather than newly executed in Q5. The conversation previously called Finish “CHST-05”; that was an **identifier error**. The stable document identifier is **CHST-06**, and AC-014 remains unchanged. These are manual test results recorded by the Software Test Engineer, not independent AUT verification or formal TC execution.
 
-**Open conditions:** Empty-cart Checkout is now covered by AC-016 and is a manual FAIL. Duplicate addition is covered by AC-017 and is a manual PASS. Three-or-more-item behavior, cancellation/back navigation, tax formula correctness, nonempty malformed data and checkout recovery after errors remain unverified.
+**Open conditions:** Empty-cart Checkout is now covered by AC-016 and is a manual FAIL. Duplicate addition is covered by AC-017 and is a manual PASS. Three-or-more-item behavior, cancellation/back navigation, nonempty malformed data and checkout recovery after errors remain unverified.
 
 ## 5A. DT-003 — Newly approved cart policy checks (19 November)
 
@@ -157,8 +157,8 @@ Conditions: F = First Name nonempty; L = Last Name nonempty; P = Postal Code non
 | Requirements traceability | All AC-001–017 identified and linked to a REQ | Six REQ groups; AC-001–017 in `requirements.md`; design mappings for cart/checkout | PASS — document traceability |
 | Design coverage | Reviewed decision rules and transitions represented | DT-001 (4 rules), DT-002 (8 rules), DT-003 (2 targeted cases); ST-01–08 and CHST-01–07 | PASS — selected design scope |
 | Manual execution | Actual manual results distinguished from design-only cases and CI | Software Test Engineer performed manual checks; AC-016 FAIL and AC-017 PASS recorded; candidate TC IDs are not formal execution logs | PASS — manual execution; record completeness varies |
-| Residual risks | Unverified scenarios and product-policy limitations explicit | 3+ products, navigation recovery, input-format/length rules, tax-rate correctness and backend persistence unverified | CONDITIONAL PASS — risks documented |
-| Defect triage | Failed AC has a recorded expected/actual and ownership | AC-016: checkout allowed with empty cart; defect candidate against exercise PO rule; official SauceDemo policy unconfirmed | OPEN — PO triage / product-policy confirmation |
+| Residual risks | Unverified scenarios and product-policy limitations explicit | 3+ products, navigation recovery, input-format/length rules, backend persistence unverified; tax-rate formula source-verified on 2026-11-20 | CONDITIONAL PASS — risks documented |
+| Defect triage | Failed AC has a recorded expected/actual and ownership | AC-016: checkout allowed with empty cart; defect candidate against exercise PO rule; upstream Issue #201 CLOSED as expected behaviour; exercise AC-016 remains FAIL | CLOSED upstream; historical exercise FAIL |
 
 **Release/acceptance interpretation:** CP applies to the **test-design deliverables**, not to the application's defect-free status. AC-016 is an application FAIL against the newly approved exercise AC; no defect fix or retest is claimed. No GitHub push is implied.
 
@@ -173,7 +173,7 @@ Conditions: F = First Name nonempty; L = Last Name nonempty; P = Postal Code non
 | F / L / P | First Name / Last Name / Postal Code | Boolean input conditions in `DT-002`; `Y` = nonempty, `N` = empty. |
 | ID | Identifier | Unique label for a design element or proposed test case. |
 | Q | Question | Daily exercise question number, e.g., `Q4/6`. |
-| CP | Conditional Pass | Design accepted with documented residual risks and an open defect candidate. |
+| CP | Conditional Pass | Design accepted with documented residual risks and a historical exercise-AC FAIL (upstream Issue #201 CLOSED — expected behaviour). |
 | PO | Product Owner | ChatGPT acting as PO for this training exercise only. |
 | REQ | Requirement | Candidate functional requirement group. |
 | CI | Continuous Integration | Historical GitHub Actions automation baseline, not new manual execution. |
@@ -188,3 +188,11 @@ Conditions: F = First Name nonempty; L = Last Name nonempty; P = Postal Code non
 **Result labels:** `PASS` = specified design/review check met; `NOT RUN` = a particular application test was not executed as part of the cited record; `NOT VERIFIED` / `NOT INDEPENDENTLY VERIFIED` = independent confirmation unavailable; `MISSING` = no explicit matching acceptance criterion. These labels apply only to the scope stated in their row and must not be interpreted as a blanket application-test verdict.
 
 **Page/state notation:** `Inventory` = product-list page; `Cart` = shopping-cart page; `Checkout Information` = first checkout form; `Checkout Overview` = review step; `Checkout Complete` = completion page. `Empty`, `One Item`, `Two Items` describe the modeled cart contents, not the application's maximum capacity. `Inventory, One Item → Cart, One Item` changes page without changing cart contents.
+
+## Post-review triage and source verification — 2026-11-20
+
+**PO approval note (AC-016):** `Issue #201 expected behaviour (Development comment)`. The exercise-approved AC-016 expectation is unchanged; the historical manual verdict remains FAIL against this exercise AC. Upstream [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201) was closed on 2026-11-20 as intentional/expected behaviour, not fixed; no open upstream product defect is asserted.
+
+**Source-code verification (2026-11-20): PASS.** Sauce Labs [`src/utils/orderCalculations.js`](https://github.com/saucelabs/sample-app-web/blob/d5cd655fa8a974f4ddb6fde2868586e0084211d2/src/utils/orderCalculations.js) at commit `d5cd655fa8a974f4ddb6fde2868586e0084211d2` calculates `orderTax = (orderTotal * 0.08).toFixed(2)` and `orderGrandTotal = (orderTotal + parseFloat(orderTax)).toFixed(2)`; `src/pages/CheckOutStepTwo.jsx` uses the calculation. The historical `$39.98` subtotal, `$3.20` tax and `$43.18` total agree. This is source review and comparison with recorded manual results, not a new test execution.
+
+AC-004 price sorting is included in the 23–27 November manual test-plan scope; it is outside this document’s Cart/Checkout decision-table models. No cart/checkout TC IDs are reassigned to sorting.

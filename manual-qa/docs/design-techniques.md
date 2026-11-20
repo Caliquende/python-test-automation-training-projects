@@ -168,7 +168,7 @@ The difference between an empty string and a nonempty string supports required-f
 
 - The November 17 [requirements document](https://github.com/Caliquende/python-test-automation-training-projects/blob/main/manual-qa/docs/requirements.md) records the observed required-field precedence and the exact UI error wording. The November 18 responses report the positive and negative outcomes recorded above.
 - Four provided UI states corroborated the field-order behavior: First Name present/Last Name missing/Postal Code missing; First Name missing/Last Name present/Postal Code missing; First and Last Name missing/Postal Code present; and all three missing. The same product-image observation was reported for the special `problem_user` demonstration. Neither observation set is treated as proof of all unrecorded steps or an independently complete execution session.
-- In the November 17 Checkout Overview example, displayed `Item total: $39.98`, `Tax: $3.20`, and `Total: $43.18` satisfy the displayed arithmetic. The correctness of the underlying tax-rate rule was **NOT VERIFIED**. This is context for AC-013, not a new BVA test or a new DT case.
+- In the November 17 Checkout Overview example, displayed `Item total: $39.98`, `Tax: $3.20`, and `Total: $43.18` satisfy the displayed arithmetic. The underlying 8% tax-rate rule was subsequently **VERIFIED by Sauce Labs source review on 2026-11-20**. This is context for AC-013, not a new BVA test or a new DT case.
 - No dedicated AC defines locked-account behavior or product-image correctness. No official numeric input or cart boundary specification was provided.
 - This report does not include screenshots or external screenshot references in its source list. It contains no claims of an executed test suite, a discovered production defect, or a fixed bug.
 
@@ -205,3 +205,11 @@ The difference between an empty string and a nonempty string supports required-f
 - [Manual QA Scope and Existing Automation Coverage](https://github.com/Caliquende/python-test-automation-training-projects/blob/main/manual-qa/docs/scope.md)
 - [Sauce Labs sample application — Login implementation](https://github.com/saucelabs/sample-app-web/blob/main/src/pages/Login.jsx)
 - [ISTQB Certified Tester Foundation Level](https://istqb.org/certifications/certified-tester-foundation-level/)
+
+## Post-assessment update — 2026-11-20
+
+**Source-code verification (2026-11-20): PASS.** Sauce Labs [`src/utils/orderCalculations.js`](https://github.com/saucelabs/sample-app-web/blob/d5cd655fa8a974f4ddb6fde2868586e0084211d2/src/utils/orderCalculations.js) at commit `d5cd655fa8a974f4ddb6fde2868586e0084211d2` calculates `orderTax = (orderTotal * 0.08).toFixed(2)` and `orderGrandTotal = (orderTotal + parseFloat(orderTax)).toFixed(2)`; `src/pages/CheckOutStepTwo.jsx` uses the calculation. The historical `$39.98` subtotal, `$3.20` tax and `$43.18` total agree. This is source review and comparison with recorded manual results, not a new test execution.
+
+This document remains the 2026-11-18 EP/BVA design assessment for AC-001–014; it does **not** retrospectively claim technique screening for AC-015–017. AC-004 price sorting is included in the 23–27 November manual test-plan scope, using an ordering invariant rather than unsupported BVA limits.
+
+**PO approval note (AC-016):** `Issue #201 expected behaviour (Development comment)`. The exercise-approved AC-016 expectation is unchanged; the historical manual verdict remains FAIL against this exercise AC. Upstream [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201) was closed on 2026-11-20 as intentional/expected behaviour, not fixed; no open upstream product defect is asserted.

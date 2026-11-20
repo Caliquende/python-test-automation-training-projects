@@ -7,13 +7,13 @@
 **Scope baseline:** [scope.md](scope.md)  
 **Source baseline reviewed:** `a2942f72d1b57ee7705d2da2d2c0181bd013527d`  
 **CI reference for existing assertions:** [Test Automation — run #56](https://github.com/Caliquende/python-test-automation-training-projects/actions/runs/43870142191) at commit `78825f13eda1f4f23b2c7b464bf19c1ea550d589`  
-**Document status:** AC-001–017 APPROVED (exercise PO only); manual execution recorded; AC-016 FAIL (open defect candidate); Final Quality Gate CONDITIONAL PASS for design deliverables. These are not official SauceDemo customer requirements.
+**Document status:** AC-001–017 APPROVED (exercise PO only); manual execution recorded; AC-016 manual FAIL against exercise AC; upstream Issue #201 CLOSED — expected behaviour; Final Quality Gate CONDITIONAL PASS for design deliverables. These are not official SauceDemo customer requirements.
 
 ## 1. Purpose and Boundaries
 
 Create testable, uniquely identified acceptance criteria for the six functional areas selected in the SauceDemo scope assessment: Login, Inventory, Cart, Checkout Information, Checkout Overview and Checkout Complete. The objective is to define observable expected behavior and map it to the existing automated assertions or a documented coverage gap. All 17 acceptance criteria have exercise-level approval from ChatGPT acting as Product Owner (PO); this does not constitute official SauceDemo stakeholder approval. Manual behavior observations made during the 2026-11-17 interactive review are recorded below; screenshots and screenshot references are intentionally excluded from this deliverable for user security.
 
-**Test environment (reported):** Windows 11; Brave (Chromium-based); version not supplied.  
+**Test environment (reported):** Windows 11; Brave (Chromium-based); Brave 1.100.58; Chromium 158.0.8127.42.  
 **Manual evidence:** Six previously unautomated behaviors were reviewed interactively on 2026-11-17, and actual results were recorded in Section 4. Screenshots and their filenames are withheld from this document for user security; this limits independent review by anyone who only receives this file.  
 **CI evidence:** 7 SauceDemo Selenium and 7 SauceDemo Playwright tests passed in run #56, with overlap in the scenarios covered. Run #56 does not validate the proposed criteria that lack corresponding assertions.
 
@@ -89,7 +89,7 @@ Create testable, uniquely identified acceptance criteria for the six functional 
 **Given** the Cart page contains `Sauce Labs Backpack` and `Sauce Labs Bike Light`,  
 **When** the user removes `Sauce Labs Bike Light` on the Cart page,  
 **Then** `Sauce Labs Bike Light` is absent, `Sauce Labs Backpack` remains, the numeric cart badge displays `1`, and the user remains on the Cart page.  
-**Basis:** USER-REPORTED manual test (2026-11-19; `DT-001/R03`, `ST-03`, `TC-003` in local `decision-tables.md`). No matching automated assertion established. **AC status:** APPROVED (by ChatGPT as PO) on 2026-11-19 for this training exercise only.
+**Basis:** USER-REPORTED manual test (2026-11-19; `DT-001/R03`, `ST-03`, `TC-003` in local `decision_tables_and_state_transitions.md`). No matching automated assertion established. **AC status:** APPROVED (by ChatGPT as PO) on 2026-11-19 for this training exercise only.
 
 **AC-017 — Prevent duplicate product addition**  
 **Given** a product is already present in the cart,  
@@ -104,7 +104,7 @@ Create testable, uniquely identified acceptance criteria for the six functional 
 **Given** the cart contains zero products,  
 **When** the user selects Checkout,  
 **Then** checkout does not advance and the user remains on the Cart page.  
-**Basis:** Manual test on 2026-11-19: empty-cart Checkout navigated to `checkout-step-one.html`, contrary to this newly approved exercise-level requirement. **AC status:** APPROVED (by ChatGPT as exercise PO) on 2026-11-19. **Test verdict:** FAIL — defect candidate; official SauceDemo intended behavior is not established.
+**Basis:** Manual test on 2026-11-19: empty-cart Checkout navigated to `checkout-step-one.html`, contrary to this newly approved exercise-level requirement. **AC status:** APPROVED (by ChatGPT as exercise PO) on 2026-11-19. **Test verdict:** FAIL — defect candidate; official SauceDemo behaviour was confirmed intentional by the maintainer in closed Issue #201. **PO approval note (AC-016):** `Issue #201 expected behaviour (Development comment)`. The exercise-approved AC-016 expectation is unchanged; the historical manual verdict remains FAIL against this exercise AC. Upstream [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201) was closed on 2026-11-20 as intentional/expected behaviour, not fixed; no open upstream product defect is asserted.
 
 **AC-009 — Open checkout with one item**  
 **Given** the cart contains one product,  
@@ -194,7 +194,7 @@ The following entries are textual records of the interactive manual-review sessi
 | AC-004 | 2026-11-17; time not recorded | Signed-in user; six inventory products | Select `Price (low to high)` | Displayed product prices are in nondecreasing order | The six displayed prices were `$7.99`, `$9.99`, `$15.99`, `$15.99`, `$29.99`, `$49.99`, in that order | Evidence: (Screenshot was not shared due to the users's security) | PASS — observed six-product sorting |
 | AC-011 | 2026-11-17; time not recorded | Checkout Information page; nonempty First Name, Last Name and Postal Code (values withheld) | Select `Continue` | Checkout Overview is displayed | Checkout Overview was displayed with title `Checkout: Overview`; `checkout-step-two.html` was observed | Evidence: (Screenshot was not shared due to the users's security) | PASS — observed navigation |
 | AC-012 | 2026-11-17; time not recorded | Checkout Information page; all seven nonempty subsets of the three required fields left blank in separate checks | Select `Continue` for each blank-field combination | A required-field error appears; user does not advance | Validation messages reflected the priority `First Name`, then `Last Name`, then `Postal Code`; all seven blank-field combinations were checked (details below) | Evidence: (Screenshot was not shared due to the users's security) | PASS — observed missing-field validation; see detail table |
-| AC-013 | 2026-11-17; time not recorded | Checkout Overview with Backpack (`$29.99`) and Bike Light (`$9.99`) | Inspect selected items and financial summary | Items, quantities, `Item total`, `Tax` and `Total` are visible; displayed arithmetic is consistent | Two items visible; `Item total: $39.98`, `Tax: $3.20`, `Total: $43.18`; displayed values satisfy `$39.98 + $3.20 = $43.18`. Independent tax-rate correctness was not verified | Evidence: (Screenshot was not shared due to the users's security) | PASS — item display/arithmetic; tax formula NOT VERIFIED |
+| AC-013 | 2026-11-17; time not recorded | Checkout Overview with Backpack (`$29.99`) and Bike Light (`$9.99`) | Inspect selected items and financial summary | Items, quantities, `Item total`, `Tax` and `Total` are visible; displayed arithmetic is consistent | Two items visible; `Item total: $39.98`, `Tax: $3.20`, `Total: $43.18`; displayed values satisfy `$39.98 + $3.20 = $43.18`. The 8% tax calculation was subsequently verified against Sauce Labs source code on 2026-11-20 | Evidence: (Screenshot was not shared due to the users's security) | PASS — item display/arithmetic; tax formula VERIFIED by source review (2026-11-20) |
 | AC-014 | 2026-11-17; time not recorded | Checkout Overview reached with items in cart | Select `Finish` | Distinct completion state and visible confirmation appear | `Thank you for your order!` was displayed, with the order-dispatched explanatory text and `Back Home` control; browser address bar displayed `saucedemo.com/checkout-complete.html` | Evidence: (Screenshot was not shared due to the users's security) | PASS — visible confirmation and browser URL observed |
 
 **Seven blank-field combinations (AC-012)**
@@ -209,7 +209,7 @@ The following entries are textual records of the interactive manual-review sessi
 | Last Name + Postal Code | `Error: Last Name is required` |
 | First Name + Last Name + Postal Code | `Error: First Name is required` |
 
-**Evidence privacy:** Screenshots were used in the interactive review but are deliberately not embedded, linked, named or distributed with this document. An external reviewer cannot independently reproduce the screenshot-based verification from the document alone. No backend-order proof or independent tax-rate rule is asserted.
+**Evidence privacy:** Screenshots were used in the interactive review but are deliberately not embedded, linked, named or distributed with this document. An external reviewer cannot independently reproduce the screenshot-based verification from the document alone. No backend-order proof is asserted; the tax-rate rule was subsequently verified against Sauce Labs source code.
 
 ### Additional manual observation — 2026-11-19
 
@@ -226,7 +226,7 @@ The following entries are textual records of the interactive manual-review sessi
 | Verification — authoring | Requirement and AC structure | Six requirement groups; at least 10 unique AC IDs; traceable scenarios | Six REQ sections, 17 unique AC entries and 17 corresponding traceability rows verified in the draft | PASS (structure only) |
 | Verification — source | Existing automation baseline | Identified assertions and relevant run link | Source reviewed in GitHub; 7 Selenium + 7 Playwright SauceDemo tests in successful run #56 | PASS (baseline only) |
 | Verification — observations | Six manual observation entries; test data, action, expected, actual, evidence privacy and status recorded | Every targeted AC has a complete textual observation entry | AC-002, AC-004, AC-011, AC-012, AC-013, AC-014 recorded; no screenshot material or filenames included | PASS (textual records only) |
-| Validation — observed behavior | Match six draft ACs to the session's observable behavior | Explicit actual results for each targeted behavior | Observed login rejection, sorting, form advancement, empty-field rejection, overview and completion confirmation; unverified tax rule clearly scoped; completion URL recorded | PASS for stated UI observations; exceptions NOT VERIFIED |
+| Validation — observed behavior | Match six draft ACs to the session's observable behavior | Explicit actual results for each targeted behavior | Observed login rejection, sorting, form advancement, empty-field rejection, overview and completion confirmation; source-verified 8% tax rule separately documented; completion URL recorded | PASS for stated UI observations; exceptions NOT VERIFIED |
 | Validation — external evidence reproducibility | Independent reviewer can inspect underlying screenshot evidence | Screenshots are intentionally withheld for user security | Not independently inspectable from the exported document alone | BLOCKED (privacy restriction) |
 | Validation — exercise PO approval | All 17 ACs receive explicit exercise-level approval from the assigned PO role | ChatGPT acting as PO approved AC-001 through AC-017 within this training exercise | APPROVED (by ChatGPT as PO) — 17/17 | PASS (exercise approval only) |
 | Validation — stakeholder requirements | Official product requirements are approved by an authorized product owner | Explicit official requirement authority | Not available; exercise role-play does not confer official SauceDemo approval | BLOCKED |
@@ -236,8 +236,8 @@ The following entries are textual records of the interactive manual-review sessi
 - Source code and CI demonstrate **assertion coverage**, not official authorization of business requirements; exercise-level PO approval is recorded separately.
 - This document contains six manual observation entries from 2026-11-17 and three additional manual test records (AC-015–017) from 2026-11-19. Source screenshots remain withheld for the user's security; external independent screenshot verification is therefore unavailable.
 - No new SauceDemo test run, code change, defect report or fix is claimed by this file.
-- The six original targeted observation gaps and AC-015–017 manual results are recorded in Section 4. Empty-cart checkout fails the newly approved exercise AC-016 and is a defect candidate; duplicate-add behavior meets exercise AC-017. The attached zero-total Overview screenshot is not proof of the exact navigation sequence. `Tax` formula correctness remains NOT VERIFIED. The checkout-complete URL was observed in the browser address bar during the interactive review.
-- The AC-015–017 amendments are local only; no GitHub update is claimed. Final design review Q6/6: CONDITIONAL PASS; AC-016 remains an open defect candidate against the exercise PO criterion. Do not require or attach screenshots: the evidence column uses the user-specified privacy statement.
+- The six original targeted observation gaps and AC-015–017 manual results are recorded in Section 4. Empty-cart checkout fails the newly approved exercise AC-016 and is a defect candidate; duplicate-add behavior meets exercise AC-017. The attached zero-total Overview screenshot is not proof of the exact navigation sequence. The 8% `Tax` formula is source-code VERIFIED (2026-11-20). The checkout-complete URL was observed in the browser address bar during the interactive review.
+- The AC-015–017 amendments are local only; no GitHub update is claimed. Final design review Q6/6: CONDITIONAL PASS; AC-016 remains a historical FAIL against the unchanged exercise AC; upstream Issue #201 is CLOSED as expected behaviour. Do not require or attach screenshots: the evidence column uses the user-specified privacy statement.
 
 ### Final Quality Gate — 2026-11-19
 
@@ -246,8 +246,8 @@ The following entries are textual records of the interactive manual-review sessi
 | Requirements | All AC-001–017 unique and traceable | 17 AC entries and 17 traceability rows; six REQ groups | PASS |
 | Manual execution | Results recorded without requiring screenshot distribution | Software Test Engineer performed the manual tests; AC-016 FAIL, AC-017 PASS; earlier observations preserved | PASS — execution; outcomes vary |
 | Design consistency | AC-015–017 reflected in decision/state models | See local `decision_tables_and_state_transitions.md` (DT-001/DT-003, ST-03/ST-08, CHST-07) | PASS — local design |
-| Residual risk | Unverified behavior explicit | 3+ products, navigation recovery, input limits, tax rule and backend persistence remain unverified | CONDITIONAL PASS |
-| Application acceptance | No untriaged failed AC | AC-016 is an open defect candidate relative to exercise PO rule; official product policy not confirmed | FAIL — AC-016; triage open |
+| Residual risk | Unverified behavior explicit | 3+ products, navigation recovery, input limits and backend persistence remain unverified; the tax rule is source-code verified | CONDITIONAL PASS |
+| Application acceptance | No untriaged failed AC | AC-016 remains FAIL relative to the exercise PO rule; official product behaviour confirmed intentional in closed Issue #201 | FAIL — AC-016 exercise AC; upstream triage CLOSED — expected behaviour |
 
 **Overall:** CONDITIONAL PASS for design-document handoff, not a PASS for all application behavior. No new automation execution, defect fix or GitHub synchronization is claimed.
 
@@ -258,3 +258,11 @@ The following entries are textual records of the interactive manual-review sessi
 - [Existing Playwright SauceDemo tests](https://github.com/Caliquende/python-test-automation-training-projects/blob/main/ui/playwright_pytest/sauce_demo/tests/test_sauce_demo_core.py)
 - [Sauce Labs official sample-app-web repository](https://github.com/saucelabs/sample-app-web)
 - [ISTQB Foundation Level](https://istqb.org/certifications/certified-tester-foundation-level/)
+
+## 8. Post-assessment verification update — 2026-11-20
+
+**PO approval note (AC-016):** `Issue #201 expected behaviour (Development comment)`. The exercise-approved AC-016 expectation is unchanged; the historical manual verdict remains FAIL against this exercise AC. Upstream [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201) was closed on 2026-11-20 as intentional/expected behaviour, not fixed; no open upstream product defect is asserted.
+
+**Source-code verification (2026-11-20): PASS.** Sauce Labs [`src/utils/orderCalculations.js`](https://github.com/saucelabs/sample-app-web/blob/d5cd655fa8a974f4ddb6fde2868586e0084211d2/src/utils/orderCalculations.js) at commit `d5cd655fa8a974f4ddb6fde2868586e0084211d2` calculates `orderTax = (orderTotal * 0.08).toFixed(2)` and `orderGrandTotal = (orderTotal + parseFloat(orderTax)).toFixed(2)`; `src/pages/CheckOutStepTwo.jsx` uses the calculation. The historical `$39.98` subtotal, `$3.20` tax and `$43.18` total agree. This is source review and comparison with recorded manual results, not a new test execution.
+
+AC-004 (price sorting) is **IN SCOPE** for the 2026-11-23–27 manual execution plan; its 2026-11-17 manual PASS remains historical, not a new execution.

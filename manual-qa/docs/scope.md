@@ -45,7 +45,7 @@ Check whether the existing **SauceDemo test suites** contain dedicated assertion
 
 | Assessment type | Environment | Evidence | Result |
 |---|---|---|---|
-| Manual exploration | Windows 11; Brave (Chromium-based); version not recorded | Tester statement; no saved manual artifacts | **OBSERVED — USER-REPORTED**, not independently validated |
+| Manual exploration | Windows 11; Brave (Chromium-based); Brave 1.100.58 / Chromium 158.0.8127.42 (version recorded 2026-11-20) | Tester statement; no saved manual artifacts | **OBSERVED — USER-REPORTED**, not independently validated |
 | Selenium CI | GitHub Actions, Ubuntu 24.04 runner; headless Chrome via Selenium; Python 3.11.18 / pytest 9.0.3 per shared logs | Run #56, Selenium UI Tests job log and JUnit artifact | **PASS: 10/10** (7 SauceDemo functional, 3 supporting tests) |
 | Playwright CI | GitHub Actions, Ubuntu 24.04 runner; Chromium; Python 3.11.18 / pytest 9.0.3 per shared logs | Run #56, Playwright UI Tests job log and JUnit artifact | **PASS: 15/15** (7 SauceDemo, 8 TodoMVC) |
 | Playwright Firefox/WebKit | Not evidenced for this run | No matching execution results in reviewed run | **NOT VERIFIED** |
@@ -189,3 +189,9 @@ Priority reflects **business impact**, a **qualitative view of plausible failure
 ## 14. Assessment Summary
 
 The reviewed repository has **7 SauceDemo Selenium** and **7 SauceDemo Playwright** functional tests, all passing in the verified CI run. These two suites exercise largely equivalent **login → inventory → cart → first checkout screen** scenarios. No automated assertions were found in these suites for **invalid login, inventory sorting, customer-information submission/validation, checkout overview totals, or completed purchase**. Manual exploration of these areas is reported but lacks independent evidence. The document therefore records the current **baseline and gaps**, rather than certifying the whole application as tested.
+
+## Post-baseline coordination — 2026-11-20
+
+This 2026-11-16 automation coverage baseline is preserved as historical evidence. AC-004 price sorting is included in the separate 2026-11-23–27 manual execution plan; the original B04 automation gap remains unchanged. The browser version was subsequently recorded: Brave 1.100.58 / Chromium 158.0.8127.42.
+
+**Cross-document PO approval note (AC-016):** `Issue #201 expected behaviour (Development comment)`. AC-016 retains its exercise-level expectation and historical FAIL. The upstream issue was closed on 2026-11-20 as intentional behaviour; this 16 November automation baseline is unchanged.

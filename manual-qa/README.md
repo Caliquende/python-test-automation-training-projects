@@ -14,6 +14,7 @@ This manual software testing case study connects scope, exercise-level requireme
 | [Scope & Coverage Assessment](docs/scope.md) | Six functional areas; 14 original baseline behaviors (`B01–B14`); automation gap assessment | Baseline: 16 Nov 2026 |
 | [Requirements & Acceptance Criteria](docs/requirements.md) | Six requirement groups (`REQ-001–006`); **17** exercise-approved ACs (`AC-001–017`); traceability, manual observations, AC-016 defect candidate | Updated: 19 Nov 2026 |
 | [Test Design Techniques](docs/design-techniques.md) | Equivalence Partitioning (EP), Boundary Value Analysis (BVA) feasibility, test-design screening | Reviewed: 18 Nov 2026 |
+| [Manual Test Plan](docs/test-plan.md) | 23–27 Nov execution strategy, AC–TC traceability, risk and entry/exit gates | Updated: 20 Nov 2026 |
 | [Decision Tables & State Transitions](docs/decision_tables_and_state_transitions.md) | Cart/Checkout decision tables, state transitions, test-case candidates, Q6 final quality gate | Reviewed: 19 Nov 2026; **CP** |
 
 **Version note:** The original 14-behavior scope baseline remains historical; AC-015–017 extend the requirements beyond it. The 18 Nov `design-techniques.md` assessment predates AC-015–017 and must not be interpreted as having screened them.
@@ -26,7 +27,7 @@ This manual software testing case study connects scope, exercise-level requireme
 | Inventory | Six-product inventory and price-low-to-high sorting |
 | Cart | Cart navigation, one/two-item add/remove, two-to-one removal (AC-015), duplicate-add policy (AC-017: manual PASS) |
 | Checkout Information | One/two-item entry, required-field combinations, **empty-cart checkout restriction (AC-016: manual FAIL)** |
-| Checkout Overview | Items and displayed totals; arithmetic checked for a two-item example; tax-rate correctness unverified |
+| Checkout Overview | Items and displayed totals; arithmetic checked for a two-item example; tax-rate formula source-verified (8%; 2026-11-20) |
 | Checkout Complete | Finish navigation and visible confirmation |
 
 ### Automation baseline — historical, not new execution
@@ -46,12 +47,12 @@ Existing SauceDemo automation reaches Checkout Information; the cited run does n
 
 ### Defect candidate — AC-016: Empty cart allows checkout
 
-**Status:** OPEN — manually observed; **Severity/Priority:** Not assigned; **Type:** Functional behavior against an exercise-level acceptance criterion.
+**Upstream status:** CLOSED 2026-11-20 — expected behaviour; **Exercise AC-016:** historical manual FAIL; **Severity/Priority:** Not assigned; **Type:** Functional behavior against an exercise-level acceptance criterion.
 
 | Field | Detail |
 |---|---|
 | Application | [SauceDemo](https://www.saucedemo.com/) |
-| Test environment | Windows 11, Brave (Chromium-based); browser version not recorded |
+| Test environment | Windows 11, Brave (Chromium-based); Brave 1.100.58 / Chromium 158.0.8127.42 |
 | Preconditions | Signed in; shopping cart contains **zero products** |
 | Reproduction steps | 1. Open the empty cart. 2. Select **Checkout**. |
 | Expected result (AC-016) | Checkout is blocked and the user remains on the Cart page (`cart.html`). |
@@ -62,9 +63,9 @@ Existing SauceDemo automation reaches Checkout Information; the cited run does n
 | Supporting evidence | Tester observation and screenshot reviewed in the study conversation; image not embedded or linked here |
 
 **Upstream GitHub Issue:** [saucelabs/sample-app-web#201 — Empty cart allows users to proceed to checkout](https://github.com/saucelabs/sample-app-web/issues/201)  
-**Issue status (verified 19 Nov 2026):** OPEN; no maintainer response recorded at verification time.
+**Issue status (updated 20 Nov 2026):** CLOSED — expected/intentional behaviour per Development comment; no application fix claimed.
 
-**Upstream issue caveat:** AC-016 was defined by the Product Owner **for this training exercise**, not by Sauce Labs. The upstream issue has been submitted; maintainers have not yet confirmed whether empty-cart checkout is intended behavior. The observed navigation is factual; violation of official product requirements is **NOT VERIFIED**.
+**Upstream issue caveat:** AC-016 was defined by the Product Owner **for this training exercise**, not by Sauce Labs. The upstream maintainer confirmed empty-cart checkout is intentional; Issue #201 was closed on 2026-11-20. The observed navigation is factual; violation of official product requirements is **NOT VERIFIED**.
 
 ### Manual execution and defect triage
 
@@ -75,13 +76,13 @@ Manual checks were executed by the **Software Test Engineer**. Recorded outcomes
 - **AC-016 defect candidate:** With an empty cart, selecting Checkout navigated to `checkout-step-one.html` instead of remaining on Cart. A separate screenshot shows a zero-total Checkout Overview, but does not independently prove its navigation path. This is a failure **against the exercise-level AC**, not confirmation of a violation of official SauceDemo requirements.
 - **AC-017 policy:** The exercise PO specified at most one instance of a product. The observed refusal to add a duplicate matches that criterion. Detailed interaction sequence was not separately recorded.
 
-**Evidence boundary:** Screenshots and screenshot filenames are intentionally excluded from these exported documents. No independent screenshot review, tax-formula verification, backend order-persistence check, or new automation run is claimed.
+**Evidence boundary:** Screenshots and screenshot filenames are intentionally excluded from these exported documents. No new screenshot review, backend order-persistence check, or automation run is claimed. The 8% tax formula was subsequently verified by Sauce Labs source-code review on 2026-11-20.
 
 ## Final Quality Gate — Q6/6
 
-**Decision: CONDITIONAL PASS (CP) for the test-design handoff.** Requirements traceability and selected design coverage passed review. Manual execution is **PASS as an activity**, while individual application results retain their own PASS/FAIL verdicts. The open AC-016 defect candidate and remaining unverified conditions prevent a blanket application PASS.
+**Decision: CONDITIONAL PASS (CP) for the test-design handoff.** Requirements traceability and selected design coverage passed review. Manual execution is **PASS as an activity**, while individual application results retain their own PASS/FAIL verdicts. The historical exercise AC-016 FAIL (upstream issue closed as intentional) and remaining unverified conditions prevent a blanket application PASS.
 
-**Residual risks:** Three-or-more-product cart/checkout behavior, cancel/back navigation and recovery, malformed/whitespace-only/length-boundary inputs without approved limits, tax-rate correctness, and backend persistence. These are **NOT VERIFIED**, not assumed defects.
+**Residual risks:** Three-or-more-product cart/checkout behavior, cancel/back navigation and recovery, malformed/whitespace-only/length-boundary inputs without approved limits, backend persistence. These are **NOT VERIFIED**, not assumed defects.
 
 ## Repository layout
 
@@ -92,10 +93,11 @@ manual-qa/
     ├── scope.md
     ├── requirements.md
     ├── design-techniques.md
-    └── decision_tables_and_state_transitions.md
+    ├── decision_tables_and_state_transitions.md
+    └── test-plan.md
 ```
 
-The documentation files shown above are present in the repository following PR #30. The updated README with the upstream Issue #201 reference is prepared for a separate commit. Formal standalone test-case files and a test plan are not claimed to exist.
+The documentation files shown above are present in the repository following PR #30. The updated README with the upstream Issue #201 reference is prepared for a separate commit. Formal standalone test-case files are not claimed to exist. `docs/test-plan.md` is included in this documentation set; its local existence does not imply a GitHub push.
 
 ## Abbreviations and status legend
 
@@ -116,4 +118,12 @@ The documentation files shown above are present in the repository following PR #
 | PASS / FAIL | Outcome for the explicitly named check or application criterion |
 | NOT VERIFIED | Evidence or approved expected behavior is insufficient for the named condition |
 
-**Next actions:** Track the upstream response to [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201); verify the remaining risk scenarios if they enter scope; create formal test cases/execution logs or automation assertions separately when requested. Do not treat the design CP as an application release sign-off.
+**Next actions:** Record the closed/expected-behaviour disposition of [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201); verify the remaining risk scenarios if they enter scope; create formal test cases/execution logs or automation assertions separately when requested. Do not treat the design CP as an application release sign-off.
+
+## Documentation coordination — 2026-11-20
+
+**PO approval note (AC-016):** `Issue #201 expected behaviour (Development comment)`. The exercise-approved AC-016 expectation is unchanged; the historical manual verdict remains FAIL against this exercise AC. Upstream [Issue #201](https://github.com/saucelabs/sample-app-web/issues/201) was closed on 2026-11-20 as intentional/expected behaviour, not fixed; no open upstream product defect is asserted.
+
+**Source-code verification (2026-11-20): PASS.** Sauce Labs [`src/utils/orderCalculations.js`](https://github.com/saucelabs/sample-app-web/blob/d5cd655fa8a974f4ddb6fde2868586e0084211d2/src/utils/orderCalculations.js) at commit `d5cd655fa8a974f4ddb6fde2868586e0084211d2` calculates `orderTax = (orderTotal * 0.08).toFixed(2)` and `orderGrandTotal = (orderTotal + parseFloat(orderTax)).toFixed(2)`; `src/pages/CheckOutStepTwo.jsx` uses the calculation. The historical `$39.98` subtotal, `$3.20` tax and `$43.18` total agree. This is source review and comparison with recorded manual results, not a new test execution.
+
+AC-004 sorting is **IN SCOPE** for 23–27 November manual execution. Historical B04 sorting observation PASS does not replace the missing formal AC-004 test case. All six documents in this package use canonical names without export timestamps or numbered suffixes.
