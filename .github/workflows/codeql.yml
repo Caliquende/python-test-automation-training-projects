@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # TR: CodeQL analiz motorunu başlatır.
       # EN: Initializes the CodeQL analysis engine.
